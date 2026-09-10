@@ -168,7 +168,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: address not found at bcamail.org.",
+   "bounced": true
   },
   {
    "n": 15,
@@ -180,7 +181,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: address not found at bcamail.org.",
+   "bounced": true
   },
   {
    "n": 16,
@@ -528,7 +530,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: address not found (550 5.2.1).",
+   "bounced": true
   },
   {
    "n": 45,
@@ -552,7 +555,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: rejected by caschools.us mail gateway (Paubox).",
+   "bounced": true
   },
   {
    "n": 47,
@@ -636,7 +640,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: rejected by caschools.us mail gateway (Paubox).",
+   "bounced": true
   },
   {
    "n": 54,
@@ -648,7 +653,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: rejected by caschools.us mail gateway (Paubox).",
+   "bounced": true
   },
   {
    "n": 55,
@@ -1008,7 +1014,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: message blocked / not found at eagleslanding.org.",
+   "bounced": true
   },
   {
    "n": 85,
@@ -1020,7 +1027,7 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "CAUTION: all other eagleslanding.org addresses bounced 2026-09-10; likely invalid."
   },
   {
    "n": 86,
@@ -1032,7 +1039,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: message blocked / not found at eagleslanding.org.",
+   "bounced": true
   },
   {
    "n": 87,
@@ -1044,7 +1052,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: message blocked / not found at eagleslanding.org.",
+   "bounced": true
   },
   {
    "n": 88,
@@ -1056,7 +1065,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": "BOUNCED 2026-09-10: address not found at eagleslanding.org. Needs a corrected address or drop."
+   "notes": "BOUNCED 2026-09-10: recipient unknown at eagleslanding.org.",
+   "bounced": true
   },
   {
    "n": 89,
@@ -1176,7 +1186,8 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: message blocked by recipient server.",
+   "bounced": true
   },
   {
    "n": 99,

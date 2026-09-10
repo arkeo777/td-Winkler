@@ -1,5 +1,5 @@
 #,School,City,State,Admin Name,Email,Date Emailed (you send),Responded?,Response Date,Wants to Take Part?,Questions Sent?,Meeting Date/Time,Notes
-1,Aliso Viejo Christian School,Aliso Viejo,CA,Meredith Arldt,marldt@avchristianschool.org,,Yes,2026-09-10,YES — happy to take part,,,"Replied 2026-09-10: ""I would be happy to be a part of this development!"" → SEND questions-preview email + schedule."
+1,Aliso Viejo Christian School,Aliso Viejo,CA,Meredith Arldt,marldt@avchristianschool.org,2026-09-10,Yes,2026-09-10,YES — happy to take part,,,"Replied 2026-09-10: ""I would be happy to be a part of this development!"" → SEND questions-preview email + schedule."
 2,Asheville Christian Academy,Swannanoa,NC,Alison Gioia,alison.gioia@ashevillechristian.org,,,,,,,
 3,Asheville Christian Academy,Swannanoa,NC,Christopher Zaccaro,chris.zaccaro@ashevillechristian.org,,,,,,,
 4,Asheville Christian Academy,Swannanoa,NC,Kasey Murray,kasey.murray@ashevillechristian.org,,,,,,,
@@ -7,14 +7,14 @@
 6,Atlantic Shores Christian School - Elementary,Chesapeake,VA,Andrea Rudy,arudy@shoreschristian.org,,,,,,,
 7,Atlantic Shores Christian School - Elementary,Chesapeake,VA,Gale Hall,ghall@shoreschristian.org,,,,,,,
 8,Atlantic Shores Christian School - Elementary,Chesapeake,VA,Lisa Reyes,lreyes@shoreschristian.org,,,,,,,
-9,Ben Lippen School,Columbia,SC,Christa Agee,christa.agee@benlippen.com,,Yes,2026-09-10,No — elementary educator,,,"Replied 2026-09-10: elementary educator, never taught middle school; declined."
+9,Ben Lippen School,Columbia,SC,Christa Agee,christa.agee@benlippen.com,2026-09-10,Yes,2026-09-10,No — elementary educator,,,"Replied 2026-09-10: elementary educator, never taught middle school; declined."
 10,Ben Lippen School,Columbia,SC,Kelli Larsen,kelli.larsen@benlippen.com,,,,,,,
 11,Ben Lippen School,Columbia,SC,Steve Maurelli,steve.maurelli@benlippen.com,,,,,,,
 12,Berean Christian School,West Palm Beach,FL,Sheri Fyke,sheri_fyke@bereanwpb.org,,,,,,,
 13,Bethlehem Christian Academy - Elementary,Bethlehem,GA,Ana Peavy,apeavy@bcamail.org,,,,,,,
-14,Bethlehem Christian Academy - Elementary,Bethlehem,GA,Chris Holland,cholland@bcamail.org,,,,,,,
-15,Bethlehem Christian Academy - Elementary,Bethlehem,GA,Jen Prior,jprior@bcamail.org,,,,,,,
-16,Bethlehem Christian Academy - Elementary,Bethlehem,GA,Kelly Vann,kvann@bcamail.org,,Yes,2026-09-10,No — works with K3–5th; referral,,,"Replied 2026-09-10: works with K3-5th, suggested a better-fit contact (cc SJones@bcamail.org)."
+14,Bethlehem Christian Academy - Elementary,Bethlehem,GA,Chris Holland,cholland@bcamail.org,2026-09-10,,,,,,BOUNCED 2026-09-10: address not found at bcamail.org.
+15,Bethlehem Christian Academy - Elementary,Bethlehem,GA,Jen Prior,jprior@bcamail.org,2026-09-10,,,,,,BOUNCED 2026-09-10: address not found at bcamail.org.
+16,Bethlehem Christian Academy - Elementary,Bethlehem,GA,Kelly Vann,kvann@bcamail.org,2026-09-10,Yes,2026-09-10,No — works with K3–5th; referral,,,"Replied 2026-09-10: works with K3-5th, suggested a better-fit contact (cc SJones@bcamail.org)."
 17,Boca Raton Christian School,Boca Raton,FL,Eve Good,goode@bocachristian.org,,,,,,,
 18,Boca Raton Christian School,Boca Raton,FL,Kenneth Fry,fryk@bocachristian.org,,,,,,,
 19,California Crosspoint Academy,Hayward,CA,Ashley Kim,ashleykim@crosspointacademy.org,,,,,,,
@@ -42,17 +42,17 @@
 41,Charlotte Christian School,Charlotte,NC,Ashley Jenkins,ashley.jenkins@charchrist.com,,,,,,,
 42,Charlotte Christian School,Charlotte,NC,Brandon Henderson,brandon.henderson@charchrist.com,,,,,,,
 43,Charlotte Christian School,Charlotte,NC,Christina Sachtleben,christina.sachtleben@charchrist.com,,,,,,,
-44,Charlotte Christian School,Charlotte,NC,Jen Payne,jen.payne@charchrist.com,,,,,,,
+44,Charlotte Christian School,Charlotte,NC,Jen Payne,jen.payne@charchrist.com,2026-09-10,,,,,,BOUNCED 2026-09-10: address not found (550 5.2.1).
 45,Charlotte Christian School,Charlotte,NC,Katey Balikian,katey.balikian@charchrist.com,,,,,,,
-46,Christian Academy of Indiana,New Albany,IN,Krystal Morrow,kmorrow@caschools.us,,,,,,,
+46,Christian Academy of Indiana,New Albany,IN,Krystal Morrow,kmorrow@caschools.us,2026-09-10,,,,,,BOUNCED 2026-09-10: rejected by caschools.us mail gateway (Paubox).
 47,Christian Academy of Indiana,New Albany,IN,Sarah Barlowe,sbarlowe@caschools.us,,,,,,,
 48,Christian Academy of Indiana,New Albany,IN,Shawn Neal,sneal@caschools.us,,,,,,,
 49,Christian Academy of Louisville - English Station Campus,Louisville,KY,Anna Carson,acarson@caschools.us,,,,,,,
 50,Christian Academy of Louisville - English Station Campus,Louisville,KY,Becky Wiley,bwiley@caschools.us,,,,,,,
 51,Christian Academy of Louisville - English Station Campus,Louisville,KY,Chris Troyer,ctroyer@caschools.us,,,,,,,
 52,Christian Academy of Louisville - English Station Campus,Louisville,KY,Craig Wallace,cwallace@caschools.us,,,,,,,
-53,Christian Academy of Louisville - English Station Campus,Louisville,KY,Jennifer Rehnberg,jrehnberg@caschools.us,,,,,,,
-54,Christian Academy of Louisville - English Station Campus,Louisville,KY,Jennifer Watson,jwatson@caschools.us,,,,,,,
+53,Christian Academy of Louisville - English Station Campus,Louisville,KY,Jennifer Rehnberg,jrehnberg@caschools.us,2026-09-10,,,,,,BOUNCED 2026-09-10: rejected by caschools.us mail gateway (Paubox).
+54,Christian Academy of Louisville - English Station Campus,Louisville,KY,Jennifer Watson,jwatson@caschools.us,2026-09-10,,,,,,BOUNCED 2026-09-10: rejected by caschools.us mail gateway (Paubox).
 55,Christian Academy of Louisville - English Station Campus,Louisville,KY,Jeremy Gutierrez,jgutierrez@caschools.us,,,,,,,
 56,Christian Academy of Louisville - English Station Campus,Louisville,KY,Lauren Berg,lberg@caschools.us,,,,,,,
 57,Christian Academy of Louisville - English Station Campus,Louisville,KY,Mike Chitty,mchitty@caschools.us,,,,,,,
@@ -82,11 +82,11 @@
 81,Des Moines Christian School,Urbandale,IA,Linda Steele,lsteele@dmcs.org,,,,,,,
 82,Des Moines Christian School,Urbandale,IA,Sheri Lortz,slortz@dmcs.org,,,,,,,
 83,Des Moines Christian School,Urbandale,IA,Will Weaver,wweaver@dmcs.org,,,,,,,
-84,Eagle's Landing Christian Academy - Junior High,McDonough,GA,Andy Whitlock,andy.whitlock@eagleslanding.org,,,,,,,
-85,Eagle's Landing Christian Academy - Junior High,McDonough,GA,Cathie Kelly,cathie.kelly@eagleslanding.org,,,,,,,
-86,Eagle's Landing Christian Academy - Junior High,McDonough,GA,"Douglas Campbell, Jr",douglas.campbell@eagleslanding.org,,,,,,,
-87,Eagle's Landing Christian Academy - Junior High,McDonough,GA,Ivey Davis,ivey.davis@eagleslanding.org,,,,,,,
-88,Eagle's Landing Christian Academy - Junior High,McDonough,GA,Walter Shields,walter.shields@eagleslanding.org,,,,,,,BOUNCED 2026-09-10: address not found at eagleslanding.org. Needs a corrected address or drop.
+84,Eagle's Landing Christian Academy - Junior High,McDonough,GA,Andy Whitlock,andy.whitlock@eagleslanding.org,2026-09-10,,,,,,BOUNCED 2026-09-10: message blocked / not found at eagleslanding.org.
+85,Eagle's Landing Christian Academy - Junior High,McDonough,GA,Cathie Kelly,cathie.kelly@eagleslanding.org,,,,,,,CAUTION: all other eagleslanding.org addresses bounced 2026-09-10; likely invalid.
+86,Eagle's Landing Christian Academy - Junior High,McDonough,GA,"Douglas Campbell, Jr",douglas.campbell@eagleslanding.org,2026-09-10,,,,,,BOUNCED 2026-09-10: message blocked / not found at eagleslanding.org.
+87,Eagle's Landing Christian Academy - Junior High,McDonough,GA,Ivey Davis,ivey.davis@eagleslanding.org,2026-09-10,,,,,,BOUNCED 2026-09-10: message blocked / not found at eagleslanding.org.
+88,Eagle's Landing Christian Academy - Junior High,McDonough,GA,Walter Shields,walter.shields@eagleslanding.org,2026-09-10,,,,,,BOUNCED 2026-09-10: recipient unknown at eagleslanding.org.
 89,East Hill Christian School,Pensacola,FL,Jennifer Kughn,j_kughn@ehcseagles.com,,,,,,,
 90,Elkhart Christian Academy,Elkhart,IN,Tara Morris,tmm@elkhartchristian.org,,,,,,,
 91,"Faith Christian School (Lafayette, IN)",Lafayette,IN,Andrew Williams,awilliams@faithlafayette.org,,,,,,,
@@ -96,7 +96,7 @@
 95,"Faith Christian School (Rocky Mount, NC)",Rocky Mount,NC,Jeremy Jones,jeremy.jones@fcspatriots.com,,,,,,,
 96,"Faith Christian School (Rocky Mount, NC)",Rocky Mount,NC,Will Lamb,will.lamb@fcspatriots.com,,,,,,,
 97,Fellowship Christian School,Roswell,GA,Danielle Reeves,danielle.reeves@fcspaladins.org,,,,,,,
-98,Fellowship Christian School,Roswell,GA,Gina Tomberlin,gina.tomberlin@fcspaladins.org,,,,,,,
+98,Fellowship Christian School,Roswell,GA,Gina Tomberlin,gina.tomberlin@fcspaladins.org,2026-09-10,,,,,,BOUNCED 2026-09-10: message blocked by recipient server.
 99,Fellowship Christian School,Roswell,GA,Michelle Eastman,michelle.eastman@fcspaladins.org,,,,,,,
 100,Fellowship Christian School,Roswell,GA,Sherri McLeroy,sherri.mcleroy@fcspaladins.org,,,,,,,
 101,"First Christian Academy (High Springs, FL)",High Springs,FL,Candace Davis,cdavis@fbchighsprings.org,,,,,,,
