@@ -7,12 +7,12 @@
    "school": "Aliso Viejo Christian School",
    "email": "marldt@avchristianschool.org",
    "name": "Meredith Arldt",
-   "responded": false,
-   "response_date": null,
-   "wants": null,
+   "responded": true,
+   "response_date": "2026-09-10",
+   "wants": "YES \u2014 happy to take part",
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "Replied 2026-09-10: \"I would be happy to be a part of this development!\" \u2192 SEND questions-preview email + schedule."
   },
   {
    "n": 2,
@@ -103,12 +103,12 @@
    "school": "Ben Lippen School",
    "email": "christa.agee@benlippen.com",
    "name": "Christa Agee",
-   "responded": false,
-   "response_date": null,
-   "wants": null,
+   "responded": true,
+   "response_date": "2026-09-10",
+   "wants": "No \u2014 elementary educator",
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "Replied 2026-09-10: elementary educator, never taught middle school; declined."
   },
   {
    "n": 10,
@@ -187,12 +187,12 @@
    "school": "Bethlehem Christian Academy - Elementary",
    "email": "kvann@bcamail.org",
    "name": "Kelly Vann",
-   "responded": false,
-   "response_date": null,
-   "wants": null,
+   "responded": true,
+   "response_date": "2026-09-10",
+   "wants": "No \u2014 works with K3\u20135th; referral",
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "Replied 2026-09-10: works with K3-5th, suggested a better-fit contact (cc SJones@bcamail.org)."
   },
   {
    "n": 17,
@@ -1056,7 +1056,7 @@
    "wants": null,
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "BOUNCED 2026-09-10: address not found at eagleslanding.org. Needs a corrected address or drop."
   },
   {
    "n": 89,
