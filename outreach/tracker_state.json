@@ -563,12 +563,12 @@
    "school": "Christian Academy of Indiana",
    "email": "sbarlowe@caschools.us",
    "name": "Sarah Barlowe",
-   "responded": false,
-   "response_date": null,
-   "wants": null,
+   "responded": true,
+   "response_date": "2026-09-10",
+   "wants": "No - K-12 ELL teacher, not a fit",
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "Replied 2026-09-10: teaches ELL in small pull-out groups; does not think it is a good fit."
   },
   {
    "n": 48,
@@ -1350,12 +1350,12 @@
    "school": "Foundation Academy - Lakeside",
    "email": "tanya.murphy@foundationacademy.net",
    "name": "Tanya Murphy",
-   "responded": false,
-   "response_date": null,
-   "wants": null,
+   "responded": true,
+   "response_date": "2026-09-10",
+   "wants": "No - administrator; referral",
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "Replied 2026-09-10: has not used the curriculum with students (administrator); refers Diana Helton, who has used DeepRoots."
   },
   {
    "n": 113,
