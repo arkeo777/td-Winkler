@@ -360,7 +360,7 @@
    "responded": true,
    "response_date": "2026-09-11",
    "wants": "YES \u2014 happy to help personally (or refer to MS Bible teachers)",
-   "questions_sent": false,
+   "questions_sent": true,
    "meeting": null,
    "notes": "Replied 2026-09-11 (on the forwarded Kathy Agarth thread, since Kathy has retired and her mail auto-forwards to Julianne): \"I would be happy to help personally or direct you to our MS Bible teachers.\" No specific times proposed yet. FLAG: send questions-preview email + ask for times next."
   },
@@ -901,12 +901,12 @@
    "school": "Dayspring Christian Academy",
    "email": "dhenry@dayspringchristian.com",
    "name": "Dee Henry",
-   "responded": false,
-   "response_date": null,
-   "wants": null,
+   "responded": true,
+   "response_date": "2026-09-14",
+   "wants": "Referral -> Donna Hurley (Upper School curriculum director)",
    "questions_sent": false,
    "meeting": null,
-   "notes": ""
+   "notes": "Replied 2026-09-14: referred Donna Hurley (dhurley@dayspringchristian.com), who would love to talk. Troy engaged both 2026-09-14."
   },
   {
    "n": 76,
@@ -1623,6 +1623,36 @@
    "meeting": null,
    "notes": "REFERRAL from Kelly Vann (Bethlehem). Invitation sent 2026-09-10 (greeting \"Shannon\").",
    "referral": true
+  },
+  {
+   "n": 135,
+   "email": "dhurley@dayspringchristian.com",
+   "responded": true,
+   "response_date": "2026-09-14",
+   "wants": "YES - Upper School curriculum director, wants to talk",
+   "questions_sent": false,
+   "meeting": null,
+   "notes": "Referred by Dee Henry (Dayspring). Troy engaged 2026-09-14.",
+   "referral": true,
+   "school": "Dayspring Christian Academy",
+   "city": "Mountville",
+   "state": "PA",
+   "name": "Donna Hurley"
+  },
+  {
+   "n": 136,
+   "email": "diana.helton@foundationacademy.net",
+   "responded": true,
+   "response_date": "2026-09-11",
+   "wants": "YES - happy to help (elementary)",
+   "questions_sent": true,
+   "meeting": null,
+   "notes": "Round 1 contact; agreed 2026-09-11 and questions sent 2026-09-11. Also referred by Tanya Murphy.",
+   "referral": false,
+   "school": "Foundation Academy",
+   "city": "Winter Garden",
+   "state": "FL",
+   "name": "Diana Helton"
   }
  ]
 }
