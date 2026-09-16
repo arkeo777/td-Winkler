@@ -289,8 +289,9 @@
     }
 
     try{
-      // Form-encoded + no-cors: writes to Google Sheet without a CORS preflight.
-      await fetch(ENDPOINT, { method:"POST", mode:"no-cors", body: payload });
+      // Pass fields in the query string (+ body) so Apps Script's e.parameter
+      // reliably receives them; no-cors avoids a CORS preflight.
+      await fetch(ENDPOINT + "?" + payload.toString(), { method:"POST", mode:"no-cors", body: payload });
       showSuccess();
     }catch(err){
       btn.disabled = false;
