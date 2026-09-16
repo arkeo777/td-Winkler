@@ -1,47 +1,50 @@
-# Peptide Beach
+# Social Media Dashboard
 
-A single-file peptide **reconstitution calculator** and **dosing tracker** for
-laboratory / research reference. No build step, no server, no dependencies —
-open `index.html` in any browser and it works offline. All data stays in your
-browser (`localStorage`); nothing is sent anywhere.
+A single-file **social media analytics dashboard**. No build step, no server,
+no dependencies, no API keys — open `index.html` in any browser and it works
+offline. All data stays in your browser (`localStorage`); nothing is uploaded
+anywhere.
 
-> **Research use only.** This tool performs arithmetic on values you enter. It
-> is not medical advice, and the reference figures are commonly cited research
-> parameters, not prescriptions. Verify every calculation independently.
+Track your presence across platforms in one place: total followers and growth,
+engagement and reach, per-platform breakdowns, and post-by-post performance.
+The app ships with realistic sample data so you can explore it immediately —
+reset or edit it to make it your own.
 
 ## Features
 
-- **Reconstitution calculator** — enter vial mass (mg/mcg), bacteriostatic
-  water volume, and desired dose; get the exact **units to draw** on a U‑100
-  insulin syringe, concentration (mg/mL), mcg per unit, injection volume, and
-  doses per vial. A live syringe diagram shows the fill and warns when a dose
-  exceeds the selected syringe capacity (0.3 / 0.5 / 1 mL).
-- **Vial inventory** — track each reconstituted vial with its date,
-  concentration, default dose, remaining amount (with a fill meter), and an age
-  badge that flags aging (>21d) and past‑35‑day vials.
-- **Dosing schedule + reminders** — build **protocols** per peptide: daily,
-  every other day, specific weekdays, or every N days; multiple times per day;
-  optional cycle **weeks on / off**. A **Today & upcoming agenda** shows what's
-  due, flags overdue doses, and lets you **mark a dose taken** in one tap (which
-  logs it and draws down the vial). Get **browser notifications** when a dose is
-  due while the tab is open, plus a per-protocol **Add to Google Calendar** link
-  for real alarms when the app is closed. A badge on the Schedule tab counts
-  overdue doses.
-- **Dose log** — record each dose (date/time, peptide, dose, units, injection
-  site, notes). Logging a dose can automatically draw down the linked vial's
-  remaining amount.
-- **Reference library** — commonly cited parameters for ~16 research peptides
-  (BPC‑157, TB‑500, Ipamorelin, CJC‑1295, Semaglutide, Tirzepatide,
-  Retatrutide, GHK‑Cu, and more). One tap loads a peptide into the calculator
-  or inventory.
-- **Backup & restore** — copy/paste JSON to back up or move your data. Includes
-  light/dark themes.
+- **Overview** — headline KPIs (total followers with period-over-period change,
+  average engagement rate, total engagement and reach, posts published) plus an
+  interactive **follower-growth chart** with a hover/touch crosshair and
+  tooltip.
+- **By platform** — per-platform cards (Instagram, X, TikTok, YouTube,
+  LinkedIn, Facebook) showing follower count, period growth, a sparkline, and
+  progress toward an optional goal, alongside an audience-share donut.
+- **Content** — a sortable table of published posts with reach, likes,
+  comments, shares, and a color-coded **engagement rate**. Filter by platform,
+  and log, edit, or delete posts. Summary tiles roll up reach and average
+  engagement for the current view.
+- **Scheduled posts** — flag posts as scheduled to see upcoming content in a
+  strip on the Overview (excluded from published analytics).
+- **Accounts** — manage connected platforms and follower counts; editing a
+  follower count records a snapshot that feeds the growth chart.
+- **Time ranges** — switch the whole dashboard between 7 / 30 / 90 days and all
+  time.
+- **Private & offline** — installable as a PWA (add to home screen), fully
+  offline via a service worker, with **light / dark / auto** themes and
+  **JSON export / import** for backup and restore.
 
 ## Usage
 
-Open `index.html` in a browser, or host the file anywhere static.
+Open `index.html` in a browser, or host the folder anywhere static. Install it
+from your browser's menu ("Add to Home Screen" / "Install") for a full-screen,
+offline app.
+
+Everything is editable: use the **Log post** button to add performance data,
+the **Accounts** tab to add platforms and update follower counts, and
+**Settings** to rename the profile, switch themes, or export/import your data.
 
 ## Tech
 
-Plain HTML/CSS/JS in one file. IBM Plex Sans / Mono via Google Fonts. State
-persisted to `localStorage` under the key `peptideBench.v1`.
+Plain HTML/CSS/JS in one file — no frameworks, no external chart library
+(charts are hand-drawn inline SVG). State is persisted to `localStorage` under
+the key `smdash.v1`. Icons are generated PNGs under `icons/`.

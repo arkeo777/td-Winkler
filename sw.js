@@ -1,7 +1,7 @@
-/* Peptide Beach service worker — offline caching + notification handling.
+/* Social Media Dashboard service worker — offline caching + notification handling.
    Bump CACHE when you change any cached file; installed apps pick up the new
    version automatically on the next launch. */
-var CACHE = "peptide-beach-v1";
+var CACHE = "social-dashboard-v1";
 var ASSETS = [
   "./",
   "./index.html",
