@@ -245,8 +245,8 @@
 
 <script>
   // ====== CONFIG ==================================================
-  // Paste your deployed Google Apps Script Web App URL here:
-  const ENDPOINT = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  // Deployed Google Apps Script Web App URL (writes entries to the Sheet):
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbzHwhxW5vAFP1CNj-A0-rddgAQb_Xb7D6zRC7rRTqpRY8gPRRJWl8TC-ydVWsiQuV2dmw/exec";
   // ================================================================
 
   const form = document.getElementById("entryForm");
@@ -254,9 +254,14 @@
   const btn  = document.getElementById("submitBtn");
   const isConfigured = ENDPOINT && ENDPOINT.indexOf("PASTE_YOUR") === -1;
 
-  // Show a "Preview" badge when running without a configured backend
-  // (e.g. inside the Claude artifact preview) so it's never mistaken for live.
-  if (!isConfigured) document.getElementById("previewBadge").style.display = "block";
+  // The Claude artifact preview sandbox blocks outbound requests, so run a
+  // safe demo there and only send real entries from the live hosted page.
+  const isPreview = /(^$|claude|usercontent|anthropic)/.test(location.hostname)
+                    || location.protocol === "blob:" || location.protocol === "file:";
+  const liveMode = isConfigured && !isPreview;
+
+  // Show a "Preview" badge whenever we're not actually sending entries.
+  if (!liveMode) document.getElementById("previewBadge").style.display = "block";
 
   function showSuccess(){
     form.classList.add("hide");
@@ -277,8 +282,8 @@
       ts:    new Date().toISOString()
     });
 
-    if (!isConfigured){
-      // Preview / demo mode: no backend wired yet.
+    if (!liveMode){
+      // Preview / demo mode (artifact sandbox or unconfigured): don't send.
       setTimeout(showSuccess, 500);
       return;
     }
