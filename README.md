@@ -19,6 +19,14 @@ browser (`localStorage`); nothing is sent anywhere.
 - **Vial inventory** — track each reconstituted vial with its date,
   concentration, default dose, remaining amount (with a fill meter), and an age
   badge that flags aging (>21d) and past‑35‑day vials.
+- **Dosing schedule + reminders** — build **protocols** per peptide: daily,
+  every other day, specific weekdays, or every N days; multiple times per day;
+  optional cycle **weeks on / off**. A **Today & upcoming agenda** shows what's
+  due, flags overdue doses, and lets you **mark a dose taken** in one tap (which
+  logs it and draws down the vial). Get **browser notifications** when a dose is
+  due while the tab is open, plus a per-protocol **Add to Google Calendar** link
+  for real alarms when the app is closed. A badge on the Schedule tab counts
+  overdue doses.
 - **Dose log** — record each dose (date/time, peptide, dose, units, injection
   site, notes). Logging a dose can automatically draw down the linked vial's
   remaining amount.

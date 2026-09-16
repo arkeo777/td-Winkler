@@ -144,6 +144,11 @@
   }
   .tab:hover { color: var(--ink); }
   .tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab-badge {
+    display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px;
+    border-radius: 999px; background: var(--crit); color: #fff; font-size: 11px; font-weight: 700;
+    font-family: "IBM Plex Mono", monospace; vertical-align: 1px;
+  }
 
   main { max-width: 1120px; margin: 0 auto; padding-block: 22px; padding-inline: 16px 16px; }
   .panel[hidden] { display: none; }
@@ -294,6 +299,32 @@
   .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
   @media (max-width: 480px) { .form-2col { grid-template-columns: 1fr; } }
 
+  /* ---- Schedule / agenda ---- */
+  .reminder-bar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: var(--radius-sm); padding: 11px 14px; margin-bottom: 18px; font-size: 13.5px; color: var(--accent-ink);
+  }
+  .reminder-bar svg { flex: none; color: var(--accent); }
+  .reminder-bar .spacer { flex: 1; }
+  .agenda-group { margin-bottom: 22px; }
+  .agenda-head { display: flex; align-items: baseline; gap: 9px; margin-bottom: 9px; }
+  .agenda-head h3 { font-size: 14px; font-weight: 600; }
+  .agenda-head .date { color: var(--faint); font-size: 12.5px; }
+  .agenda-item {
+    display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    margin-bottom: 8px; box-shadow: var(--shadow);
+  }
+  .agenda-item.overdue { border-color: color-mix(in srgb, var(--crit) 45%, transparent); }
+  .agenda-item.taken { opacity: .62; }
+  .agenda-item .time { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px; min-width: 62px; }
+  .agenda-item .body { flex: 1; min-width: 0; }
+  .agenda-item .body .nm { font-weight: 600; display: flex; align-items: center; gap: 7px; }
+  .agenda-item .body .meta { font-size: 12.5px; color: var(--muted); font-family: "IBM Plex Mono", monospace; }
+  .agenda-item .take { flex: none; }
+  .agenda-empty { color: var(--muted); font-size: 13.5px; padding: 8px 2px; }
+
   .stat-strip { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
   .stat-tile { flex: 1; min-width: 140px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 15px; }
   .stat-tile .k { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); font-weight: 600; }
@@ -339,6 +370,7 @@
     <nav class="tabs" role="tablist" aria-label="Sections">
       <button class="tab" role="tab" data-tab="calc" aria-selected="true">Calculator</button>
       <button class="tab" role="tab" data-tab="inventory" aria-selected="false">Inventory</button>
+      <button class="tab" role="tab" data-tab="schedule" aria-selected="false" id="tabSchedule">Schedule <span class="tab-badge" id="schedBadge" hidden>0</span></button>
       <button class="tab" role="tab" data-tab="log" aria-selected="false">Dose Log</button>
       <button class="tab" role="tab" data-tab="reference" aria-selected="false">Reference</button>
       <button class="tab" role="tab" data-tab="data" aria-selected="false">Data</button>
@@ -499,6 +531,51 @@
     </div>
   </section>
 
+  <!-- ============ SCHEDULE ============ -->
+  <section class="panel" id="panel-schedule" role="tabpanel" hidden>
+    <div class="reminder-bar" id="reminderBar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      <span id="reminderMsg">Turn on browser reminders to get a notification when a dose comes due while this tab is open.</span>
+      <span class="spacer"></span>
+      <button class="btn btn-primary btn-sm" id="enableRemind">Enable reminders</button>
+    </div>
+
+    <div class="toolbar">
+      <h2>Today &amp; upcoming</h2>
+      <span class="spacer"></span>
+    </div>
+    <div id="agenda" style="margin-bottom:26px;"></div>
+
+    <div class="toolbar">
+      <h2>Protocols</h2>
+      <span class="count-chip" id="schedCount">0</span>
+      <span class="spacer"></span>
+      <button class="btn btn-primary btn-sm" id="addSchedBtn">+ New protocol</button>
+    </div>
+    <div class="card">
+      <div class="table-scroll">
+        <table id="schedTable">
+          <thead>
+            <tr>
+              <th>Peptide</th>
+              <th class="num">Dose</th>
+              <th>Frequency</th>
+              <th>Times</th>
+              <th>Cycle</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="schedBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="schedEmpty" hidden>
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></svg>
+        <div>No protocols yet. Create one to build a dosing schedule and get reminders.</div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ REFERENCE ============ -->
   <section class="panel" id="panel-reference" role="tabpanel" hidden>
     <div class="toolbar">
@@ -566,7 +643,7 @@
 
   /* ---------------- storage ---------------- */
   var LS_KEY = "peptideBench.v1";
-  var state = { inventory: [], doses: [], theme: null };
+  var state = { inventory: [], doses: [], schedules: [], theme: null };
 
   function load() {
     try {
@@ -576,6 +653,7 @@
         if (parsed && typeof parsed === "object") {
           state.inventory = Array.isArray(parsed.inventory) ? parsed.inventory : [];
           state.doses = Array.isArray(parsed.doses) ? parsed.doses : [];
+          state.schedules = Array.isArray(parsed.schedules) ? parsed.schedules : [];
           state.theme = parsed.theme || null;
         }
       }
@@ -772,6 +850,7 @@
           '<td class="row-actions">' +
             '<button class="link-btn" data-act="calc" title="Send to calculator">Calc</button>' +
             '<button class="link-btn" data-act="dose" title="Log a dose from this vial">Dose</button>' +
+            '<button class="link-btn" data-act="sched" title="Create a protocol for this vial">Sched</button>' +
             '<button class="link-btn" data-act="edit">Edit</button>' +
             '<button class="link-btn danger" data-act="del">Del</button>' +
           '</td></tr>';
@@ -1003,12 +1082,312 @@
     setTimeout(wireDoseForm, 40);
   }
 
+  /* ---------------- schedules ---------------- */
+  var WK_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  var FREQS = { daily: "Daily", eod: "Every other day", weekly: "Specific days", everyN: "Every N days" };
+
+  function ymd(d) { var m = d.getMonth() + 1, dd = d.getDate(); return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (dd < 10 ? "0" : "") + dd; }
+  function midnight(d) { var x = new Date(d.getTime()); x.setHours(0, 0, 0, 0); return x; }
+  function parseYMD(s) { if (!s) return null; var p = String(s).slice(0, 10).split("-"); var d = new Date(+p[0], (+p[1]) - 1, +p[2], 0, 0, 0, 0); return isNaN(d) ? null : d; }
+
+  function schedUnits(s) {
+    var v = s.inventoryId ? state.inventory.find(function (x) { return x.id === s.inventoryId; }) : null;
+    if (v) { var c = invConc(v); return c > 0 ? (s.doseMcg / c) * 100 : null; }
+    return null;
+  }
+  function freqLabel(s) {
+    if (s.freq === "daily") return "Daily";
+    if (s.freq === "eod") return "Every other day";
+    if (s.freq === "everyN") return "Every " + (s.intervalDays || 1) + " days";
+    if (s.freq === "weekly") return (s.weekdays || []).slice().sort().map(function (d) { return WK_SHORT[d]; }).join(", ") || "—";
+    return "—";
+  }
+  function isDoseDay(s, dsl, dayDate) {
+    if (s.cycleOn > 0 && s.cycleOff > 0) {
+      var wk = Math.floor(dsl / 7) % (s.cycleOn + s.cycleOff);
+      if (wk >= s.cycleOn) return false;
+    }
+    if (s.freq === "daily") return true;
+    if (s.freq === "eod") return dsl % 2 === 0;
+    if (s.freq === "everyN") return s.intervalDays > 0 ? dsl % s.intervalDays === 0 : false;
+    if (s.freq === "weekly") return (s.weekdays || []).indexOf(dayDate.getDay()) > -1;
+    return false;
+  }
+  function occurrences(s, winStart, winEnd) {
+    var out = [], start = parseYMD(s.startDate) || midnight(new Date());
+    var times = (s.times && s.times.length) ? s.times : ["09:00"];
+    var day = midnight(winStart), end = midnight(winEnd), startMid = midnight(start), guard = 0;
+    while (day.getTime() <= end.getTime() && guard < 500) {
+      guard++;
+      var dsl = Math.round((day.getTime() - startMid.getTime()) / 86400000);
+      if (dsl >= 0 && isDoseDay(s, dsl, day)) {
+        for (var i = 0; i < times.length; i++) {
+          var t = times[i], hm = t.split(":");
+          var occ = new Date(day.getTime()); occ.setHours(+hm[0] || 0, +hm[1] || 0, 0, 0);
+          var key = ymd(day) + "T" + t;
+          out.push({ sched: s, date: occ, key: key, time: t, taken: !!(s.taken && s.taken[key]) });
+        }
+      }
+      day.setDate(day.getDate() + 1);
+    }
+    return out;
+  }
+  function allOccurrences(winStart, winEnd) {
+    var out = [];
+    state.schedules.forEach(function (s) { if (s.active !== false) out = out.concat(occurrences(s, winStart, winEnd)); });
+    return out;
+  }
+  function to12h(t) {
+    var p = t.split(":"), h = +p[0], m = p[1];
+    var ap = h >= 12 ? "PM" : "AM", hh = h % 12; if (hh === 0) hh = 12;
+    return hh + ":" + m + " " + ap;
+  }
+
+  function overdueCount() {
+    var now = Date.now();
+    var occs = allOccurrences(new Date(now - 3 * 86400000), new Date(now));
+    return occs.filter(function (o) { return !o.taken && o.date.getTime() <= now; }).length;
+  }
+  function updateBadge() {
+    var n = overdueCount(), b = $("#schedBadge");
+    if (n > 0) { b.textContent = n; b.hidden = false; } else { b.hidden = true; }
+  }
+
+  function renderAgenda() {
+    var host = $("#agenda"), now = Date.now(), today = new Date();
+    var occs = allOccurrences(new Date(now - 3 * 86400000), new Date(now + 14 * 86400000));
+    occs.sort(function (a, b) { return a.date - b.date; });
+    var overdue = [], byDay = {}, order = [];
+    occs.forEach(function (o) {
+      if (o.taken) { if (ymd(o.date) === ymd(today)) pushDay(o); return; }
+      if (o.date.getTime() < now) overdue.push(o);
+      else pushDay(o);
+    });
+    function pushDay(o) { var k = ymd(o.date); if (!byDay[k]) { byDay[k] = []; order.push(k); } byDay[k].push(o); }
+
+    var html = "";
+    if (overdue.length) html += groupHtml("Overdue", "", overdue.slice().sort(function (a, b) { return a.date - b.date; }), true);
+    order.sort();
+    order.forEach(function (k) {
+      var d = parseYMD(k), label, sub = d.toLocaleDateString(undefined, { weekday: "long", month: "short", day: "numeric" });
+      var diff = Math.round((midnight(d).getTime() - midnight(today).getTime()) / 86400000);
+      if (diff === 0) label = "Today"; else if (diff === 1) label = "Tomorrow"; else label = sub, sub = "";
+      html += groupHtml(label, sub, byDay[k].sort(function (a, b) { return a.date - b.date; }), false);
+    });
+    if (!html) html = '<div class="agenda-empty">Nothing scheduled in the next two weeks. Create a protocol below to build your schedule.</div>';
+    host.innerHTML = html;
+  }
+  function groupHtml(label, sub, items, isOverdue) {
+    var rows = items.map(function (o) {
+      var s = o.sched, units = schedUnits(s);
+      var cls = "agenda-item" + (o.taken ? " taken" : (isOverdue ? " overdue" : ""));
+      var meta = fmtMcg(s.doseMcg) + (units != null ? " · " + fmt(units, 1) + " u" : "") + " · " + freqLabel(s);
+      var right = o.taken
+        ? '<button class="link-btn take" data-sid="' + s.id + '" data-key="' + o.key + '" data-take="undo" title="Undo"><span class="pill good">✓ taken</span></button>'
+        : '<button class="btn btn-ghost btn-sm take" data-sid="' + s.id + '" data-key="' + o.key + '" data-take="do">Mark taken</button>';
+      return '<div class="' + cls + '">' +
+        '<span class="time">' + esc(to12h(o.time)) + '</span>' +
+        '<span class="body"><span class="nm"><span class="swatch" style="background:' + (s.color || "#0E8C8C") + '"></span>' + esc(s.name) + '</span>' +
+        '<span class="meta">' + esc(meta) + '</span></span>' +
+        right + '</div>';
+    }).join("");
+    return '<div class="agenda-group"><div class="agenda-head"><h3' + (isOverdue ? ' style="color:var(--crit)"' : '') + '>' + esc(label) + '</h3>' +
+      (sub ? '<span class="date">' + esc(sub) + '</span>' : '') + '</div>' + rows + '</div>';
+  }
+
+  function renderSchedules() {
+    var body = $("#schedBody");
+    $("#schedCount").textContent = state.schedules.length;
+    if (!state.schedules.length) { body.innerHTML = ""; $("#schedEmpty").hidden = false; renderAgenda(); updateBadge(); return; }
+    $("#schedEmpty").hidden = true;
+    body.innerHTML = state.schedules.map(function (s) {
+      var units = schedUnits(s), col = s.color || "#0E8C8C";
+      var cycle = (s.cycleOn > 0 && s.cycleOff > 0) ? (s.cycleOn + "w on / " + s.cycleOff + "w off") : "—";
+      var status = s.active === false ? '<span class="pill neutral">paused</span>' : '<span class="pill good">active</span>';
+      return '<tr data-id="' + s.id + '">' +
+        '<td><span class="swatch" style="background:' + col + '"></span> <b>' + esc(s.name) + '</b></td>' +
+        '<td class="num">' + fmtMcg(s.doseMcg) + (units != null ? '<div style="color:var(--faint);font-size:12px">' + fmt(units, 1) + ' u</div>' : '') + '</td>' +
+        '<td>' + esc(freqLabel(s)) + '</td>' +
+        '<td class="mono" style="font-size:13px">' + esc((s.times || []).map(to12h).join(", ")) + '</td>' +
+        '<td style="font-size:12.5px;color:var(--muted)">' + esc(cycle) + '</td>' +
+        '<td>' + status + '</td>' +
+        '<td class="row-actions">' +
+          '<button class="link-btn" data-act="cal" title="Add to Google Calendar">📅</button>' +
+          '<button class="link-btn" data-act="toggle">' + (s.active === false ? "Resume" : "Pause") + '</button>' +
+          '<button class="link-btn" data-act="editsched">Edit</button>' +
+          '<button class="link-btn danger" data-act="delsched">Del</button>' +
+        '</td></tr>';
+    }).join("");
+    renderAgenda(); updateBadge();
+  }
+
+  function markTaken(sid, key, mode) {
+    var s = state.schedules.find(function (x) { return x.id === sid; }); if (!s) return;
+    s.taken = s.taken || {};
+    var v = s.inventoryId ? state.inventory.find(function (x) { return x.id === s.inventoryId; }) : null;
+    if (mode === "undo" && s.taken[key]) {
+      delete s.taken[key];
+      state.doses = state.doses.filter(function (d) { return !(d.scheduleId === s.id && d.occKey === key); });
+      if (v) v.remainingMcg = (v.remainingMcg != null ? v.remainingMcg : v.vialMg * 1000) + s.doseMcg;
+      toast("Marked not taken");
+    } else if (mode !== "undo") {
+      s.taken[key] = new Date().toISOString();
+      var units = schedUnits(s);
+      state.doses.push({
+        id: uid(), when: key, peptide: s.name, inventoryId: s.inventoryId || null,
+        doseMcg: s.doseMcg, units: units != null ? Math.round(units * 10) / 10 : null,
+        site: "", notes: "Scheduled dose", scheduleId: s.id, occKey: key
+      });
+      if (v) { var cur = v.remainingMcg != null ? v.remainingMcg : v.vialMg * 1000; v.remainingMcg = Math.max(0, cur - s.doseMcg); }
+      toast("Dose logged ✓");
+    }
+    save(); renderSchedules(); renderLog(); renderInventory(); updateBadge();
+  }
+
+  function gcalUrl(s) {
+    var t = (s.times && s.times[0]) || "09:00", hm = t.split(":");
+    var start = parseYMD(s.startDate) || new Date();
+    var dt = new Date(start.getTime()); dt.setHours(+hm[0] || 0, +hm[1] || 0, 0, 0);
+    if (dt.getTime() < Date.now()) { /* keep template start; Google projects future recurrences */ }
+    var end = new Date(dt.getTime() + 15 * 60000);
+    function z(n) { return (n < 10 ? "0" : "") + n; }
+    function f(d) { return "" + d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + "T" + z(d.getHours()) + z(d.getMinutes()) + "00"; }
+    var rrule;
+    if (s.freq === "daily") rrule = "FREQ=DAILY";
+    else if (s.freq === "eod") rrule = "FREQ=DAILY;INTERVAL=2";
+    else if (s.freq === "everyN") rrule = "FREQ=DAILY;INTERVAL=" + (s.intervalDays || 1);
+    else { var map = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"]; rrule = "FREQ=WEEKLY;BYDAY=" + (s.weekdays || []).map(function (d) { return map[d]; }).join(","); }
+    return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+      "&text=" + encodeURIComponent(s.name + " — " + fmtMcg(s.doseMcg)) +
+      "&dates=" + f(dt) + "/" + f(end) +
+      "&recur=" + encodeURIComponent("RRULE:" + rrule) +
+      "&details=" + encodeURIComponent("Peptide Bench scheduled dose (" + freqLabel(s) + "). Research use only.");
+  }
+
+  /* schedule modal */
+  function schedFormHtml(s) {
+    s = s || {};
+    var invOpts = '<option value="">— not linked —</option>' + state.inventory.map(function (v) {
+      return '<option value="' + v.id + '"' + (s.inventoryId === v.id ? ' selected' : '') + '>' + esc(v.name) + ' (' + fmt(v.vialMg, 2) + 'mg/' + fmt(v.bacMl, 2) + 'mL)</option>';
+    }).join("");
+    var freqOpts = Object.keys(FREQS).map(function (k) { return '<option value="' + k + '"' + ((s.freq || "daily") === k ? ' selected' : '') + '>' + FREQS[k] + '</option>'; }).join("");
+    var wdays = s.weekdays || [1, 3, 5];
+    var wdBtns = WK_SHORT.map(function (lbl, i) { return '<button type="button" data-wd="' + i + '" aria-pressed="' + (wdays.indexOf(i) > -1 ? "true" : "false") + '">' + lbl[0] + '</button>'; }).join("");
+    var colorOpts = COLORS.map(function (c) { return '<option value="' + c + '"' + ((s.color || COLORS[0]) === c ? ' selected' : '') + '>' + c + '</option>'; }).join("");
+    var times = (s.times && s.times.length ? s.times : ["09:00"]).join(", ");
+    var startVal = (s.startDate || new Date().toISOString().slice(0, 10));
+    return '' +
+      '<label class="field"><span class="field-label">From vial <span class="hint">optional</span></span><select id="s_inv">' + invOpts + '</select></label>' +
+      '<div class="form-2col">' +
+        '<label class="field"><span class="field-label">Peptide</span><input type="text" id="s_name" value="' + esc(s.name || "") + '" placeholder="e.g. Ipamorelin" /></label>' +
+        '<label class="field"><span class="field-label">Dose (mcg)</span><input class="mono" type="number" id="s_dose" step="any" min="0" value="' + (s.doseMcg != null ? s.doseMcg : "") + '" /></label>' +
+      '</div>' +
+      '<label class="field"><span class="field-label">Frequency</span><select id="s_freq">' + freqOpts + '</select></label>' +
+      '<label class="field" id="s_wdRow"><span class="field-label">Days of week</span><div class="seg" id="s_weekdays" role="group" aria-label="Weekdays">' + wdBtns + '</div></label>' +
+      '<label class="field" id="s_intRow"><span class="field-label">Interval (days)</span><input class="mono" type="number" id="s_interval" min="1" step="1" value="' + (s.intervalDays || 3) + '" /></label>' +
+      '<div class="form-2col">' +
+        '<label class="field"><span class="field-label">Times <span class="hint">24h, comma‑separated</span></span><input class="mono" type="text" id="s_times" value="' + esc(times) + '" placeholder="08:00, 20:00" /></label>' +
+        '<label class="field"><span class="field-label">Start date</span><input type="date" id="s_start" value="' + esc(startVal) + '" /></label>' +
+      '</div>' +
+      '<div class="form-2col">' +
+        '<label class="field"><span class="field-label">Cycle weeks ON <span class="hint">0 = continuous</span></span><input class="mono" type="number" id="s_on" min="0" step="1" value="' + (s.cycleOn || 0) + '" /></label>' +
+        '<label class="field"><span class="field-label">Cycle weeks OFF</span><input class="mono" type="number" id="s_off" min="0" step="1" value="' + (s.cycleOff || 0) + '" /></label>' +
+      '</div>' +
+      '<label class="field"><span class="field-label">Tag color</span><select class="mono" id="s_color">' + colorOpts + '</select></label>';
+  }
+  function wireSchedForm() {
+    function sync() {
+      var f = $("#s_freq").value;
+      $("#s_wdRow").style.display = f === "weekly" ? "" : "none";
+      $("#s_intRow").style.display = f === "everyN" ? "" : "none";
+    }
+    $("#s_freq").addEventListener("change", sync); sync();
+    $("#s_weekdays").addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-wd]"); if (!b) return;
+      e.preventDefault();
+      b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") === "true" ? "false" : "true");
+    });
+    $("#s_inv").addEventListener("change", function () {
+      var v = state.inventory.find(function (x) { return x.id === $("#s_inv").value; });
+      if (v) { if (!$("#s_name").value) $("#s_name").value = v.name; if ($("#s_dose").value === "") $("#s_dose").value = v.doseMcg || ""; }
+    });
+  }
+  function parseTimes(str) {
+    var out = [];
+    String(str || "").split(",").forEach(function (t) {
+      t = t.trim(); var m = t.match(/^(\d{1,2}):(\d{2})$/);
+      if (m) { var h = Math.min(23, +m[1]); out.push((h < 10 ? "0" : "") + h + ":" + m[2]); }
+    });
+    return out.length ? out : ["09:00"];
+  }
+  function openSchedModal(existing) {
+    openModal(existing ? "Edit protocol" : "New protocol", schedFormHtml(existing), function () {
+      var name = $("#s_name").value.trim();
+      if (!name) { toast("Name the protocol"); return false; }
+      var freq = $("#s_freq").value;
+      var weekdays = $$("#s_weekdays button[data-wd]").filter(function (b) { return b.getAttribute("aria-pressed") === "true"; }).map(function (b) { return +b.getAttribute("data-wd"); });
+      if (freq === "weekly" && !weekdays.length) { toast("Pick at least one day"); return false; }
+      var rec = {
+        id: existing ? existing.id : uid(),
+        name: name,
+        inventoryId: $("#s_inv").value || null,
+        doseMcg: num($("#s_dose").value),
+        freq: freq,
+        weekdays: weekdays,
+        intervalDays: Math.max(1, parseInt($("#s_interval").value, 10) || 1),
+        times: parseTimes($("#s_times").value),
+        startDate: $("#s_start").value || new Date().toISOString().slice(0, 10),
+        cycleOn: Math.max(0, parseInt($("#s_on").value, 10) || 0),
+        cycleOff: Math.max(0, parseInt($("#s_off").value, 10) || 0),
+        color: $("#s_color").value,
+        active: existing ? existing.active !== false : true,
+        taken: existing ? (existing.taken || {}) : {}
+      };
+      if (existing) { var i = state.schedules.findIndex(function (x) { return x.id === existing.id; }); if (i > -1) state.schedules[i] = rec; }
+      else state.schedules.push(rec);
+      save(); renderSchedules();
+      toast(existing ? "Protocol updated" : "Protocol created");
+      return true;
+    });
+    setTimeout(wireSchedForm, 40);
+  }
+
+  /* reminders */
+  var notified = {};
+  function updateReminderBar() {
+    var bar = $("#reminderBar"), msg = $("#reminderMsg"), btn = $("#enableRemind");
+    if (!("Notification" in window)) { msg.textContent = "This browser can't show notifications, but your due doses still appear in the agenda above."; btn.hidden = true; return; }
+    var p = Notification.permission;
+    if (p === "granted") { msg.textContent = "Reminders are on — you'll get a notification when a dose is due while this tab is open. For alarms when it's closed, add a protocol to your calendar (📅)."; btn.hidden = true; }
+    else if (p === "denied") { msg.textContent = "Notifications are blocked in your browser settings. Your due doses still show in the agenda, and 📅 adds a protocol to Google Calendar for real alarms."; btn.hidden = true; }
+    else { msg.textContent = "Turn on browser reminders to get a notification when a dose comes due while this tab is open."; btn.hidden = false; }
+  }
+  function checkReminders() {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    var now = Date.now();
+    var occs = allOccurrences(new Date(now - 90000), new Date(now + 1000));
+    occs.forEach(function (o) {
+      if (o.taken || notified[o.key + "|" + o.sched.id]) return;
+      if (o.date.getTime() > now || o.date.getTime() < now - 90000) return;
+      notified[o.key + "|" + o.sched.id] = true;
+      var units = schedUnits(o.sched);
+      try {
+        new Notification("Peptide Bench — dose due", {
+          body: o.sched.name + " · " + fmtMcg(o.sched.doseMcg) + (units != null ? " · " + fmt(units, 1) + " u" : ""),
+          tag: o.key + o.sched.id
+        });
+      } catch (e) { /* ignore */ }
+    });
+    updateBadge();
+  }
+
   /* ---------------- events ---------------- */
   // tabs
   function activateTab(name) {
     $$(".tab").forEach(function (t) { t.setAttribute("aria-selected", t.getAttribute("data-tab") === name ? "true" : "false"); });
     $$(".panel").forEach(function (p) { p.hidden = p.id !== "panel-" + name; });
-    if (name === "data") $("#dataBox").value = JSON.stringify({ inventory: state.inventory, doses: state.doses }, null, 2);
+    if (name === "schedule") { renderSchedules(); updateReminderBar(); }
+    if (name === "data") $("#dataBox").value = JSON.stringify({ inventory: state.inventory, doses: state.doses, schedules: state.schedules }, null, 2);
     window.scrollTo({ top: 0, behavior: "auto" });
   }
   $$(".tab").forEach(function (t) { t.addEventListener("click", function () { activateTab(t.getAttribute("data-tab")); }); });
@@ -1043,6 +1422,7 @@
     else if (act === "del") { if (confirm("Delete " + v.name + "?")) { state.inventory = state.inventory.filter(function (x) { return x.id !== id; }); save(); renderInventory(); toast("Vial deleted"); } }
     else if (act === "calc") { loadIntoCalc(v.vialMg, v.bacMl, v.doseMcg); activateTab("calc"); toast("Loaded " + v.name); }
     else if (act === "dose") { openDoseModal(null, id); }
+    else if (act === "sched") { activateTab("schedule"); openSchedModal({ name: v.name, inventoryId: v.id, doseMcg: v.doseMcg, color: v.color || COLORS[0], startDate: new Date().toISOString().slice(0, 10) }); }
   });
 
   // dose log actions
@@ -1054,6 +1434,27 @@
     if (!d) return;
     if (btn.getAttribute("data-act") === "editdose") openDoseModal(d);
     else if (btn.getAttribute("data-act") === "deldose") { if (confirm("Delete this dose entry?")) { state.doses = state.doses.filter(function (x) { return x.id !== id; }); save(); renderLog(); toast("Dose deleted"); } }
+  });
+
+  // schedule actions
+  $("#addSchedBtn").addEventListener("click", function () { openSchedModal(null); });
+  $("#schedBody").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-act]"); if (!btn) return;
+    var id = e.target.closest("tr").getAttribute("data-id");
+    var s = state.schedules.find(function (x) { return x.id === id; }); if (!s) return;
+    var act = btn.getAttribute("data-act");
+    if (act === "editsched") openSchedModal(s);
+    else if (act === "delsched") { if (confirm("Delete protocol \"" + s.name + "\"? Logged doses are kept.")) { state.schedules = state.schedules.filter(function (x) { return x.id !== id; }); save(); renderSchedules(); toast("Protocol deleted"); } }
+    else if (act === "toggle") { s.active = s.active === false; save(); renderSchedules(); toast(s.active === false ? "Paused" : "Resumed"); }
+    else if (act === "cal") { window.open(gcalUrl(s), "_blank", "noopener"); }
+  });
+  $("#agenda").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-take]"); if (!btn) return;
+    markTaken(btn.getAttribute("data-sid"), btn.getAttribute("data-key"), btn.getAttribute("data-take"));
+  });
+  $("#enableRemind").addEventListener("click", function () {
+    if (!("Notification" in window)) return;
+    Notification.requestPermission().then(function () { updateReminderBar(); checkReminders(); });
   });
 
   // reference actions
@@ -1081,20 +1482,21 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { toast("Backup copied"); }, function () { toast("Select and copy manually"); });
     else { $("#dataBox").select(); toast("Select and copy manually"); }
   });
-  $("#refreshDataBtn").addEventListener("click", function () { $("#dataBox").value = JSON.stringify({ inventory: state.inventory, doses: state.doses }, null, 2); toast("Refreshed"); });
+  $("#refreshDataBtn").addEventListener("click", function () { $("#dataBox").value = JSON.stringify({ inventory: state.inventory, doses: state.doses, schedules: state.schedules }, null, 2); toast("Refreshed"); });
   $("#importDataBtn").addEventListener("click", function () {
     try {
       var parsed = JSON.parse($("#dataBox").value);
       state.inventory = Array.isArray(parsed.inventory) ? parsed.inventory : [];
       state.doses = Array.isArray(parsed.doses) ? parsed.doses : [];
-      save(); renderInventory(); renderLog();
+      state.schedules = Array.isArray(parsed.schedules) ? parsed.schedules : [];
+      save(); renderInventory(); renderLog(); renderSchedules();
       toast("Backup restored");
     } catch (e) { toast("That isn't valid backup JSON"); }
   });
   $("#clearDataBtn").addEventListener("click", function () {
-    if (confirm("Erase all vials and dose history? This cannot be undone.")) {
-      state.inventory = []; state.doses = []; save();
-      renderInventory(); renderLog(); $("#dataBox").value = "";
+    if (confirm("Erase all vials, protocols, and dose history? This cannot be undone.")) {
+      state.inventory = []; state.doses = []; state.schedules = []; save();
+      renderInventory(); renderLog(); renderSchedules(); $("#dataBox").value = "";
       toast("Everything erased");
     }
   });
@@ -1118,5 +1520,12 @@
   renderInventory();
   renderLog();
   renderReference();
+  renderSchedules();
+  updateBadge();
+  updateReminderBar();
+  checkReminders();
+  setInterval(checkReminders, 30000);
+  // refresh agenda / badge periodically so overdue items surface without a reload
+  setInterval(function () { if (state.schedules.length) { updateBadge(); if (!$("#panel-schedule").hidden) renderAgenda(); } }, 60000);
 })();
 </script>
