@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>COREy HCM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,900&family=Work+Sans:wght@400;500;600;700&display=swap">
+<style>
+  /* ===================================================================
+     COREy HCM — $100 Mitchell's Fish Market gift-card drawing entry form
+     Original artwork; the restaurant name is used only to name the prize.
+     ------------------------------------------------------------------
+     CONFIG: after deploying the Google Apps Script (see README.md),
+     paste its Web App URL between the quotes below and re-publish.
+     =================================================================== */
+  :root{
+    --navy:#0d2b3e;
+    --navy-deep:#08202f;
+    --seafoam:#3fb0a0;
+    --seafoam-dk:#2b8577;
+    --sand:#f6efe2;
+    --sand-soft:#fbf7ee;
+    --coral:#e8613c;
+    --gold:#e7b84e;
+    --ink:#12303f;
+    --muted:#5c7482;
+    --line:#e2d8c6;
+    --card:#ffffff;
+    --shadow:0 18px 50px -22px rgba(8,32,47,.55);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Work Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #12374d 0%, transparent 60%),
+      linear-gradient(180deg,var(--navy) 0%, var(--navy-deep) 100%);
+    min-height:100dvh;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  .wrap{
+    max-width:520px;
+    margin:0 auto;
+    padding:24px 18px 40px;
+  }
+
+  /* ---- sponsor / brand line ---- */
+  .brand{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    color:#bcd6d0;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+    font-size:12px;margin-bottom:16px;
+  }
+  .brand .dot{width:6px;height:6px;border-radius:50%;background:var(--seafoam)}
+
+  /* ---- prize card ---- */
+  .card{
+    background:var(--card);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .hero{
+    position:relative;
+    background:linear-gradient(160deg,#0f3145 0%, #12475a 55%, #14606a 100%);
+    padding:26px 22px 22px;
+    text-align:center;
+    color:#fff;
+    overflow:hidden;
+  }
+  .hero .waves{position:absolute;left:0;right:0;bottom:-1px;display:block;width:100%;height:38px}
+  .emblem{width:96px;height:96px;margin:2px auto 10px;display:block}
+  .kicker{
+    font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--gold);font-weight:700;margin:0 0 6px;
+  }
+  .prize{
+    font-family:"Fraunces",Georgia,serif;font-weight:900;
+    font-size:clamp(30px,9vw,44px);line-height:1.02;margin:0;
+    text-wrap:balance;
+  }
+  .prize .amt{color:var(--gold)}
+  .venue{
+    font-family:"Fraunces",Georgia,serif;font-weight:600;font-style:italic;
+    font-size:clamp(18px,5vw,22px);margin:8px 0 0;color:#dff0ec;
+  }
+  .steps{
+    display:flex;justify-content:center;gap:6px;flex-wrap:wrap;
+    margin:14px 0 2px;font-size:12.5px;color:#cfe4df;font-weight:600;
+    letter-spacing:.04em;
+  }
+  .steps b{color:#fff}
+
+  /* ---- form body ---- */
+  form{padding:22px 20px 24px;display:flex;flex-direction:column;gap:14px}
+  .lead{margin:0 0 2px;color:var(--muted);font-size:14.5px;text-align:center}
+  label{display:block;font-weight:600;font-size:13.5px;margin:0 0 6px;color:var(--ink)}
+  .field input{
+    width:100%;padding:13px 14px;font-size:16px;font-family:inherit;
+    border:1.5px solid var(--line);border-radius:12px;background:var(--sand-soft);
+    color:var(--ink);transition:border-color .15s, box-shadow .15s, background .15s;
+  }
+  .field input::placeholder{color:#9aa9b1}
+  .field input:focus{
+    outline:none;border-color:var(--seafoam);background:#fff;
+    box-shadow:0 0 0 4px rgba(63,176,160,.18);
+  }
+  .field input:user-invalid{border-color:var(--coral)}
+
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:var(--muted);margin-top:2px}
+  .consent input{margin-top:2px;width:16px;height:16px;flex:0 0 auto;accent-color:var(--seafoam-dk)}
+  .consent label{font-weight:500;margin:0;color:var(--muted)}
+
+  button.submit{
+    margin-top:6px;border:0;border-radius:13px;padding:15px 18px;
+    font-family:"Work Sans",sans-serif;font-size:16.5px;font-weight:700;letter-spacing:.02em;
+    color:#fff;cursor:pointer;
+    background:linear-gradient(180deg,var(--coral) 0%, #d34e2c 100%);
+    box-shadow:0 12px 24px -12px rgba(211,78,44,.9);
+    transition:transform .08s ease, filter .15s;
+  }
+  button.submit:hover{filter:brightness(1.04)}
+  button.submit:active{transform:translateY(1px)}
+  button.submit:disabled{filter:grayscale(.4) brightness(.9);cursor:progress}
+
+  .fineprint{font-size:11.5px;color:var(--muted);text-align:center;margin:2px 0 0;line-height:1.45}
+
+  /* ---- success state ---- */
+  .done{padding:38px 24px 40px;text-align:center;display:none}
+  .done.show{display:block}
+  form.hide{display:none}
+  .check{
+    width:78px;height:78px;margin:0 auto 14px;border-radius:50%;
+    background:radial-gradient(circle at 30% 25%, #4fd0bd, var(--seafoam-dk));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 14px 30px -14px rgba(43,133,119,.9);
+  }
+  .done h2{font-family:"Fraunces",Georgia,serif;font-weight:900;font-size:30px;margin:0 0 8px;color:var(--ink)}
+  .done p{color:var(--muted);margin:0 auto;max-width:34ch;font-size:15px}
+
+  .footer{
+    text-align:center;color:#9fb9b8;font-size:12px;margin-top:20px;line-height:1.6;
+  }
+  .footer b{color:#d7ebe7}
+
+  .previewbadge{
+    display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);
+    background:var(--gold);color:#3a2b00;font-weight:700;font-size:11px;
+    letter-spacing:.12em;text-transform:uppercase;padding:6px 12px;border-radius:999px;
+    box-shadow:0 6px 16px -6px rgba(0,0,0,.5);z-index:5;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .emblem{animation:bob 4.5s ease-in-out infinite}
+    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  }
+</style>
+</head>
+<body>
+  <div class="previewbadge" id="previewBadge">Preview</div>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span> Presented by COREy HCM <span class="dot"></span></div>
+
+    <div class="card">
+      <div class="hero">
+        <!-- Original emblem: a stylized fish leaping over a wave with a $100 prize tag. Not any restaurant's logo. -->
+        <svg class="emblem" viewBox="0 0 120 120" role="img" aria-label="Seafood gift drawing emblem">
+          <defs>
+            <linearGradient id="fishg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#5fd6c4"/><stop offset="1" stop-color="#2b8577"/>
+            </linearGradient>
+            <linearGradient id="tagg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f2c85f"/><stop offset="1" stop-color="#e7b84e"/>
+            </linearGradient>
+          </defs>
+          <circle cx="60" cy="60" r="56" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.25)" stroke-width="2"/>
+          <!-- wave -->
+          <path d="M14 82 q14 -14 28 0 t28 0 t28 0 t14 -6 v22 h-98 z" fill="rgba(95,214,196,.28)"/>
+          <path d="M14 84 q14 -12 28 0 t28 0 t28 0" fill="none" stroke="#9fe7db" stroke-width="3" stroke-linecap="round"/>
+          <!-- fish body -->
+          <path d="M40 55 q20 -22 44 -8 q10 6 10 10 q0 4 -10 10 q-24 14 -44 -8 q-4 -2 0 -4 z" fill="url(#fishg)"/>
+          <!-- tail -->
+          <path d="M40 55 q-12 -8 -18 -4 q6 6 4 10 q2 4 -4 10 q6 4 18 -4 q4 -6 0 -12 z" fill="#2b8577"/>
+          <!-- eye -->
+          <circle cx="80" cy="52" r="3.4" fill="#08202f"/>
+          <!-- prize tag -->
+          <g transform="rotate(18 92 40)">
+            <rect x="78" y="24" width="34" height="22" rx="5" fill="url(#tagg)"/>
+            <circle cx="84" cy="30" r="2.6" fill="#08202f"/>
+            <text x="97" y="40" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="900" font-size="13" fill="#3a2b00">$100</text>
+          </g>
+        </svg>
+
+        <p class="kicker">Free Gift Card Drawing</p>
+        <h1 class="prize">Win a <span class="amt">$100</span> Gift Card</h1>
+        <p class="venue">to Mitchell&rsquo;s Fish Market</p>
+        <div class="steps"><b>Scan</b> → <b>Enter</b> → <b>Win</b></div>
+
+        <svg class="waves" viewBox="0 0 500 40" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 24 q62 -22 125 0 t125 0 t125 0 t125 0 v20 h-625 z" fill="#ffffff"/>
+        </svg>
+      </div>
+
+      <form id="entryForm" novalidate>
+        <p class="lead">Enter your info below for a chance to win. It takes 15 seconds.</p>
+
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" name="name" type="text" autocomplete="name" placeholder="Jamie Rivera" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="jamie@email.com" required>
+        </div>
+        <div class="field">
+          <label for="phone">Mobile phone</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(555) 123-4567" required>
+        </div>
+
+        <div class="consent">
+          <input id="consent" type="checkbox" required>
+          <label for="consent">I agree to be contacted if I win the drawing.</label>
+        </div>
+
+        <button class="submit" type="submit" id="submitBtn">Enter the Drawing</button>
+        <p class="fineprint">One entry per person. Winner will be contacted by phone or email. No purchase necessary.</p>
+      </form>
+
+      <div class="done" id="done">
+        <div class="check">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h2>You&rsquo;re entered!</h2>
+        <p>Good luck &mdash; we&rsquo;ll reach out if you win the $100 gift card to Mitchell&rsquo;s Fish Market. 🎣</p>
+      </div>
+    </div>
+
+    <p class="footer">
+      Drawing run by <b>COREy HCM</b>. Your info is used only to contact the winner.<br>
+      Not affiliated with or endorsed by Mitchell&rsquo;s Fish Market.
+    </p>
+  </div>
+
+<script>
+  // ====== CONFIG ==================================================
+  // Paste your deployed Google Apps Script Web App URL here:
+  const ENDPOINT = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+  // ================================================================
+
+  const form = document.getElementById("entryForm");
+  const done = document.getElementById("done");
+  const btn  = document.getElementById("submitBtn");
+  const isConfigured = ENDPOINT && ENDPOINT.indexOf("PASTE_YOUR") === -1;
+
+  // Show a "Preview" badge when running without a configured backend
+  // (e.g. inside the Claude artifact preview) so it's never mistaken for live.
+  if (!isConfigured) document.getElementById("previewBadge").style.display = "block";
+
+  function showSuccess(){
+    form.classList.add("hide");
+    done.classList.add("show");
+    try { window.scrollTo({top:0, behavior:"smooth"}); } catch(e){}
+  }
+
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    btn.disabled = true;
+    btn.textContent = "Entering…";
+
+    const payload = new URLSearchParams({
+      name:  document.getElementById("name").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      ts:    new Date().toISOString()
+    });
+
+    if (!isConfigured){
+      // Preview / demo mode: no backend wired yet.
+      setTimeout(showSuccess, 500);
+      return;
+    }
+
+    try{
+      // Form-encoded + no-cors: writes to Google Sheet without a CORS preflight.
+      await fetch(ENDPOINT, { method:"POST", mode:"no-cors", body: payload });
+      showSuccess();
+    }catch(err){
+      btn.disabled = false;
+      btn.textContent = "Enter the Drawing";
+      alert("Sorry, something went wrong sending your entry. Please try again.");
+    }
+  });
+</script>
+</body>
+</html>
