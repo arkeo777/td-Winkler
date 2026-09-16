@@ -341,6 +341,100 @@
   .install-banner { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-top: 14px; }
   .install-banner .st-txt { flex: 1; }
 
+  /* ---------- Publisher ---------- */
+  .info-banner { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 22%, var(--border)); }
+  .info-banner .ib-ic { width: 34px; height: 34px; border-radius: 9px; background: var(--grad); color: #fff; display: grid; place-items: center; flex: none; }
+  .info-banner .ib-ic svg { width: 18px; height: 18px; }
+  .info-banner b { font-weight: 700; }
+  .info-banner p { margin: 3px 0 0; font-size: 12.5px; color: var(--muted); line-height: 1.45; }
+  .info-banner a { font-weight: 650; }
+
+  .dropzone { border: 2px dashed var(--border-strong); border-radius: var(--radius); padding: 24px 18px; text-align: center; color: var(--muted); background: var(--surface); transition: border-color .15s, background .15s; cursor: pointer; }
+  .dropzone:hover { background: var(--surface-2); }
+  .dropzone.drag { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+  .dropzone .dz-ic { width: 38px; height: 38px; margin: 0 auto 8px; color: var(--accent); }
+  .dropzone b { color: var(--ink); font-weight: 700; }
+  .dropzone .dz-sub { font-size: 12.5px; margin-top: 3px; }
+
+  .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(116px, 1fr)); gap: 10px; margin-top: 12px; }
+  .media-item { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: var(--surface-2); cursor: grab; aspect-ratio: 1; }
+  .media-item:active { cursor: grabbing; }
+  .media-item.dragging { opacity: .45; }
+  .media-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+  .media-item .ph { width: 100%; height: 100%; display: grid; place-items: center; color: var(--faint); pointer-events: none; }
+  .media-item .ph svg { width: 30px; height: 30px; }
+  .media-item .mtype { position: absolute; left: 6px; top: 6px; background: rgba(10,12,24,.72); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 6px; display: flex; align-items: center; gap: 4px; pointer-events: none; }
+  .media-item .mtype svg { width: 11px; height: 11px; }
+  .media-item .mdur { position: absolute; right: 6px; bottom: 6px; background: rgba(10,12,24,.72); color: #fff; font-size: 10px; font-weight: 700; padding: 1px 5px; border-radius: 5px; pointer-events: none; }
+  .media-item .mdel { position: absolute; right: 6px; top: 6px; width: 24px; height: 24px; border-radius: 6px; border: 0; background: rgba(10,12,24,.72); color: #fff; place-items: center; opacity: 0; transition: opacity .12s; }
+  .media-item:hover .mdel { opacity: 1; }
+  .media-item .mdel svg { width: 13px; height: 13px; }
+  .media-item .mplay { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+  .media-item .mplay span { width: 34px; height: 34px; border-radius: 50%; background: rgba(10,12,24,.55); display: grid; place-items: center; }
+  .media-item .mplay svg { width: 16px; height: 16px; color: #fff; }
+
+  .page-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(238px, 1fr)); gap: 12px; }
+  .page-card { padding: 0; overflow: hidden; transition: box-shadow .15s; }
+  .page-card.drop { outline: 2px solid var(--accent); outline-offset: -2px; box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent); }
+  .page-band { height: 50px; }
+  .page-body { padding: 0 14px 14px; margin-top: -22px; }
+  .page-av { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; color: #fff; border: 3px solid var(--surface); box-shadow: var(--shadow); }
+  .page-av svg { width: 24px; height: 24px; }
+  .page-name { font-weight: 700; margin-top: 9px; line-height: 1.1; }
+  .page-handle { font-size: 12px; color: var(--faint); }
+  .page-stats { display: flex; gap: 16px; margin-top: 9px; font-size: 12.5px; color: var(--muted); }
+  .page-stats b { color: var(--ink); font-weight: 700; display: block; font-size: 15px; }
+  .page-foot { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+  .page-status { font-size: 11.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; color: var(--warn); }
+  .page-status .d { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .page-status.on { color: var(--good); }
+  .page-foot .btn { margin-left: auto; }
+  .page-drop-hint { font-size: 11px; color: var(--faint); margin-top: 10px; display: flex; align-items: center; gap: 6px; padding-top: 10px; border-top: 1px dashed var(--border); }
+  .page-drop-hint svg { width: 13px; height: 13px; }
+
+  .queue { display: flex; flex-direction: column; gap: 10px; }
+  .q-item { display: flex; gap: 12px; align-items: center; padding: 11px 12px; }
+  .q-thumb { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex: none; background: var(--surface-2); display: grid; place-items: center; color: var(--faint); position: relative; overflow: hidden; }
+  .q-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .q-thumb > svg { width: 22px; height: 22px; }
+  .q-thumb .q-play { position: absolute; inset: 0; display: grid; place-items: center; }
+  .q-thumb .q-play svg { width: 16px; height: 16px; color: #fff; filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); }
+  .q-main { flex: 1; min-width: 0; }
+  .q-cap { font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .q-meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); margin-top: 4px; flex-wrap: wrap; }
+  .q-when { font-weight: 700; color: var(--accent); display: inline-flex; align-items: center; gap: 4px; }
+  .q-when svg { width: 12px; height: 12px; }
+  .q-plat { display: inline-flex; align-items: center; gap: 5px; }
+  .q-plat .mini-badge { width: 18px; height: 18px; border-radius: 5px; }
+  .q-plat .mini-badge svg { width: 11px; height: 11px; }
+  .q-actions { display: inline-flex; gap: 4px; flex: none; }
+
+  .up-thumb { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 16/9; margin: -2px 0 2px; background: var(--surface-2); }
+  .up-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .up-play { position: absolute; inset: 0; display: grid; place-items: center; }
+  .up-play svg { width: 22px; height: 22px; color: #fff; filter: drop-shadow(0 1px 3px rgba(0,0,0,.7)); }
+
+  /* Composer */
+  .comp-media { border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #0c0e18; aspect-ratio: 16/9; display: grid; place-items: center; color: var(--faint); position: relative; }
+  .comp-media img { width: 100%; height: 100%; object-fit: contain; }
+  .comp-media .cm-empty { color: var(--faint); display: grid; place-items: center; text-align: center; gap: 6px; font-size: 12.5px; }
+  .comp-media .cm-empty svg { width: 30px; height: 30px; margin: 0 auto; }
+  .comp-media .cm-play { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+  .comp-media .cm-play span { width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,.5); display: grid; place-items: center; }
+  .comp-media .cm-play svg { width: 20px; height: 20px; color: #fff; }
+  .comp-tools { display: flex; gap: 8px; margin: 10px 0 4px; }
+  .comp-tools .btn { flex: 1; }
+  .picker-strip { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0 4px; }
+  .picker-strip .pk { width: 60px; height: 60px; border-radius: 9px; overflow: hidden; border: 2px solid transparent; flex: none; cursor: pointer; background: var(--surface-2); display: grid; place-items: center; color: var(--faint); position: relative; }
+  .picker-strip .pk[aria-pressed="true"] { border-color: var(--accent); }
+  .picker-strip .pk img { width: 100%; height: 100%; object-fit: cover; }
+  .picker-strip .pk-empty { font-size: 12px; color: var(--faint); padding: 10px 4px; }
+  .target-pick { display: flex; flex-wrap: wrap; gap: 8px; }
+  .target-opt { display: inline-flex; align-items: center; gap: 7px; border: 1.5px solid var(--border); border-radius: 999px; padding: 6px 12px 6px 7px; background: var(--surface); font-size: 13px; font-weight: 600; transition: border-color .15s, background .15s; }
+  .target-opt[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+  .target-opt .mini-badge { width: 22px; height: 22px; border-radius: 6px; }
+  .target-opt .mini-badge svg { width: 13px; height: 13px; }
+
   @media (max-width: 760px) {
     .kpis { grid-template-columns: repeat(2, 1fr); }
     .split { grid-template-columns: 1fr; }
@@ -378,6 +472,7 @@
   </div>
   <nav class="tabs" id="tabs" role="tablist">
     <button role="tab" data-view="overview" aria-selected="true">Overview</button>
+    <button role="tab" data-view="publish" aria-selected="false">Publish</button>
     <button role="tab" data-view="content" aria-selected="false">Content</button>
     <button role="tab" data-view="accounts" aria-selected="false">Accounts</button>
   </nav>
@@ -432,7 +527,18 @@
     download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>',
     upload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>',
     install: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>',
-    spark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>'
+    spark: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>',
+    video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="14" height="14" rx="2.5"/><path d="M16 10l6-3v10l-6-3z"/></svg>',
+    image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></svg>',
+    play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>',
+    upload2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>',
+    send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+    link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1.5-1.5"/></svg>',
+    drag: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/><circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/><circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>',
+    layers: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+    rocket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.9.7-2.2-.1-3a2.1 2.1 0 0 0-2.9 0z"/><path d="M12 15l-3-3a11 11 0 0 1 5-8c2.5-1.5 5-1.5 6-1.5s1 3.5-.5 6a11 11 0 0 1-7.5 6.5z"/><path d="M9 12H5s.5-2.5 2-3.5c1-.7 3 0 3 0M12 15v4s2.5-.5 3.5-2c.7-1 0-3 0-3"/></svg>'
   };
 
   // ---------- Storage ----------
@@ -471,10 +577,10 @@
   function seed() {
     var rnd = mulberry32(20260916);
     var accts = [
-      { platform: "instagram", handle: "@studioaster", start: 8600, rate: 0.0042, goal: 15000 },
-      { platform: "x", handle: "@studioaster", start: 5400, rate: 0.0028, goal: 8000 },
-      { platform: "tiktok", handle: "@studio.aster", start: 12200, rate: 0.0075, goal: 25000 },
-      { platform: "youtube", handle: "Studio Aster", start: 3100, rate: 0.0036, goal: 5000 }
+      { platform: "instagram", handle: "@deeprootsbible", start: 8600, rate: 0.0042, goal: 15000 },
+      { platform: "facebook", handle: "Deep Roots Bible", start: 14200, rate: 0.0031, goal: 20000 },
+      { platform: "youtube", handle: "Deep Roots Bible", start: 3100, rate: 0.0048, goal: 5000 },
+      { platform: "tiktok", handle: "@deeproots.bible", start: 6200, rate: 0.0075, goal: 15000 }
     ];
     var N = 120;
     var start = addDays(new Date(), -N + 1);
@@ -499,14 +605,14 @@
 
     // posts over last ~85 days
     var captions = [
-      "Behind the scenes of the spring shoot", "3 tips that changed how we work", "New drop is live — link in bio",
-      "The making of our latest piece", "Answering your most-asked question", "A quick studio tour",
-      "This took 40 hours. Worth it?", "Before / after — swipe to see", "Weekend mood board",
-      "How we plan a month of content", "Our favorite tool right now", "Reply with your questions 👇",
-      "Client work we can finally share", "The one mistake we kept making", "5 minutes of pure process",
-      "Testing a new format, thoughts?", "Throwback to where it started", "What's on the desk today",
-      "Little wins from this week", "A thread on staying consistent", "Unboxing the new gear",
-      "Community spotlight ✨", "Timelapse: idea to finish", "We hit a milestone — thank you"
+      "Verse of the day: Psalm 1:3", "Sunday service highlights", "3 minutes on rooting your faith",
+      "Behind the scenes of this week's study", "Answering your most-asked question", "A short devotional for your morning",
+      "New episode is live — link in bio", "Scripture memory challenge starts today", "Testimony Tuesday 🙌",
+      "How we read a chapter in context", "Our reading plan for the month", "Reply with your prayer requests 👇",
+      "Small group recap", "The one habit that deepened our study", "5 minutes in the Word",
+      "Worship set from Sunday", "Throwback to where the ministry started", "What's on our hearts today",
+      "Little wins from this week", "A thread on staying rooted", "Unboxing new study guides",
+      "Community spotlight ✨", "From notes to finished teaching", "We hit a milestone — thank you"
     ];
     var posts = [];
     var pid = 1;
@@ -528,18 +634,19 @@
     }
     // upcoming / scheduled
     var upcoming = [
-      { plat: "instagram", cap: "Q3 recap carousel", in: 1 },
-      { plat: "tiktok", cap: "Trend remix (draft)", in: 2 },
-      { plat: "youtube", cap: "Studio setup walkthrough", in: 4 }
+      { plat: "instagram", cap: "Verse of the day graphic", in: 1, time: "08:00" },
+      { plat: "youtube", cap: "Sunday sermon upload", in: 2, time: "18:00" },
+      { plat: "facebook", cap: "Midweek study reminder", in: 3, time: "12:00" },
+      { plat: "tiktok", cap: "60-second devotional clip", in: 4, time: "17:00" }
     ];
     upcoming.forEach(function (u) {
       posts.push({ id: "p" + (pid++), platform: u.plat, date: toISO(addDays(new Date(), u.in)),
-        caption: u.cap, reach: 0, likes: 0, comments: 0, shares: 0, status: "scheduled" });
+        time: u.time, caption: u.cap, reach: 0, likes: 0, comments: 0, shares: 0, status: "scheduled", mediaId: null });
     });
 
     return {
-      brand: "Studio Aster", tagline: "Your channels at a glance",
-      theme: "auto", accounts: accounts, snapshots: snapshots, posts: posts,
+      brand: "Deep Roots Bible", tagline: "Marketing & social command center",
+      theme: "auto", accounts: accounts, snapshots: snapshots, posts: posts, media: [],
       sort: { key: "date", dir: -1 }, filter: "all"
     };
   }
@@ -735,6 +842,7 @@
 
   function render() {
     if (currentView === "overview") renderOverview();
+    else if (currentView === "publish") renderPublish();
     else if (currentView === "content") renderContent();
     else renderAccounts();
     updateFab();
@@ -743,8 +851,9 @@
   function updateFab() {
     var fab = document.getElementById("fab");
     var label = document.getElementById("fabLabel");
-    if (currentView === "accounts") { label.textContent = "Add account"; }
-    else { label.textContent = "Log post"; }
+    if (currentView === "accounts") label.textContent = "Add account";
+    else if (currentView === "publish") label.textContent = "New post";
+    else label.textContent = "Log post";
     fab.hidden = false;
   }
 
@@ -784,7 +893,9 @@
     var up = upcomingPosts();
     if (up.length) {
       var chips = up.map(function (p) {
-        return '<div class="up-chip"><div class="up-when">' + I.cal + relDate(p.date) + '</div>' +
+        var m = mediaById(p.mediaId);
+        var thumb = m && m.thumb ? '<div class="up-thumb"><img src="' + m.thumb + '" alt="">' + (m.type === "video" ? '<span class="up-play">' + I.play + '</span>' : '') + '</div>' : '';
+        return '<div class="up-chip">' + thumb + '<div class="up-when">' + I.clock + relDate(p.date) + (p.time ? ' · ' + p.time : '') + '</div>' +
           '<div class="up-cap">' + esc(p.caption) + '</div>' +
           '<div class="up-plat"><span class="mini-badge" style="background:' + platColor(p.platform) + '">' + platIcon(p.platform) + '</span>' + platName(p.platform) + '</div></div>';
       }).join("");
@@ -1205,7 +1316,7 @@
         try {
           var data = JSON.parse(r.result);
           if (!data.accounts || !data.snapshots || !data.posts) throw new Error("bad");
-          state = data; if (!state.sort) state.sort = { key: "date", dir: -1 }; if (!state.filter) state.filter = "all";
+          state = data; if (!state.sort) state.sort = { key: "date", dir: -1 }; if (!state.filter) state.filter = "all"; if (!Array.isArray(state.media)) state.media = [];
           save(); closeModal(); applyBrand(); applyTheme(); render(); toast("Data imported");
         } catch (e) { toast("Couldn't read that file"); }
       };
@@ -1228,6 +1339,389 @@
     toast("Backup downloaded");
   }
 
+  // ---------- Media store (IndexedDB for blobs) ----------
+  var DBNAME = "smdash-media", STORE = "blobs", _db = null;
+  function idb() {
+    return new Promise(function (res, rej) {
+      if (_db) return res(_db);
+      if (!window.indexedDB) return rej(new Error("no-idb"));
+      var r = indexedDB.open(DBNAME, 1);
+      r.onupgradeneeded = function () { if (!r.result.objectStoreNames.contains(STORE)) r.result.createObjectStore(STORE); };
+      r.onsuccess = function () { _db = r.result; res(_db); };
+      r.onerror = function () { rej(r.error); };
+    });
+  }
+  function idbPut(id, blob) {
+    return idb().then(function (db) { return new Promise(function (res, rej) {
+      var tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).put(blob, id);
+      tx.oncomplete = function () { res(id); }; tx.onerror = function () { rej(tx.error); };
+    }); });
+  }
+  function idbGet(id) {
+    return idb().then(function (db) { return new Promise(function (res, rej) {
+      var tx = db.transaction(STORE, "readonly"); var rq = tx.objectStore(STORE).get(id);
+      rq.onsuccess = function () { res(rq.result); }; rq.onerror = function () { rej(rq.error); };
+    }); });
+  }
+  function idbDel(id) {
+    return idb().then(function (db) { return new Promise(function (res) {
+      var tx = db.transaction(STORE, "readwrite"); tx.objectStore(STORE).delete(id);
+      tx.oncomplete = function () { res(); }; tx.onerror = function () { res(); };
+    }); }).catch(function () {});
+  }
+
+  function mediaById(id) { return id ? state.media.find(function (m) { return m.id === id; }) : null; }
+  function fmtSize(b) {
+    if (!b) return "";
+    if (b >= 1048576) return (b / 1048576).toFixed(1).replace(/\.0$/, "") + " MB";
+    if (b >= 1024) return Math.round(b / 1024) + " KB";
+    return b + " B";
+  }
+  function fmtDur(s) {
+    s = Math.round(s || 0); if (!s) return "";
+    return Math.floor(s / 60) + ":" + pad(s % 60);
+  }
+
+  function drawThumb(src, w, h) {
+    var max = 320, scale = Math.min(1, max / Math.max(w || max, h || max));
+    var cw = Math.max(1, Math.round((w || max) * scale)), ch = Math.max(1, Math.round((h || max) * scale));
+    var c = document.createElement("canvas"); c.width = cw; c.height = ch;
+    try { c.getContext("2d").drawImage(src, 0, 0, cw, ch); return c.toDataURL("image/jpeg", 0.6); }
+    catch (e) { return ""; }
+  }
+  function fileToMeta(file, cb) {
+    var isVideo = file.type.indexOf("video") === 0;
+    if (isVideo) {
+      var url = URL.createObjectURL(file), v = document.createElement("video"), done = false;
+      v.preload = "metadata"; v.muted = true; v.playsInline = true; v.src = url;
+      function finish(thumb, dur) { if (done) return; done = true; try { URL.revokeObjectURL(url); } catch (e) {} cb({ thumb: thumb, duration: dur }); }
+      v.onloadedmetadata = function () { var d = v.duration || 0; try { v.currentTime = Math.min(1, d ? d / 2 : 0); } catch (e) { finish("", d); } };
+      v.onseeked = function () { finish(drawThumb(v, v.videoWidth, v.videoHeight), v.duration || 0); };
+      v.onerror = function () { finish("", 0); };
+      setTimeout(function () { finish("", v.duration || 0); }, 5000);
+    } else {
+      var u2 = URL.createObjectURL(file), img = new Image();
+      img.onload = function () { var t = drawThumb(img, img.naturalWidth, img.naturalHeight); try { URL.revokeObjectURL(u2); } catch (e) {} cb({ thumb: t, duration: 0 }); };
+      img.onerror = function () { try { URL.revokeObjectURL(u2); } catch (e) {} cb({ thumb: "", duration: 0 }); };
+      img.src = u2;
+    }
+  }
+  function addFiles(files, onFirst) {
+    var arr = Array.prototype.slice.call(files).filter(function (f) {
+      return f.type.indexOf("image") === 0 || f.type.indexOf("video") === 0;
+    });
+    if (!arr.length) { toast("Drop images or videos"); return; }
+    var firstFired = false, added = 0;
+    arr.forEach(function (f) {
+      var id = "m" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      // Display + scheduling work off the thumbnail; the original blob is stored
+      // best-effort (IndexedDB can be unavailable on file:// or in private mode).
+      fileToMeta(f, function (meta) {
+        var item = {
+          id: id, name: f.name || "Untitled", type: f.type.indexOf("video") === 0 ? "video" : "image",
+          mime: f.type, size: f.size, duration: meta.duration, thumb: meta.thumb, added: Date.now(), stored: false
+        };
+        state.media.unshift(item);
+        idbPut(id, f).then(function () { item.stored = true; save(); }).catch(function () {});
+        save();
+        added++;
+        if (!firstFired && onFirst) { firstFired = true; onFirst(id); }
+        if (currentView === "publish") renderPublish();
+        if (added === arr.length) toast(arr.length + (arr.length > 1 ? " items added" : " item added"));
+      });
+    });
+  }
+  function deleteMedia(id) {
+    var m = mediaById(id); if (!m) return;
+    if (!confirm("Remove “" + m.name + "” from the library?")) return;
+    state.media = state.media.filter(function (x) { return x.id !== id; });
+    state.posts.forEach(function (p) { if (p.mediaId === id) p.mediaId = null; });
+    idbDel(id); save(); render(); toast("Media removed");
+  }
+
+  // ---------- Publish view ----------
+  var dragMediaId = null;
+
+  function renderPublish() {
+    var v = el('<div class="view"></div>');
+
+    // Connect / mode banner (honest about local-queue vs live posting)
+    v.appendChild(el('<section><div class="card info-banner">' +
+      '<span class="ib-ic">' + I.rocket + '</span>' +
+      '<div><b>Publishing studio — draft &amp; schedule mode</b>' +
+      '<p>Drag videos and images into the library, drop them onto a page to compose, and schedule posts. Posts are queued on this device. ' +
+      'Connecting each network’s API (a one-time setup) turns on automatic publishing at the scheduled time.</p></div></div></section>'));
+
+    // Library
+    var grid = state.media.length
+      ? '<div class="media-grid" id="mediaGrid">' + state.media.map(mediaTile).join("") + '</div>'
+      : '';
+    v.appendChild(el('<section><div class="sec-head"><h2>Content library</h2>' +
+      '<div class="rhs" style="font-size:12px;color:var(--faint)">' + state.media.length + ' item' + (state.media.length === 1 ? '' : 's') + '</div></div>' +
+      '<div class="dropzone" id="dropzone"><div class="dz-ic">' + I.upload2 + '</div>' +
+      '<b>Drag &amp; drop videos or images here</b><div class="dz-sub">or tap to browse — then drag a clip onto a page below to schedule it</div></div>' +
+      grid +
+      '<input type="file" id="mediaInput" accept="image/*,video/*" multiple hidden></section>'));
+
+    // Pages (drop targets + snapshots)
+    var pages = state.accounts.map(pageCard).join("");
+    v.appendChild(el('<section><div class="sec-head"><h2>Your pages</h2>' +
+      '<div class="rhs"><button class="btn ghost sm" data-goto="accounts">Manage</button></div></div>' +
+      (state.accounts.length ? '<div class="page-grid" id="pageGrid">' + pages + '</div>'
+        : '<div class="card empty">' + I.users + '<h3>No pages yet</h3><p>Add your social accounts to schedule posts to them.</p></div>') +
+      '</section>'));
+
+    // Scheduled queue
+    var q = upcomingPosts();
+    v.appendChild(el('<section><div class="sec-head"><h2>Scheduled queue</h2>' +
+      '<div class="rhs"><button class="btn primary sm" id="composeBtn">' + I.plus + 'New post</button></div></div>' +
+      (q.length ? '<div class="queue" id="queue">' + q.map(queueItem).join("") + '</div>'
+        : '<div class="card empty">' + I.cal + '<h3>Nothing scheduled</h3><p>Drop media on a page or tap <b>New post</b> to line up your first post.</p></div>') +
+      '</section>'));
+
+    main.innerHTML = ""; main.appendChild(v);
+    wirePublish();
+  }
+
+  function mediaTile(m) {
+    var inner = m.thumb ? '<img src="' + m.thumb + '" alt="' + esc(m.name) + '">'
+      : '<div class="ph">' + (m.type === "video" ? I.video : I.image) + '</div>';
+    var play = m.type === "video" ? '<div class="mplay"><span>' + I.play + '</span></div>' : '';
+    var dur = m.type === "video" && m.duration ? '<span class="mdur">' + fmtDur(m.duration) + '</span>' : '';
+    return '<div class="media-item" draggable="true" data-mid="' + m.id + '" title="' + esc(m.name) + ' — drag onto a page">' +
+      inner + play +
+      '<span class="mtype">' + (m.type === "video" ? I.video : I.image) + (m.type === "video" ? "Video" : "Image") + '</span>' +
+      dur +
+      '<button class="mdel" data-mdel="' + m.id + '" title="Remove">' + I.trash + '</button></div>';
+  }
+
+  function pageCard(a) {
+    var connected = !!a.connected;
+    return '<div class="card page-card" data-drop="' + a.platform + '">' +
+      '<div class="page-band" style="background:' + platColor(a.platform) + '"></div>' +
+      '<div class="page-body">' +
+      '<span class="page-av" style="background:' + platColor(a.platform) + '">' + platIcon(a.platform) + '</span>' +
+      '<div class="page-name">' + platName(a.platform) + '</div>' +
+      '<div class="page-handle">' + esc(a.handle || "") + '</div>' +
+      '<div class="page-stats"><span><b class="num">' + fmt(a.followers) + '</b>followers</span>' +
+      '<span><b class="num">' + scheduledForPlatform(a.platform) + '</b>queued</span></div>' +
+      '<div class="page-foot"><span class="page-status ' + (connected ? "on" : "") + '"><span class="d"></span>' +
+      (connected ? "Connected" : "Not connected") + '</span>' +
+      '<button class="btn sm ' + (connected ? "" : "primary") + '" data-connect="' + a.platform + '">' + (connected ? "Manage" : "Connect") + '</button></div>' +
+      '<div class="page-drop-hint">' + I.drag + 'Drop a clip here to schedule a post</div>' +
+      '</div></div>';
+  }
+  function scheduledForPlatform(p) {
+    return state.posts.filter(function (x) { return x.status === "scheduled" && x.platform === p && x.date >= todayISO(); }).length;
+  }
+
+  function queueItem(p) {
+    var m = mediaById(p.mediaId);
+    var thumb = m && m.thumb
+      ? '<div class="q-thumb"><img src="' + m.thumb + '" alt="">' + (m.type === "video" ? '<span class="q-play">' + I.play + '</span>' : '') + '</div>'
+      : '<div class="q-thumb">' + (m ? (m.type === "video" ? I.video : I.image) : I.image) + '</div>';
+    return '<div class="card q-item" data-qid="' + p.id + '">' + thumb +
+      '<div class="q-main"><div class="q-cap">' + esc(p.caption) + '</div>' +
+      '<div class="q-meta"><span class="q-when">' + I.clock + relDate(p.date) + (p.time ? ' · ' + p.time : '') + '</span>' +
+      '<span class="q-plat"><span class="mini-badge" style="background:' + platColor(p.platform) + '">' + platIcon(p.platform) + '</span>' + platName(p.platform) + '</span></div></div>' +
+      '<div class="q-actions"><button class="btn sm" data-publish="' + p.id + '" title="Mark as published">' + I.check + '</button>' +
+      '<button class="btn sm" data-eq="' + p.id + '" title="Edit">' + I.edit + '</button>' +
+      '<button class="btn sm" data-dq="' + p.id + '" title="Delete">' + I.trash + '</button></div></div>';
+  }
+
+  function wirePublish() {
+    var dz = document.getElementById("dropzone");
+    var input = document.getElementById("mediaInput");
+    if (dz && input) {
+      dz.addEventListener("click", function () { input.click(); });
+      input.addEventListener("change", function () { if (input.files.length) addFiles(input.files); input.value = ""; });
+      ["dragenter", "dragover"].forEach(function (ev) {
+        dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add("drag"); });
+      });
+      ["dragleave", "dragend"].forEach(function (ev) {
+        dz.addEventListener(ev, function (e) { if (e.target === dz) dz.classList.remove("drag"); });
+      });
+      dz.addEventListener("drop", function (e) {
+        e.preventDefault(); dz.classList.remove("drag");
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+      });
+    }
+    main.querySelectorAll(".media-item").forEach(function (it) {
+      it.addEventListener("dragstart", function (e) {
+        dragMediaId = it.getAttribute("data-mid");
+        it.classList.add("dragging");
+        try { e.dataTransfer.setData("text/plain", dragMediaId); e.dataTransfer.effectAllowed = "copy"; } catch (er) {}
+      });
+      it.addEventListener("dragend", function () { it.classList.remove("dragging"); dragMediaId = null; });
+      it.addEventListener("click", function (e) {
+        if (e.target.closest("[data-mdel]")) return;
+        openComposer({ mediaId: it.getAttribute("data-mid") });
+      });
+    });
+    main.querySelectorAll("[data-mdel]").forEach(function (b) {
+      b.addEventListener("click", function (e) { e.stopPropagation(); deleteMedia(b.getAttribute("data-mdel")); });
+    });
+    main.querySelectorAll(".page-card").forEach(function (card) {
+      var plat = card.getAttribute("data-drop");
+      ["dragenter", "dragover"].forEach(function (ev) {
+        card.addEventListener(ev, function (e) { e.preventDefault(); card.classList.add("drop"); try { e.dataTransfer.dropEffect = "copy"; } catch (er) {} });
+      });
+      card.addEventListener("dragleave", function (e) { if (!card.contains(e.relatedTarget)) card.classList.remove("drop"); });
+      card.addEventListener("drop", function (e) {
+        e.preventDefault(); card.classList.remove("drop");
+        var id = dragMediaId; try { id = e.dataTransfer.getData("text/plain") || dragMediaId; } catch (er) {}
+        openComposer({ mediaId: id, platform: plat });
+      });
+    });
+    main.querySelectorAll("[data-connect]").forEach(function (b) {
+      b.addEventListener("click", function () { openConnect(b.getAttribute("data-connect")); });
+    });
+    main.querySelectorAll("[data-goto]").forEach(function (b) {
+      b.addEventListener("click", function () { switchView(b.getAttribute("data-goto")); });
+    });
+    var cb = document.getElementById("composeBtn");
+    if (cb) cb.addEventListener("click", function () { openComposer({}); });
+    main.querySelectorAll("[data-eq]").forEach(function (b) { b.addEventListener("click", function () { openComposer({ postId: b.getAttribute("data-eq") }); }); });
+    main.querySelectorAll("[data-dq]").forEach(function (b) { b.addEventListener("click", function () { deletePost(b.getAttribute("data-dq")); }); });
+    main.querySelectorAll("[data-publish]").forEach(function (b) { b.addEventListener("click", function () { markPublished(b.getAttribute("data-publish")); }); });
+  }
+
+  function markPublished(id) {
+    var p = state.posts.find(function (x) { return x.id === id; });
+    if (!p) return;
+    if (!confirm("Mark “" + p.caption + "” as published now?\n\nIt moves to your Content analytics with 0 metrics — update them once you have numbers.")) return;
+    p.status = "published"; p.date = todayISO();
+    save(); render(); toast("Moved to published");
+  }
+
+  function openConnect(platform) {
+    var a = state.accounts.find(function (x) { return x.platform === platform; });
+    var m = el('<div class="modal">' +
+      '<div class="modal-head"><h3>Connect ' + platName(platform) + '</h3><button class="icon-btn" data-close>' + I.close + '</button></div>' +
+      '<div class="card info-banner" style="margin-bottom:14px"><span class="ib-ic">' + I.link + '</span>' +
+      '<div><b>Live publishing needs an API connection</b><p>Automatic posting and live page stats for ' + platName(platform) + ' require a one-time developer connection (' +
+      connectHint(platform) + '). Until that’s wired up, you can still draft, schedule, and track posts here, then publish them with one tap.</p></div></div>' +
+      '<label style="display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600;cursor:pointer;margin-bottom:4px">' +
+      '<input type="checkbox" id="c-on" style="width:auto" ' + (a && a.connected ? "checked" : "") + '> Mark this page as connected</label>' +
+      '<p style="font-size:12px;color:var(--faint);margin:2px 0 0">Marks the page as ready in the dashboard. It does not send anything to ' + platName(platform) + ' on its own.</p>' +
+      '<div class="modal-actions"><button class="btn primary" data-save>Save</button></div></div>');
+    m.querySelector("[data-close]").addEventListener("click", closeModal);
+    m.querySelector("[data-save]").addEventListener("click", function () {
+      if (a) { a.connected = m.querySelector("#c-on").checked; save(); render(); toast(a.connected ? platName(platform) + " marked connected" : "Connection cleared"); }
+      closeModal();
+    });
+    openModal(m);
+  }
+  function connectHint(p) {
+    var h = { instagram: "Meta Graph API — Instagram Content Publishing", facebook: "Meta Graph API — Pages", youtube: "YouTube Data API v3", tiktok: "TikTok Content Posting API", x: "X API v2", linkedin: "LinkedIn Marketing API" };
+    return h[p] || "the platform API";
+  }
+
+  // ---------- Composer ----------
+  function openComposer(opts) {
+    opts = opts || {};
+    if (!state.accounts.length) { toast("Add a page first"); switchView("accounts"); return; }
+    var editing = opts.postId ? state.posts.find(function (p) { return p.id === opts.postId; }) : null;
+    var sel = {
+      mediaId: editing ? (editing.mediaId || null) : (opts.mediaId || null),
+      targets: editing ? [editing.platform] : (opts.platform ? [opts.platform] : []),
+      showPicker: false
+    };
+    var accts = state.accounts;
+    var defDate = editing ? editing.date : toISO(addDays(new Date(), 1));
+    var defTime = editing ? (editing.time || "09:00") : "09:00";
+
+    var targetChips = accts.map(function (a) {
+      return '<button type="button" class="target-opt" data-target="' + a.platform + '" aria-pressed="' + (sel.targets.indexOf(a.platform) >= 0) + '">' +
+        '<span class="mini-badge" style="background:' + platColor(a.platform) + '">' + platIcon(a.platform) + '</span>' + platName(a.platform) + '</button>';
+    }).join("");
+
+    var m = el('<div class="modal">' +
+      '<div class="modal-head"><h3>' + (editing ? "Edit scheduled post" : "Compose post") + '</h3><button class="icon-btn" data-close>' + I.close + '</button></div>' +
+      '<div id="compMedia"></div>' +
+      '<div class="comp-tools"><button type="button" class="btn sm" data-upload>' + I.upload2 + 'Upload</button>' +
+      '<button type="button" class="btn sm" data-pick>' + I.layers + 'Library</button>' +
+      '<button type="button" class="btn sm" data-clear ' + (sel.mediaId ? '' : 'hidden') + '>' + I.close + 'Remove</button></div>' +
+      '<div id="pickStrip" hidden></div>' +
+      '<div class="field" style="margin-top:8px"><label>Post to</label><div class="target-pick">' + targetChips + '</div></div>' +
+      '<div class="field"><label>Caption</label><textarea id="c-cap" placeholder="Write your caption…">' + (editing ? esc(editing.caption) : "") + '</textarea></div>' +
+      '<div class="field-row"><div class="field"><label>Date</label><input type="date" id="c-date" value="' + defDate + '"></div>' +
+      '<div class="field"><label>Time</label><input type="time" id="c-time" value="' + defTime + '"></div></div>' +
+      '<div class="modal-actions">' + (editing ? '<button class="btn danger" data-delete>Delete</button>' : '') +
+      '<button class="btn primary" data-save>' + (editing ? "Save changes" : "Schedule post") + '</button></div>' +
+      '<input type="file" id="c-file" accept="image/*,video/*" multiple hidden></div>');
+
+    function paintMedia() {
+      var host = m.querySelector("#compMedia");
+      var mm = mediaById(sel.mediaId);
+      if (mm && mm.thumb) {
+        host.innerHTML = '<div class="comp-media"><img src="' + mm.thumb + '" alt="">' +
+          (mm.type === "video" ? '<div class="cm-play"><span>' + I.play + '</span></div>' : '') + '</div>';
+      } else if (mm) {
+        host.innerHTML = '<div class="comp-media"><div class="cm-empty">' + (mm.type === "video" ? I.video : I.image) + esc(mm.name) + '</div></div>';
+      } else {
+        host.innerHTML = '<div class="comp-media"><div class="cm-empty">' + I.image + 'No media attached<br><span style="color:var(--faint)">Text-only post, or add a clip</span></div></div>';
+      }
+      m.querySelector("[data-clear]").hidden = !sel.mediaId;
+    }
+    function paintPicker() {
+      var strip = m.querySelector("#pickStrip");
+      strip.hidden = !sel.showPicker;
+      if (!sel.showPicker) return;
+      if (!state.media.length) { strip.innerHTML = '<div class="pk-empty">Library is empty — tap Upload to add media.</div>'; strip.className = "picker-strip"; return; }
+      strip.className = "picker-strip";
+      strip.innerHTML = state.media.map(function (mm) {
+        var inner = mm.thumb ? '<img src="' + mm.thumb + '" alt="">' : (mm.type === "video" ? I.video : I.image);
+        return '<button type="button" class="pk" data-pk="' + mm.id + '" aria-pressed="' + (mm.id === sel.mediaId) + '">' + inner + '</button>';
+      }).join("");
+      strip.querySelectorAll("[data-pk]").forEach(function (b) {
+        b.addEventListener("click", function () { sel.mediaId = b.getAttribute("data-pk"); paintMedia(); paintPicker(); });
+      });
+    }
+
+    m.querySelector("[data-close]").addEventListener("click", closeModal);
+    m.querySelectorAll("[data-target]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var p = b.getAttribute("data-target"), i = sel.targets.indexOf(p);
+        if (i >= 0) sel.targets.splice(i, 1); else sel.targets.push(p);
+        b.setAttribute("aria-pressed", sel.targets.indexOf(p) >= 0);
+      });
+    });
+    var fileInput = m.querySelector("#c-file");
+    m.querySelector("[data-upload]").addEventListener("click", function () { fileInput.click(); });
+    fileInput.addEventListener("change", function () {
+      if (fileInput.files.length) addFiles(fileInput.files, function (id) { sel.mediaId = id; paintMedia(); if (sel.showPicker) paintPicker(); });
+      fileInput.value = "";
+    });
+    m.querySelector("[data-pick]").addEventListener("click", function () { sel.showPicker = !sel.showPicker; paintPicker(); });
+    m.querySelector("[data-clear]").addEventListener("click", function () { sel.mediaId = null; paintMedia(); if (sel.showPicker) paintPicker(); });
+    var delBtn = m.querySelector("[data-delete]");
+    if (delBtn) delBtn.addEventListener("click", function () { closeModal(); deletePost(opts.postId); });
+    m.querySelector("[data-save]").addEventListener("click", function () {
+      var cap = m.querySelector("#c-cap").value.trim();
+      if (!sel.targets.length) { toast("Pick at least one page"); return; }
+      if (!cap && !sel.mediaId) { m.querySelector("#c-cap").focus(); toast("Add a caption or media"); return; }
+      var date = m.querySelector("#c-date").value || toISO(addDays(new Date(), 1));
+      var time = m.querySelector("#c-time").value || "09:00";
+      if (editing) {
+        editing.platform = sel.targets[0]; editing.caption = cap; editing.date = date; editing.time = time; editing.mediaId = sel.mediaId; editing.status = "scheduled";
+        toast("Post updated");
+      } else {
+        sel.targets.forEach(function (p) {
+          state.posts.push({ id: "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
+            platform: p, caption: cap, date: date, time: time, mediaId: sel.mediaId,
+            reach: 0, likes: 0, comments: 0, shares: 0, status: "scheduled" });
+        });
+        toast(sel.targets.length > 1 ? "Scheduled to " + sel.targets.length + " pages" : "Post scheduled");
+      }
+      save(); closeModal();
+      if (currentView !== "publish") switchView("publish"); else render();
+    });
+
+    openModal(m);
+    paintMedia();
+  }
+
   // ---------- Chrome ----------
   function applyTheme() {
     var t = state.theme || "auto";
@@ -1243,7 +1737,7 @@
     document.title = (state.brand ? state.brand + " · " : "") + "Social Media Dashboard";
   }
 
-  var VIEWS = ["overview", "content", "accounts"];
+  var VIEWS = ["overview", "publish", "content", "accounts"];
   function switchView(view) {
     if (VIEWS.indexOf(view) < 0) view = "overview";
     currentView = view;
@@ -1285,6 +1779,7 @@
   load();
   if (!state.sort) state.sort = { key: "date", dir: -1 };
   if (!state.filter) state.filter = "all";
+  if (!Array.isArray(state.media)) state.media = [];
   applyTheme();
   applyBrand();
 
@@ -1300,6 +1795,7 @@
   document.getElementById("settingsBtn").addEventListener("click", openSettings);
   document.getElementById("fab").addEventListener("click", function () {
     if (currentView === "accounts") openAccountModal(null);
+    else if (currentView === "publish") openComposer({});
     else openPostModal(null);
   });
   window.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
