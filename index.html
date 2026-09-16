@@ -315,6 +315,35 @@
   .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
   @media (max-width: 480px) { .form-2col { grid-template-columns: 1fr; } }
 
+  .owner-chip {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 600;
+    color: var(--accent-ink); background: var(--accent-soft); padding: 2px 9px; border-radius: 999px;
+    max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ---- Lock screen ---- */
+  .lock-screen {
+    position: fixed; inset: 0; z-index: 60; background: var(--readout-bg);
+    display: grid; place-items: center; padding: 24px;
+    padding-top: calc(24px + env(safe-area-inset-top, 0px));
+  }
+  .lock-screen[hidden] { display: none; }
+  .lock-card { width: 100%; max-width: 360px; text-align: center; color: #dbeeec; }
+  .lock-logo { width: 56px; height: 56px; margin: 0 auto 16px; border-radius: 15px; background: #0a161c; display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(79,224,214,.25); }
+  .lock-card h2 { font-size: 20px; font-weight: 600; color: #eafffe; }
+  .lock-owner { font-size: 13px; color: var(--readout-ink); margin: 4px 0 0; font-weight: 600; }
+  .lock-sub { font-size: 13.5px; color: #7f9a9a; margin: 6px 0 20px; line-height: 1.5; }
+  .lock-card input[type="password"] {
+    width: 100%; text-align: center; font-size: 16px; padding: 12px; margin-bottom: 12px;
+    background: #0a161c; border: 1px solid #2f5b59; color: #eafffe; border-radius: 10px;
+  }
+  .lock-card input[type="password"]:focus { outline: 2px solid var(--readout-ink); border-color: var(--readout-ink); }
+  .lock-card .btn-primary { width: 100%; padding: 12px; }
+  .lock-err { color: #ff8f7a; font-size: 13px; margin-bottom: 10px; }
+  .lock-reset { display: inline-block; margin-top: 16px; color: #7f9a9a; font-size: 12.5px; background: none; border: none; cursor: pointer; text-decoration: underline; }
+  .lock-reset:hover { color: #b7cfcf; }
+  .sec-status { display: flex; align-items: center; gap: 8px; margin: 4px 0 14px; font-size: 13.5px; }
+
   /* ---- Schedule / agenda ---- */
   .reminder-bar {
     display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
@@ -378,10 +407,14 @@
       </span>
       <div>
         <h1>Peptide Bench</h1>
-        <span class="tag">Reconstitution &amp; dosing log</span>
+        <span class="tag" id="brandTag">Reconstitution &amp; dosing log</span>
+        <span class="owner-chip" id="ownerChip" hidden></span>
       </div>
       <span class="spacer"></span>
       <button class="btn btn-ghost btn-sm" id="installBtn" hidden style="margin-right:2px;">Install app</button>
+      <button class="icon-btn" id="lockBtn" hidden title="Lock" aria-label="Lock" style="margin-right:2px;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      </button>
       <button class="icon-btn" id="themeBtn" title="Toggle light / dark" aria-label="Toggle theme">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       </button>
@@ -630,6 +663,21 @@
         <span>Restoring or erasing replaces what's currently stored. Copy a backup first if unsure.</span>
       </div>
     </div>
+
+    <div class="card card-pad" id="securityCard" style="max-width:640px; margin-top:16px;">
+      <div class="section-title">Privacy &amp; security</div>
+      <p style="margin-top:0; color:var(--muted); font-size:13.5px;">
+        Everything in this app is stored only on this device, in this browser — it isn't shared with anyone (not even whoever sent you the link) and it never reaches a server. You can lock this copy with a password, which <b>encrypts your data on the device</b>.
+      </p>
+      <label class="field"><span class="field-label">This copy belongs to <span class="hint">shown at the top &amp; on the lock screen</span></span>
+        <input type="text" id="ownerInput" placeholder="e.g. Troy" maxlength="40" /></label>
+      <div class="sec-status" id="secStatus"></div>
+      <div id="secButtons" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+      <div class="helprow" id="secNote">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 18a1.9 1.9 0 0 0 1.7 2.9h15.6a1.9 1.9 0 0 0 1.7-2.9L13.7 3.9a1.9 1.9 0 0 0-3.4 0Z"/></svg>
+        <span>There's no password reset. If you forget it, the encrypted data can't be recovered — keep a JSON backup (above) somewhere safe.</span>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -654,35 +702,112 @@
   </div>
 </div>
 
+<!-- Lock screen -->
+<div class="lock-screen" id="lockScreen" hidden>
+  <div class="lock-card">
+    <div class="lock-logo" aria-hidden="true">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#4FE0D6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    </div>
+    <h2 id="lockTitle">Peptide Bench</h2>
+    <p class="lock-owner" id="lockOwner" hidden></p>
+    <p class="lock-sub">This copy is locked. Enter your password to open it.</p>
+    <form id="lockForm">
+      <input type="password" id="lockPw" placeholder="Password" autocomplete="current-password" />
+      <div class="lock-err" id="lockErr" hidden></div>
+      <button class="btn btn-primary" id="lockUnlock" type="submit">Unlock</button>
+    </form>
+    <button class="lock-reset" id="lockReset" type="button">Forgot password? Erase this copy and start over</button>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 (function () {
   "use strict";
 
-  /* ---------------- storage ---------------- */
-  var LS_KEY = "peptideBench.v1";
-  var state = { inventory: [], doses: [], schedules: [], theme: null };
+  /* ---------------- storage & vault ---------------- */
+  var LS_KEY = "peptideBench.v1";     // data (plaintext object, or encrypted envelope)
+  var META_KEY = "peptideBench.meta"; // plaintext: owner label, theme, welcomed flag
+  var state = { inventory: [], doses: [], schedules: [] };
+  var meta = { owner: "", theme: null, welcomed: false };
+  var CRYPTO_OK = !!(window.crypto && window.crypto.subtle);
+  var cryptoKey = null;   // in-memory AES key while unlocked with a password
+  var vaultSalt = null;   // Uint8Array salt for the current password
+  var locked = false;     // true when encrypted data exists but isn't unlocked yet
+
+  function payload() { return { inventory: state.inventory, doses: state.doses, schedules: state.schedules }; }
+  function applyPayload(p) {
+    p = p || {};
+    state.inventory = Array.isArray(p.inventory) ? p.inventory : [];
+    state.doses = Array.isArray(p.doses) ? p.doses : [];
+    state.schedules = Array.isArray(p.schedules) ? p.schedules : [];
+  }
+  function loadMeta() { try { var r = localStorage.getItem(META_KEY); if (r) meta = Object.assign(meta, JSON.parse(r)); } catch (e) {} }
+  function saveMeta() { try { localStorage.setItem(META_KEY, JSON.stringify(meta)); } catch (e) {} }
 
   function load() {
+    loadMeta();
     try {
       var raw = localStorage.getItem(LS_KEY);
-      if (raw) {
-        var parsed = JSON.parse(raw);
-        if (parsed && typeof parsed === "object") {
-          state.inventory = Array.isArray(parsed.inventory) ? parsed.inventory : [];
-          state.doses = Array.isArray(parsed.doses) ? parsed.doses : [];
-          state.schedules = Array.isArray(parsed.schedules) ? parsed.schedules : [];
-          state.theme = parsed.theme || null;
-        }
-      }
+      if (!raw) return;
+      var parsed = JSON.parse(raw);
+      if (parsed && parsed.enc) { locked = true; return; } // encrypted — needs unlock
+      applyPayload(parsed);
     } catch (e) { /* storage unavailable — run in-memory */ }
   }
   function save() {
-    try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
-    catch (e) { /* ignore */ }
+    if (locked) return; // never overwrite the vault while locked
+    try {
+      if (cryptoKey) { encryptState().then(function (env) { try { localStorage.setItem(LS_KEY, JSON.stringify(env)); } catch (e) {} }); }
+      else { localStorage.setItem(LS_KEY, JSON.stringify(payload())); }
+    } catch (e) { /* ignore */ }
   }
   function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  /* crypto helpers (AES-GCM key derived from the password via PBKDF2) */
+  function b64(buf) { var b = new Uint8Array(buf), s = ""; for (var i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s); }
+  function unb64(s) { var b = atob(s), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+  function deriveKey(pw, salt) {
+    var enc = new TextEncoder();
+    return crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveKey"]).then(function (base) {
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: salt, iterations: 150000, hash: "SHA-256" },
+        base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+    });
+  }
+  function encryptState() {
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    var data = new TextEncoder().encode(JSON.stringify(payload()));
+    return crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, cryptoKey, data).then(function (ct) {
+      return { enc: true, v: 1, salt: b64(vaultSalt), iv: b64(iv), ct: b64(ct) };
+    });
+  }
+  function setPassword(pw) {
+    vaultSalt = crypto.getRandomValues(new Uint8Array(16));
+    return deriveKey(pw, vaultSalt).then(function (k) { cryptoKey = k; save(); });
+  }
+  function unlock(pw) {
+    var raw = JSON.parse(localStorage.getItem(LS_KEY));
+    var salt = unb64(raw.salt), iv = unb64(raw.iv), ct = unb64(raw.ct);
+    return deriveKey(pw, salt).then(function (k) {
+      return crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, k, ct).then(function (pt) {
+        applyPayload(JSON.parse(new TextDecoder().decode(pt)));
+        cryptoKey = k; vaultSalt = salt; locked = false;
+      });
+    });
+  }
+  function lockNow() {
+    if (!cryptoKey) return;
+    cryptoKey = null; vaultSalt = null; locked = true;
+    state.inventory = []; state.doses = []; state.schedules = [];
+    renderAll();
+    showLockScreen();
+  }
+  function removePassword() {
+    cryptoKey = null; vaultSalt = null;
+    try { localStorage.setItem(LS_KEY, JSON.stringify(payload())); } catch (e) {}
+  }
 
   /* ---------------- helpers ---------------- */
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -961,6 +1086,7 @@
   function openModal(title, bodyHtml, onSave) {
     $("#modalTitle").textContent = title;
     $("#modalBody").innerHTML = bodyHtml;
+    $("#modalSave").textContent = "Save";
     modalSaveHandler = onSave;
     $("#modalBackdrop").hidden = false;
     var first = $("#modalBody input, #modalBody select, #modalBody textarea");
@@ -1411,7 +1537,7 @@
     $$(".tab").forEach(function (t) { t.setAttribute("aria-selected", t.getAttribute("data-tab") === name ? "true" : "false"); });
     $$(".panel").forEach(function (p) { p.hidden = p.id !== "panel-" + name; });
     if (name === "schedule") { renderSchedules(); updateReminderBar(); }
-    if (name === "data") $("#dataBox").value = JSON.stringify({ inventory: state.inventory, doses: state.doses, schedules: state.schedules }, null, 2);
+    if (name === "data") { $("#dataBox").value = JSON.stringify(payload(), null, 2); updateSecurityUI(); }
     window.scrollTo({ top: 0, behavior: "auto" });
   }
   $$(".tab").forEach(function (t) { t.addEventListener("click", function () { activateTab(t.getAttribute("data-tab")); }); });
@@ -1531,10 +1657,10 @@
     else document.documentElement.removeAttribute("data-theme");
   }
   $("#themeBtn").addEventListener("click", function () {
-    var cur = state.theme;
+    var cur = meta.theme;
     var isDark = cur ? cur === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    state.theme = isDark ? "light" : "dark";
-    applyTheme(state.theme); save();
+    meta.theme = isDark ? "light" : "dark";
+    applyTheme(meta.theme); saveMeta();
   });
 
   /* ---------------- PWA: install + service worker + scheduled triggers ---------------- */
@@ -1597,15 +1723,138 @@
     }
   });
 
+  /* ---------------- security / owner UI ---------------- */
+  function renderAll() { renderInventory(); renderLog(); renderSchedules(); }
+
+  function updateOwnerChip() {
+    var chip = $("#ownerChip"), tag = $("#brandTag");
+    if (meta.owner) { chip.textContent = meta.owner + "’s copy"; chip.hidden = false; tag.hidden = true; }
+    else { chip.hidden = true; tag.hidden = false; }
+  }
+  function updateLockBtn() {
+    var b = $("#lockBtn");
+    if (!CRYPTO_OK) { b.hidden = true; return; }
+    if (cryptoKey) { b.hidden = false; b.title = "Lock now"; }
+    else { b.hidden = true; } // when no password set, the entry point lives in the Data tab
+  }
+  function updateSecurityUI() {
+    $("#ownerInput").value = meta.owner || "";
+    var status = $("#secStatus"), btns = $("#secButtons"), note = $("#secNote");
+    if (!CRYPTO_OK) {
+      status.innerHTML = '<span class="pill neutral">Password unavailable</span>';
+      btns.innerHTML = "";
+      note.querySelector("span").textContent = "Password locking needs the hosted (https) version of the app — it isn't available when opening the file directly.";
+      return;
+    }
+    if (cryptoKey) {
+      status.innerHTML = '<span class="pill good">🔒 Locked with a password</span>';
+      btns.innerHTML =
+        '<button class="btn btn-ghost btn-sm" id="btnLockNow">Lock now</button>' +
+        '<button class="btn btn-ghost btn-sm" id="btnChangePw">Change password</button>' +
+        '<button class="btn btn-danger btn-sm" id="btnRemovePw">Remove password</button>';
+      $("#btnLockNow").addEventListener("click", lockNow);
+      $("#btnChangePw").addEventListener("click", openChangePw);
+      $("#btnRemovePw").addEventListener("click", function () {
+        if (confirm("Remove the password? Your data will be stored unencrypted on this device.")) {
+          removePassword(); updateSecurityUI(); updateLockBtn(); toast("Password removed");
+        }
+      });
+    } else {
+      status.innerHTML = '<span class="pill neutral">Not password-protected</span>';
+      btns.innerHTML = '<button class="btn btn-primary btn-sm" id="btnSetPw">Set a password</button>';
+      $("#btnSetPw").addEventListener("click", openSetPw);
+    }
+  }
+
+  function pwFormHtml(change) {
+    return (change ? '' : '<p style="margin-top:0;color:var(--muted);font-size:13.5px;">This encrypts everything stored on this device. There is no recovery if you forget it, so keep a backup.</p>') +
+      '<label class="field"><span class="field-label">' + (change ? "New password" : "Password") + '</span><input type="password" id="pw1" autocomplete="new-password" /></label>' +
+      '<label class="field"><span class="field-label">Confirm password</span><input type="password" id="pw2" autocomplete="new-password" /></label>';
+  }
+  function openSetPw() {
+    openModal("Set a password", pwFormHtml(false), function () {
+      var p1 = $("#pw1").value, p2 = $("#pw2").value;
+      if (!p1) { toast("Enter a password"); return false; }
+      if (p1 !== p2) { toast("Passwords don't match"); return false; }
+      setPassword(p1).then(function () { updateSecurityUI(); updateLockBtn(); toast("Data is now encrypted 🔒"); });
+      return true;
+    });
+  }
+  function openChangePw() {
+    openModal("Change password", pwFormHtml(true), function () {
+      var p1 = $("#pw1").value, p2 = $("#pw2").value;
+      if (!p1) { toast("Enter a password"); return false; }
+      if (p1 !== p2) { toast("Passwords don't match"); return false; }
+      setPassword(p1).then(function () { updateSecurityUI(); toast("Password changed"); });
+      return true;
+    });
+  }
+
+  function showLockScreen() {
+    var ls = $("#lockScreen");
+    $("#lockOwner").textContent = meta.owner ? meta.owner + "’s Peptide Bench" : "";
+    $("#lockOwner").hidden = !meta.owner;
+    $("#lockErr").hidden = true;
+    $("#lockPw").value = "";
+    ls.hidden = false;
+    setTimeout(function () { $("#lockPw").focus(); }, 60);
+  }
+  function hideLockScreen() { $("#lockScreen").hidden = true; }
+
+  $("#lockForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var pw = $("#lockPw").value;
+    if (!pw) return;
+    unlock(pw).then(function () {
+      hideLockScreen(); renderAll(); updateLockBtn(); updateSecurityUI();
+      updateReminderBar(); checkReminders(); scheduleTriggers();
+      toast("Unlocked");
+    }).catch(function () {
+      $("#lockErr").textContent = "Wrong password — try again.";
+      $("#lockErr").hidden = false; $("#lockPw").select();
+    });
+  });
+  $("#lockReset").addEventListener("click", function () {
+    if (confirm("Erase this copy and start fresh? All vials, protocols, and dose history on this device will be permanently deleted. This is the only option if you've forgotten the password.")) {
+      try { localStorage.removeItem(LS_KEY); } catch (e) {}
+      locked = false; cryptoKey = null; vaultSalt = null;
+      applyPayload({}); hideLockScreen(); renderAll(); updateLockBtn(); updateSecurityUI();
+      toast("Copy erased — starting fresh");
+    }
+  });
+  $("#lockBtn").addEventListener("click", lockNow);
+  $("#ownerInput").addEventListener("input", function () {
+    meta.owner = $("#ownerInput").value.trim(); saveMeta(); updateOwnerChip();
+  });
+
+  function maybeWelcome() {
+    if (meta.welcomed) return;
+    meta.welcomed = true; saveMeta();
+    var body =
+      '<p style="margin-top:0;line-height:1.55;">This is <b>your private copy</b> of Peptide Bench. Everything you enter — vials, protocols, dose history — is saved only on <b>this device, in this browser</b>. It isn’t shared with anyone who has the same link, and it never goes to a server.</p>' +
+      '<label class="field"><span class="field-label">Your name <span class="hint">optional — labels this copy</span></span><input type="text" id="w_owner" placeholder="e.g. Troy" maxlength="40" value="' + esc(meta.owner || "") + '" /></label>' +
+      '<p style="color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:0;">Want to keep it private on a shared device? You can <b>lock it with a password</b> anytime from the <b>Data</b> tab — that encrypts your data on this device.</p>';
+    openModal("Welcome", body, function () {
+      meta.owner = ($("#w_owner").value || "").trim(); saveMeta(); updateOwnerChip(); updateSecurityUI();
+      return true;
+    });
+    $("#modalSave").textContent = "Get started";
+  }
+
   /* ---------------- init ---------------- */
   load();
-  applyTheme(state.theme);
+  applyTheme(meta.theme);
+  updateOwnerChip();
   renderCalc();
-  renderInventory();
-  renderLog();
   renderReference();
-  renderSchedules();
-  updateBadge();
+  updateSecurityUI();
+  updateLockBtn();
+  if (locked) {
+    showLockScreen();
+  } else {
+    renderAll();
+    maybeWelcome();
+  }
   updateReminderBar();
   checkReminders();
   scheduleTriggers();

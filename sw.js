@@ -1,7 +1,7 @@
 /* Peptide Bench service worker — offline caching + notification handling.
    Bump CACHE when you change any cached file; installed apps pick up the new
    version automatically on the next launch. */
-var CACHE = "peptide-bench-v3";
+var CACHE = "peptide-bench-v4";
 var ASSETS = [
   "./",
   "./index.html",
