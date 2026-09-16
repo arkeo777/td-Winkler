@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Peptide Bench</title>
+<title>Peptide Beach</title>
 <meta name="description" content="A reconstitution calculator and dosing tracker for peptide research." />
 <meta name="theme-color" content="#0E1B22" />
 <link rel="manifest" href="manifest.webmanifest" />
@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Peptide Bench" />
+<meta name="apple-mobile-web-app-title" content="Peptide Beach" />
 <style>
   html { color-scheme: light dark; }
   img { max-width: 100%; }
@@ -399,14 +399,20 @@
   <div class="topbar-inner">
     <div class="brand">
       <span class="logo" aria-hidden="true">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M6 3h12M8 3v5.5L5 16.5A3 3 0 0 0 7.8 21h8.4A3 3 0 0 0 19 16.5L16 8.5V3" stroke="#4FE0D6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M5.7 14.2h12.6" stroke="#4FE0D6" stroke-width="1.6" stroke-linecap="round"/>
-          <circle cx="10" cy="17.5" r="1" fill="#4FE0D6"/><circle cx="13.6" cy="18.6" r="1" fill="#4FE0D6"/>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8.4" r="3.3" fill="#FFC24B"/>
+          <g stroke="#FFC24B" stroke-width="1.4" stroke-linecap="round">
+            <path d="M12 2.4v1.5"/><path d="M5.6 8.4H4.2"/><path d="M19.8 8.4h-1.4"/>
+            <path d="M7.4 3.8 6.4 2.8"/><path d="M16.6 3.8l1-1"/>
+          </g>
+          <g stroke="#4FE0D6" stroke-width="1.5" stroke-linecap="round" fill="none">
+            <path d="M2.6 17.4q1.55 -1.7 3.1 0 t3.1 0 t3.1 0 t3.1 0 t3.1 0"/>
+            <path d="M2.6 20.4q1.55 -1.7 3.1 0 t3.1 0 t3.1 0 t3.1 0 t3.1 0"/>
+          </g>
         </svg>
       </span>
       <div>
-        <h1>Peptide Bench</h1>
+        <h1>Peptide Beach</h1>
         <span class="tag" id="brandTag">Reconstitution &amp; dosing log</span>
         <span class="owner-chip" id="ownerChip" hidden></span>
       </div>
@@ -682,7 +688,7 @@
 </main>
 
 <footer class="foot">
-  Peptide Bench · a research reconstitution &amp; dosing reference · data stays in your browser
+  Peptide Beach · a research reconstitution &amp; dosing reference · data stays in your browser
 </footer>
 
 <!-- Modal -->
@@ -708,7 +714,7 @@
     <div class="lock-logo" aria-hidden="true">
       <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#4FE0D6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
     </div>
-    <h2 id="lockTitle">Peptide Bench</h2>
+    <h2 id="lockTitle">Peptide Beach</h2>
     <p class="lock-owner" id="lockOwner" hidden></p>
     <p class="lock-sub">This copy is locked. Enter your password to open it.</p>
     <form id="lockForm">
@@ -1406,7 +1412,7 @@
       "&text=" + encodeURIComponent(s.name + " — " + fmtMcg(s.doseMcg)) +
       "&dates=" + f(dt) + "/" + f(end) +
       "&recur=" + encodeURIComponent("RRULE:" + rrule) +
-      "&details=" + encodeURIComponent("Peptide Bench scheduled dose (" + freqLabel(s) + "). Research use only.");
+      "&details=" + encodeURIComponent("Peptide Beach scheduled dose (" + freqLabel(s) + "). Research use only.");
   }
 
   /* schedule modal */
@@ -1522,7 +1528,7 @@
       notified[o.key + "|" + o.sched.id] = true;
       var units = schedUnits(o.sched);
       try {
-        new Notification("Peptide Bench — dose due", {
+        new Notification("Peptide Beach — dose due", {
           body: o.sched.name + " · " + fmtMcg(o.sched.doseMcg) + (units != null ? " · " + fmt(units, 1) + " u" : ""),
           tag: o.key + o.sched.id
         });
@@ -1681,7 +1687,7 @@
           if (o.taken) return;
           var units = schedUnits(o.sched);
           try {
-            reg.showNotification("Peptide Bench — dose due", {
+            reg.showNotification("Peptide Beach — dose due", {
               tag: "pb-" + o.key + o.sched.id,
               body: o.sched.name + " · " + fmtMcg(o.sched.doseMcg) + (units != null ? " · " + fmt(units, 1) + " u" : ""),
               icon: "icons/icon-192.png", badge: "icons/icon-192.png",
@@ -1717,7 +1723,7 @@
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(function () { deferredPrompt = null; $("#installBtn").hidden = true; });
     } else if (isIOS) {
-      alert("To install on iPhone/iPad:\n\n1. Tap the Share button (the square with an up-arrow) in Safari.\n2. Scroll down and tap “Add to Home Screen.”\n3. Tap Add.\n\nThen open Peptide Bench from your home screen. On iOS 16.4+ you can allow notifications from inside the installed app.");
+      alert("To install on iPhone/iPad:\n\n1. Tap the Share button (the square with an up-arrow) in Safari.\n2. Scroll down and tap “Add to Home Screen.”\n3. Tap Add.\n\nThen open Peptide Beach from your home screen. On iOS 16.4+ you can allow notifications from inside the installed app.");
     } else {
       alert("To install: open your browser menu and choose “Install app” or “Add to Home Screen.”");
     }
@@ -1792,7 +1798,7 @@
 
   function showLockScreen() {
     var ls = $("#lockScreen");
-    $("#lockOwner").textContent = meta.owner ? meta.owner + "’s Peptide Bench" : "";
+    $("#lockOwner").textContent = meta.owner ? meta.owner + "’s Peptide Beach" : "";
     $("#lockOwner").hidden = !meta.owner;
     $("#lockErr").hidden = true;
     $("#lockPw").value = "";
@@ -1831,7 +1837,7 @@
     if (meta.welcomed) return;
     meta.welcomed = true; saveMeta();
     var body =
-      '<p style="margin-top:0;line-height:1.55;">This is <b>your private copy</b> of Peptide Bench. Everything you enter — vials, protocols, dose history — is saved only on <b>this device, in this browser</b>. It isn’t shared with anyone who has the same link, and it never goes to a server.</p>' +
+      '<p style="margin-top:0;line-height:1.55;">This is <b>your private copy</b> of Peptide Beach. Everything you enter — vials, protocols, dose history — is saved only on <b>this device, in this browser</b>. It isn’t shared with anyone who has the same link, and it never goes to a server.</p>' +
       '<label class="field"><span class="field-label">Your name <span class="hint">optional — labels this copy</span></span><input type="text" id="w_owner" placeholder="e.g. Troy" maxlength="40" value="' + esc(meta.owner || "") + '" /></label>' +
       '<p style="color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:0;">Want to keep it private on a shared device? You can <b>lock it with a password</b> anytime from the <b>Data</b> tab — that encrypts your data on this device.</p>';
     openModal("Welcome", body, function () {

@@ -1,4 +1,4 @@
-# Peptide Bench
+# Peptide Beach
 
 A single-file peptide **reconstitution calculator** and **dosing tracker** for
 laboratory / research reference. No build step, no server, no dependencies —
