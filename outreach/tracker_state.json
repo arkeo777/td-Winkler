@@ -11,8 +11,8 @@
    "response_date": "2026-09-10",
    "wants": "YES \u2014 happy to take part",
    "questions_sent": false,
-   "meeting": null,
-   "notes": "Replied 2026-09-10: \"I would be happy to be a part of this development!\" \u2192 SEND questions-preview email + schedule."
+   "meeting": "Nudged 2026-09-17 for times",
+   "notes": "Replied 2026-09-10: \"I would be happy to be a part of this development!\" \u2192 SEND questions-preview email + schedule. | Scheduling nudge sent 2026-09-17 (asked for times)."
   },
   {
    "n": 2,
@@ -361,8 +361,8 @@
    "response_date": "2026-09-11",
    "wants": "YES \u2014 happy to help personally (or refer to MS Bible teachers)",
    "questions_sent": true,
-   "meeting": null,
-   "notes": "Replied 2026-09-11 (on the forwarded Kathy Agarth thread, since Kathy has retired and her mail auto-forwards to Julianne): \"I would be happy to help personally or direct you to our MS Bible teachers.\" No specific times proposed yet. FLAG: send questions-preview email + ask for times next."
+   "meeting": "Nudged 2026-09-17 for times",
+   "notes": "Replied 2026-09-11 (on the forwarded Kathy Agarth thread, since Kathy has retired and her mail auto-forwards to Julianne): \"I would be happy to help personally or direct you to our MS Bible teachers.\" No specific times proposed yet. FLAG: send questions-preview email + ask for times next. | Scheduling nudge sent 2026-09-17 (asked for times)."
   },
   {
    "n": 31,
@@ -1631,8 +1631,8 @@
    "response_date": "2026-09-14",
    "wants": "YES - Upper School curriculum director, wants to talk",
    "questions_sent": false,
-   "meeting": null,
-   "notes": "Referred by Dee Henry (Dayspring). Troy engaged 2026-09-14.",
+   "meeting": "Nudged 2026-09-17 for times",
+   "notes": "Referred by Dee Henry (Dayspring). Troy engaged 2026-09-14. | Scheduling nudge sent 2026-09-17 (asked for times).",
    "referral": true,
    "school": "Dayspring Christian Academy",
    "city": "Mountville",
@@ -1646,8 +1646,8 @@
    "response_date": "2026-09-11",
    "wants": "YES - happy to help (elementary)",
    "questions_sent": true,
-   "meeting": null,
-   "notes": "Round 1 contact; agreed 2026-09-11 and questions sent 2026-09-11. Also referred by Tanya Murphy.",
+   "meeting": "Nudged 2026-09-17 for times",
+   "notes": "Round 1 contact; agreed 2026-09-11 and questions sent 2026-09-11. Also referred by Tanya Murphy. | Scheduling nudge sent 2026-09-17 (asked for times).",
    "referral": false,
    "school": "Foundation Academy",
    "city": "Winter Garden",
@@ -1665,9 +1665,9 @@
    "response_date": "2026-09-16",
    "wants": "YES - happy to help",
    "questions_sent": true,
-   "meeting": null,
+   "meeting": "Nudged 2026-09-17 for times",
    "referral": false,
-   "notes": "Round 1 contact; agreed 2026-09-16, questions sent 2026-09-16."
+   "notes": "Round 1 contact; agreed 2026-09-16, questions sent 2026-09-16. | Scheduling nudge sent 2026-09-17 (asked for times)."
   }
  ]
 }
