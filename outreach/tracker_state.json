@@ -361,8 +361,8 @@
       "response_date": "2026-09-11",
       "wants": "YES \u2014 happy to help personally (or refer to MS Bible teachers)",
       "questions_sent": true,
-      "meeting": "Deferred - off campus ~a few weeks (as of 2026-09-17); will follow up",
-      "notes": "Replied 2026-09-11 (on the forwarded Kathy Agarth thread, since Kathy has retired and her mail auto-forwards to Julianne): \"I would be happy to help personally or direct you to our MS Bible teachers.\" No specific times proposed yet. FLAG: send questions-preview email + ask for times next. | Scheduling nudge sent 2026-09-17 (asked for times). | 2026-09-17: off campus a few weeks; will follow up."
+      "meeting": "Deferred (off campus a few weeks per 2026-09-17); patient follow-up drafted 2026-09-21, HOLD to send ~early Oct",
+      "notes": "Replied 2026-09-11 (on the forwarded Kathy Agarth thread, since Kathy has retired and her mail auto-forwards to Julianne): \"I would be happy to help personally or direct you to our MS Bible teachers.\" No specific times proposed yet. FLAG: send questions-preview email + ask for times next. | Scheduling nudge sent 2026-09-17 (asked for times). | 2026-09-17: off campus a few weeks; will follow up. | 2026-09-21: drafted patient no-rush follow-up (ready in Drafts); recommend holding until ~early October since she said she would follow up when back."
     },
     {
       "n": 31,
@@ -1668,6 +1668,22 @@
       "meeting": "Proposed Fri Sep 25 2026, 3:00 PM ET (draft ready 2026-09-21); awaiting confirm",
       "referral": false,
       "notes": "Round 1 contact; agreed 2026-09-16, questions sent 2026-09-16. | Scheduling nudge sent 2026-09-17 (asked for times). | 2026-09-21: drafted second nudge proposing a specific slot: Fri Sep 25 3:00 PM ET (her local, New Albany IN = Eastern). Grade level unconfirmed. Awaiting confirmation."
+    },
+    {
+      "n": 138,
+      "school": "Christian Academy School System (Louisville KY campus)",
+      "city": "Louisville",
+      "state": "KY",
+      "email": "cfeitl@caschools.us",
+      "name": "Carrie Feitl",
+      "responded": true,
+      "response_date": "2026-09-04",
+      "wants": "YES - willing to talk (K-5 Instructional Coach + K-12 system Data Coach; not middle school, longtime DeepRoots user)",
+      "questions_sent": true,
+      "meeting": "Awaiting times - questions sent 2026-09-10, no reply since",
+      "notes": "From an earlier call/round (not in the round-2 list of 133). Spoke with Troy by phone ~Sep 3. Replied 2026-09-04 clarifying role (K-5 coach/K-12 data coach, Louisville KY = same caschools.us system as Wendy Wagoner). Troy replied 2026-09-10, sent questions, asked for times. No reply since (as of 2026-09-21). Eastern time. Nudge candidate.",
+      "referral": false,
+      "bounced": false
     }
   ]
 }
