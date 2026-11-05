@@ -1,0 +1,22 @@
+{
+  "title": "Kids' Internet",
+  "pin": "1234",
+  "port": 8787,
+
+  "unifi": {
+    "url": "https://192.168.1.1",
+    "username": "internet-switch",
+    "password": "CHANGE-ME",
+    "site": "default",
+    "verify_ssl": false
+  },
+
+  "devices": [
+    { "label": "Troy's Desktop", "icon": "🖥️", "match": "Troy's Desktop" },
+    { "label": "Box 1",          "icon": "📺", "match": "Box 1" },
+    { "label": "Box 2",          "icon": "📺", "match": "Box 2" },
+    { "label": "Levi's Laptop",  "icon": "💻", "match": "Levi's Laptop" },
+    { "label": "Owen's Laptop",  "icon": "💻", "match": "Owen's Laptop" },
+    { "label": "Boys' Laptop",   "icon": "💻", "match": "Boys Laptop" }
+  ]
+}
