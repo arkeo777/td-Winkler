@@ -111,3 +111,5 @@ Now it's an icon on your home screen: tap it, tap a device, done.
 - The password is stored in `config.json` on that computer only, and
   `config.json` is never uploaded to GitHub (it's in `.gitignore`).
 - The tiny dot on each button lights up when the device is currently connected.
+- **Xboxes:** turn off **"Use random MAC address"** if it's on
+  (Settings → General → Network settings → Advanced settings), so the block sticks.

@@ -13,8 +13,8 @@
 
   "devices": [
     { "label": "Troy's Desktop", "icon": "🖥️", "match": "Troy's Desktop" },
-    { "label": "Box 1",          "icon": "📺", "match": "Box 1" },
-    { "label": "Box 2",          "icon": "📺", "match": "Box 2" },
+    { "label": "Xbox 1",         "icon": "🎮", "match": "Xbox 1" },
+    { "label": "Xbox 2",         "icon": "🎮", "match": "Xbox 2" },
     { "label": "Levi's Laptop",  "icon": "💻", "match": "Levi's Laptop" },
     { "label": "Owen's Laptop",  "icon": "💻", "match": "Owen's Laptop" },
     { "label": "Boys' Laptop",   "icon": "💻", "match": "Boys Laptop" }
