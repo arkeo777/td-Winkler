@@ -1,0 +1,488 @@
+<title>DeepRoot Portal QA Run</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky control bar (views + browser picker + progress), then phase sections of test rows; each row = step text left, status buttons right. */
+:root{
+  --bg:#f5f6f3; --surface:#ffffff; --fg:#17201c; --muted:#5d6a63; --line:#dde2dc; --soft:#eaeee8;
+  --accent:#1f5c48; --accent-ink:#ffffff; --accent-soft:#dcebe3;
+  --pass:#1d7a46; --pass-soft:#dcf1e3; --fail:#b42d2d; --fail-soft:#f8e0dd;
+  --block:#a46200; --block-soft:#fbecd2; --na:#6b7470; --na-soft:#e7eae7;
+  --confirm:#7a4fb0; --confirm-soft:#efe6fa;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111613; --surface:#18201c; --fg:#e6ece8; --muted:#9aa8a0; --line:#2b3530; --soft:#202a25;
+  --accent:#6cc4a0; --accent-ink:#0d1a14; --accent-soft:#1d3a2f;
+  --pass:#5fd08e; --pass-soft:#163a25; --fail:#ff8a80; --fail-soft:#4a1d1b; --block:#f0b45a; --block-soft:#45330f; --na:#a2aca7; --na-soft:#29312d;
+  --confirm:#c9a6f5; --confirm-soft:#33264a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111613; --surface:#18201c; --fg:#e6ece8; --muted:#9aa8a0; --line:#2b3530; --soft:#202a25;
+  --accent:#6cc4a0; --accent-ink:#0d1a14; --accent-soft:#1d3a2f;
+  --pass:#5fd08e; --pass-soft:#163a25; --fail:#ff8a80; --fail-soft:#4a1d1b; --block:#f0b45a; --block-soft:#45330f; --na:#a2aca7; --na-soft:#29312d;
+  --confirm:#c9a6f5; --confirm-soft:#33264a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{padding-block:28px 18px}
+h1{font-family:var(--f-display);font-size:clamp(26px,4vw,36px);line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:8px 0 0;max-width:68ch}
+.sync{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);margin-top:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--na)}
+.dot.live{background:var(--pass)} .dot.off{background:var(--block)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-block:1px solid var(--line)}
+.bar .wrap{display:flex;flex-direction:column;gap:10px;padding-block:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tabs{display:flex;gap:4px;background:var(--soft);padding:3px;border-radius:8px}
+.tabs a{padding:6px 12px;border-radius:6px;color:var(--muted);text-decoration:none;font-weight:500;font-size:14px}
+.tabs a[aria-current="page"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.browsers{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;max-width:100%}
+.bchip{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:8px;padding:5px 10px;font:500 13px var(--f-body);cursor:pointer;display:flex;gap:6px;align-items:baseline}
+.bchip b{font-family:var(--f-mono);font-size:12px}
+.bchip small{color:var(--muted);font-variant-numeric:tabular-nums}
+.bchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.bchip[aria-pressed="true"] small{color:var(--accent-ink);opacity:.85}
+.progress{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.meter{flex:1 1 160px;height:8px;border-radius:4px;background:var(--soft);display:flex;overflow:hidden;min-width:120px}
+.meter i{display:block;height:100%}
+.meter .p{background:var(--pass)} .meter .f{background:var(--fail)} .meter .b{background:var(--block)} .meter .n{background:var(--na)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button,.btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:6px;padding:4px 10px;font:500 13px var(--f-body);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+label.chk{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
+main{padding-block:20px 60px}
+.runinfo{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:22px}
+.runinfo h2{grid-column:1/-1;margin:0;font:600 15px var(--f-body)}
+.runinfo label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+input,textarea{font:inherit;font-size:14px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:100%;text-transform:none;letter-spacing:0}
+textarea{resize:vertical;min-height:38px}
+input:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.phase{margin-bottom:26px}
+.phase>h2{font-family:var(--f-display);font-size:21px;margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.phase>h2 .pn{font-family:var(--f-mono);font-size:13px;color:var(--muted);font-weight:500}
+.phase .goal{color:var(--muted);margin:2px 0 10px;font-size:14px}
+.scope{font:600 11px var(--f-body);text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:4px;align-self:center}
+.scope.full{background:var(--accent-soft);color:var(--accent)}
+.scope.smoke{background:var(--block-soft);color:var(--block)}
+.scope.out{background:var(--na-soft);color:var(--na)}
+.smokenote{font-size:13px;background:var(--block-soft);color:var(--fg);padding:8px 10px;border-radius:6px;margin-bottom:10px}
+.tests{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.t{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;padding:12px 14px;border-top:1px solid var(--line);border-left:4px solid transparent}
+.t:first-child{border-top:0}
+.t[data-s="P"]{border-left-color:var(--pass)} .t[data-s="F"]{border-left-color:var(--fail);background:var(--fail-soft)}
+.t[data-s="B"]{border-left-color:var(--block);background:var(--block-soft)} .t[data-s="NA"]{border-left-color:var(--na)}
+.t.flash{animation:flash 1.4s ease-out}
+@keyframes flash{from{box-shadow:inset 0 0 0 2px var(--accent)}to{box-shadow:inset 0 0 0 2px transparent}}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:4px}
+.id{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.who{font-size:12px;font-weight:600;padding:1px 7px;border-radius:10px;background:var(--soft);color:var(--fg)}
+.human{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
+.shot{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);border:1px dashed var(--muted);padding:0 5px;border-radius:3px}
+.act{margin:0;font-weight:500}
+.exp{margin:3px 0 0;color:var(--muted);font-size:14px}
+.exp b{color:var(--fg);font-weight:600}
+.cf{background:var(--confirm-soft);color:var(--confirm);border-radius:3px;padding:0 4px;font-size:.92em;white-space:normal}
+.status{display:flex;gap:4px;align-items:flex-start}
+.status button{min-width:40px;height:34px;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:6px;font:600 13px var(--f-body);cursor:pointer}
+.status button[aria-pressed="true"][data-v="P"]{background:var(--pass);border-color:var(--pass);color:var(--surface)}
+.status button[aria-pressed="true"][data-v="F"]{background:var(--fail);border-color:var(--fail);color:var(--surface)}
+.status button[aria-pressed="true"][data-v="B"]{background:var(--block);border-color:var(--block);color:var(--surface)}
+.status button[aria-pressed="true"][data-v="NA"]{background:var(--na);border-color:var(--na);color:var(--surface)}
+.extra{grid-column:1/-1;display:flex;flex-direction:column;gap:4px}
+.stamp{font-size:12px;color:var(--muted)}
+.notebtn{background:none;border:0;color:var(--accent);font:500 13px var(--f-body);padding:0;cursor:pointer;align-self:flex-start}
+.empty{padding:22px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+th,td{text-align:left;padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--soft)}
+td.num{text-align:right}
+.mini{width:120px;height:6px;border-radius:3px;background:var(--soft);display:flex;overflow:hidden;margin-top:6px}
+.mini i{display:block;height:100%}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:10px}
+.pill.F{background:var(--fail-soft);color:var(--fail)} .pill.B{background:var(--block-soft);color:var(--block)}
+.linkish{background:none;border:0;color:var(--accent);font:600 13px var(--f-mono);cursor:pointer;padding:0}
+h2.view{font-family:var(--f-display);font-size:22px;margin:0 0 4px}
+p.viewsub{color:var(--muted);margin:0 0 14px;font-size:14px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:16px}
+.legend span{display:flex;gap:5px;align-items:center}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+@media (max-width:640px){
+  .t{grid-template-columns:1fr}
+  .status button{flex:1}
+  .status{width:100%}
+}
+@media (prefers-reduced-motion:reduce){.t.flash{animation:none}}
+</style>
+
+<header class="top wrap">
+  <h1>DeepRoot Portal QA Run</h1>
+  <p class="sub">The end-to-end test, step by step: marketing, website, demo request, purchase, school setup, admin roster, then a teacher and a student working through a full class cycle. Pick your browser, follow the steps in order, and mark each one. Results save for the whole team.</p>
+  <div class="sync" id="sync"><span class="dot" id="syncdot"></span><span id="synctext">Connecting to shared results…</span></div>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between">
+      <nav class="tabs" aria-label="Views">
+        <a href="#run" data-view="run">Test run</a>
+        <a href="#overview" data-view="overview">All browsers</a>
+        <a href="#issues" data-view="issues">Fails &amp; blocked <span id="issuecount"></span></a>
+      </nav>
+    </div>
+    <div class="browsers" id="browsers" role="group" aria-label="Browser under test"></div>
+    <div class="progress" id="progress"></div>
+    <div class="row" id="filterrow">
+      <div class="filters" role="group" aria-label="Filter steps">
+        <button type="button" data-f="all" aria-pressed="true">All steps</button>
+        <button type="button" data-f="todo" aria-pressed="false">Not yet marked</button>
+        <button type="button" data-f="bad" aria-pressed="false">Fail or blocked</button>
+      </div>
+      <label class="chk"><input type="checkbox" id="showout" style="width:auto"> Show phases out of scope for this browser</label>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="main"></main>
+
+<script>
+const BROWSERS=[
+ {code:'CH',name:'Chrome',os:'Windows 11',pri:'P1'},
+ {code:'CB',name:'Chromebook',os:'ChromeOS',pri:'P1'},
+ {code:'SF',name:'Safari',os:'macOS',pri:'P1'},
+ {code:'iP',name:'Safari iPad',os:'iPadOS',pri:'P1'},
+ {code:'ED',name:'Edge',os:'Windows 11',pri:'P2'},
+ {code:'FF',name:'Firefox',os:'Windows / macOS',pri:'P2'},
+ {code:'iS',name:'Safari iPhone',os:'iOS',pri:'P2'},
+ {code:'AN',name:'Chrome Android',os:'Android',pri:'P3'}
+];
+// phase numbers in full scope / smoke scope per browser (phase 0 = setup, always full)
+const SCOPE={
+ CH:{full:[0,1,2,3,4,5,6,7,8,9,10],smoke:[]},
+ SF:{full:[0,1,2,3,4,5,6,7,8,9,10],smoke:[]},
+ CB:{full:[0,7,8,9],smoke:[1,2,3,4,5,6]},
+ iP:{full:[0,1,2,3,4,7,8,9],smoke:[]},
+ ED:{full:[0,1,2,3,4,5,6],smoke:[7,8,9]},
+ FF:{full:[0,1,2,3,4,5,6],smoke:[7,8,9]},
+ iS:{full:[0,1,2,3,8],smoke:[]},
+ AN:{full:[0,1,2,3,8],smoke:[]}
+};
+// [id, who, action, expected, screenshot?]
+const PHASES=[
+ {n:0,title:'Before you start',goal:'Do this at the start of every browser run so no login or cookie carries over.',tests:[
+  ['PRE-01','Tester','Close every window of the browser under test, then open a new private/incognito window (or a fresh browser profile).','Nothing is signed in. No DeepRoot cookies.'],
+  ['PRE-02','Tester','Write the browser version (Help → About), OS, your name, and today\'s date in "Run details" above.','Run details are filled in for this browser.'],
+  ['PRE-03','Tester','Open the QA inbox on a different browser or device.','Email checks won\'t disturb the session under test.'],
+  ['PRE-04','Tester','Confirm the test data for this run: school name QA Test Academy <MMDD>-<browser code>, plus-addressed emails like deeproot.qa+admin-<MMDD>-<code>@…','Names are unique to this browser run.'],
+  ['PRE-05','Tester','Confirm you are on the staging site [CONFIRM: staging URLs] and the payment processor is in TEST mode.','Never a live site or a real card.']
+ ]},
+ {n:1,title:'Marketing & discovery',goal:'A prospect can find DeepRoot from each marketing channel, and link tracking works.',tests:[
+  ['MKT-01','Prospect','Click the link in the current marketing email or newsletter [CONFIRM: campaign name].','Lands on the correct landing page. URL keeps its UTM tags (utm_source, utm_medium, utm_campaign).',1],
+  ['MKT-02','Prospect','Click the current social or paid ad link [CONFIRM: LinkedIn/Facebook/Google Ads test link].','Correct landing page. UTMs present. No 404 and no mixed-content warning.'],
+  ['MKT-03','Prospect','Search Google for "DeepRoot Portal" and click the organic result.','Lands on the homepage. Page title and description are correct in the search result.'],
+  ['MKT-04','Prospect','Type the website address directly.','Homepage loads over https with a valid padlock in about 3 seconds or less.'],
+  ['MKT-05','Prospect','Accept, then decline, the cookie/consent banner (if present).','Banner behaves correctly and remembers the choice on refresh.'],
+  ['MKT-06','QA','Check analytics or the tag manager for the visit [CONFIRM: GA4 / other].','The session appears with the correct source and campaign.']
+ ]},
+ {n:2,title:'Website exploration',goal:'The site explains the product, and every path to buy or talk to sales works.',tests:[
+  ['WEB-01','Prospect','Click every item in the main navigation and footer.','Every link loads the right page. No 404s and no placeholder text.'],
+  ['WEB-02','Prospect','Open the Features / Product page.','Content, images, and videos load and play. Screenshots match the current Portal.'],
+  ['WEB-03','Prospect','Open the Pricing page [CONFIRM: public prices or "contact us"?].','Plans, prices, and per-student or per-school terms display correctly. Monthly/annual toggle works.',1],
+  ['WEB-04','Prospect','Open FAQ, About, Privacy Policy, Terms, and Accessibility pages.','All load. Privacy and Terms are current and cover student data (FERPA/COPPA) [CONFIRM].'],
+  ['WEB-05','Prospect','Shrink the window to phone width (or use the phone in the matrix).','Layout adapts. Menu collapses and opens and closes. No sideways scrolling.'],
+  ['WEB-06','Prospect','Move through the homepage with only the keyboard (Tab, Shift+Tab, Enter).','Focus is visible on every link and button. All buttons and links can be reached.'],
+  ['WEB-07','Prospect','Click "Log in" on the marketing site.','Goes to the Portal login page.']
+ ]},
+ {n:3,title:'Interest & lead capture',goal:'A prospect can express interest, and a person at DeepRoot receives it and follows up.',tests:[
+  ['LEAD-01','Prospect','Open Request a Demo / Contact Us [CONFIRM name] and click Submit with every field empty.','Required-field errors show next to each field. Form does not submit.'],
+  ['LEAD-02','Prospect','Enter an invalid email (abc@) and an invalid phone number.','Clear validation messages.'],
+  ['LEAD-03','Prospect','Fill in valid data (name, Prospect email, school, role, number of students, phone, message) and submit. Double-click Submit once.','Thank-you message or page. Only one submission is created.',1],
+  ['LEAD-04','Prospect','Check the QA inbox.','Confirmation email arrives within [CONFIRM: 5 min]. Branding, links, and sender are correct. Not in spam.',1],
+  ['LEAD-05','Sales/Ops','Check the CRM or lead inbox.','Lead is there with every field and the UTM source. Assigned to the right rep.'],
+  ['LEAD-06','Sales/Ops','Human step: the rep sends the follow-up email or books the demo [CONFIRM: booking link?].','Prospect gets the email. Booking works and both people get the calendar invite.'],
+  ['LEAD-07','Sales/Ops','Human step: the rep sends the quote or purchase link [CONFIRM: self-serve vs. sales quote/invoice].','Prospect gets a link or quote with the right plan, seat count, and price.']
+ ]},
+ {n:4,title:'Purchase',goal:'The school can pay (or commit to pay) and an account is created. Run the invoice/PO steps once, on Chrome, if that path exists.',tests:[
+  ['BUY-01','Purchaser','From Pricing or the quote link, choose the plan and enter the seat or student count.','Total updates correctly, including tax, discounts, and monthly vs. annual.'],
+  ['BUY-02','Purchaser','Apply a valid promo code, then an invalid one [CONFIRM if supported].','Valid code lowers the total. Invalid code shows an error.'],
+  ['BUY-03','Purchaser','Enter purchaser details and billing address. Leave Terms unchecked and submit.','Blocked with a "must accept Terms" message.'],
+  ['BUY-04','Purchaser','Pay with the decline test card.','Clear decline message. No account created. No charge or receipt email.'],
+  ['BUY-05','Purchaser','Pay with the 3-D Secure test card and complete the challenge.','Challenge window opens (not blocked) and payment succeeds.'],
+  ['BUY-06','Purchaser','If BUY-05 was not used: pay with the success test card, accept Terms, submit. Then press Back and refresh.','Confirmation page with an order number. Back or refresh does not charge twice.',1],
+  ['BUY-07','Purchaser','Check the QA inbox.','Receipt with the correct amount, plan, and company name. Welcome / "set up your school" email with a working link.',1],
+  ['BUY-08','Sales/Ops','Check the payment dashboard (test mode) and the CRM.','Payment recorded once. CRM deal moves to Closed/Won [CONFIRM].'],
+  ['BUY-10','Purchaser','Invoice path: choose "Pay by invoice/PO" and enter a PO number.','Order accepted as "pending payment".'],
+  ['BUY-11','Sales/Ops','Human step: create and send the invoice from the billing system.','Purchaser receives an invoice PDF that shows the PO number.'],
+  ['BUY-12','Sales/Ops','Human step: mark the invoice paid (test) or approve setup before payment [CONFIRM policy].','Account activates and the welcome email is sent.']
+ ]},
+ {n:5,title:'New school setup',goal:'The purchaser registers the new school and hands it to a School Admin.',tests:[
+  ['SCH-01','Purchaser','Click the setup link in the welcome email. Later, click it again.','Opens setup. The link works once and expires after [CONFIRM]. A second click shows a sensible message.'],
+  ['SCH-02','Purchaser','Try a weak password, then a valid one.','Weak password is rejected with the rules shown. Valid one is accepted.'],
+  ['SCH-03','Purchaser','Set up two-factor login if offered or required [CONFIRM].','Authenticator or SMS code works. Backup codes are shown.'],
+  ['SCH-04','Purchaser','Enter school details: name, address, district, timezone, grades, school year dates, logo [CONFIRM fields].','All fields save. Logo previews. Timezone default makes sense.',1],
+  ['SCH-05','Purchaser','Try to save with a duplicate school name or an invalid ZIP.','Correct validation messages.'],
+  ['SCH-06','Purchaser','Name the School Admin: "I am the admin" or invite the School Admin email.','Invite sent and shown as pending.'],
+  ['SCH-07','Sales/Ops','Human step (if required): in the back office, approve the school and check seat limits match the purchase.','School is Active. Seat count is correct.'],
+  ['SCH-08','Purchaser','Log out, then press Back.','Returns to login. Back does not show protected pages.']
+ ]},
+ {n:6,title:'School Admin setup',goal:'The admin builds the whole school by hand and by spreadsheet upload: teachers, classes, students, enrollments.',tests:[
+  ['ADM-01','School Admin','Open the invite email and click Accept.','Activation page. Email is pre-filled and locked.'],
+  ['ADM-02','School Admin','Set password (and two-factor if required) and log in.','Admin Dashboard shows the school name and logo. First-time walkthrough appears if designed [CONFIRM].',1],
+  ['ADM-03','School Admin','Edit school settings: terms or grading periods, bell schedule, grading scale [CONFIRM].','Changes save and stay after refresh.'],
+  ['ADM-10','School Admin','Add Teacher 1 by hand (first name, last name, email, subject).','Teacher listed as Invited/Pending. Invite email sent.'],
+  ['ADM-11','School Admin','Add Teacher 1 again with the same email.','Duplicate blocked with a clear message.'],
+  ['ADM-12','School Admin','Download the teacher CSV template, fill in Teacher 2 and 3 more, and upload it.','Preview shows 4 rows. Import succeeds. 5 teachers total.'],
+  ['ADM-13','School Admin','Upload a teacher CSV with errors (missing email, bad format, extra columns).','Errors listed by row. Valid rows import or the whole file is rejected, per design [CONFIRM]. Nothing half-imports silently.'],
+  ['ADM-14','School Admin','Resend an invite, edit a teacher\'s name, deactivate a teacher.','Each change shows in the list.'],
+  ['ADM-20','School Admin','Create class "Science 7 – Period 1" with subject, grade, term, and schedule.','Class created.',1],
+  ['ADM-21','School Admin','Assign Teacher 1 to Science 7.','Teacher shown on the class.'],
+  ['ADM-22','School Admin','Create "Math 7 – Period 2", assign Teacher 2, add Teacher 1 as co-teacher [CONFIRM if supported].','Both teachers listed.'],
+  ['ADM-23','School Admin','Create a class with no teacher. Then try to delete a class that has students.','No-teacher class allowed or blocked per design. Delete asks to confirm and warns about enrolled students.'],
+  ['ADM-30','School Admin','Add Student 1 by hand: name, grade, student ID, email or username, date of birth if required [CONFIRM].','Student created. Login details shown or sent, per design.'],
+  ['ADM-31','School Admin','Upload Students 2–10 from the student CSV template.','9 imported. 10 students total.'],
+  ['ADM-32','School Admin','Upload enough students to go over the purchased seat limit.','Blocked or warned per the contract rule [CONFIRM].'],
+  ['ADM-33','School Admin','Enroll Students 1–6 in Science 7 and Students 4–10 in Math 7.','Rosters show 6 and 7 students.'],
+  ['ADM-34','School Admin','Move Student 6 from Science 7 to Math 7. Remove Student 10 from Math 7.','Rosters update. Student history kept or handled per design.'],
+  ['ADM-35','School Admin','Human step: hand out student logins (print login cards, export PDF, or email) [CONFIRM method].','Printout is readable with correct usernames. No passwords in plain text unless intended.',1],
+  ['ADM-36','School Admin','Open the dashboard and reports.','5 teachers, 10 students, 2+ classes.'],
+  ['ADM-37','School Admin','Log out.','Session ends.']
+ ]},
+ {n:7,title:'Teacher journey',goal:'Teacher 1 goes from invite to daily use. Use a separate private window or a Chromebook.',tests:[
+  ['TCH-01','Teacher','Open the invite email and click Accept.','Activation page. An old link shows an expired message after [CONFIRM].'],
+  ['TCH-02','Teacher','Set password and log in, or use single sign-on (Google / Microsoft / Clever / ClassLink) [CONFIRM which].','Lands on the Teacher Dashboard.',1],
+  ['TCH-03','Teacher','Look at the class list.','Sees Science 7 and Math 7 (co-teacher) only. No other teachers\' classes.'],
+  ['TCH-04','Teacher','Open the Science 7 roster.','Students 1–5 (Student 6 was moved). Names correct.'],
+  ['TCH-05','Teacher','Edit own profile: name, photo, notification settings.','Saves.'],
+  ['TCH-06','Teacher','Create an assignment in Science 7: title, instructions, a PDF and an image, due tomorrow, 10 points [CONFIRM content types].','Created. Files upload. Due date shows in the school\'s timezone.',1],
+  ['TCH-07','Teacher','Post an announcement or message to the class [CONFIRM].','Shows in the class feed.'],
+  ['TCH-08','Teacher','Log out, use Forgot password, reset by email, log in with the new password.','Reset email arrives. Old password fails. New one works.'],
+  ['TCH-09','Teacher','Enter the wrong password 5 times [CONFIRM lockout threshold].','Account locks or a captcha appears, with clear recovery steps.'],
+  ['TCH-10','Teacher','Leave the browser idle past the session timeout [CONFIRM: e.g. 30 min].','Session ends and returns to login. Unsaved-work warning if designed.']
+ ]},
+ {n:8,title:'Student journey',goal:'Students log in and complete work. Use a Chromebook, iPad, or phone where possible.',tests:[
+  ['STU-01','Student','Go to the Portal login and sign in as Student 1 with the details from ADM-35 (or class code / single sign-on) [CONFIRM].','Login succeeds.',1],
+  ['STU-02','Student','Complete the first-login prompt: change temporary password or accept terms [CONFIRM].','Lands on the Student Dashboard.'],
+  ['STU-03','Student','Look at the class list.','Science 7 only. Student 1 is not in Math 7.'],
+  ['STU-04','Student','Open the assignment from TCH-06.','Instructions and files open. Due date correct.'],
+  ['STU-05','Student','Find the announcement from TCH-07.','Visible.'],
+  ['STU-06','Student','Complete and submit the assignment: typed answer plus a file (on a tablet or phone, a camera photo).','Submission confirmed. Status "Submitted" with a timestamp.',1],
+  ['STU-07','Student','Try to edit or resubmit after submitting.','Allowed or blocked per design [CONFIRM].'],
+  ['STU-08','Student','Log in as Student 4 (in both classes).','Sees Science 7 and Math 7.'],
+  ['STU-09','Student','Log in as Student 10 (removed from Math 7).','Does not see Math 7 or its content.'],
+  ['STU-10','Student','Log out, close the browser, reopen it.','Not still signed in on a shared device unless "remember me" was ticked.']
+ ]},
+ {n:9,title:'Closing the loop',goal:'Work moves correctly between teacher, student, and admin.',tests:[
+  ['LOOP-01','Teacher','Open the Science 7 assignment\'s submissions.','Student 1 shows Submitted with the file. Others show Not submitted.'],
+  ['LOOP-02','Teacher','Grade Student 1: 8/10 with written feedback. Publish or return it.','Grade saved.'],
+  ['LOOP-03','Student','Log in as Student 1 and open grades and feedback.','Sees 8/10 and the feedback. Notification arrives if designed.',1],
+  ['LOOP-04','Teacher','After the due date (or move it to the past), check a student who did not submit.','Marked Missing/Late per design.'],
+  ['LOOP-05','School Admin','Log in and open reports or the gradebook [CONFIRM].','Assignment and grade activity visible. Usage shows the teacher and student logins.'],
+  ['LOOP-06','Teacher','Send a message to Student 1 and have the student reply, if messaging exists [CONFIRM].','Delivered both ways within school messaging rules.']
+ ]},
+ {n:10,title:'Security & permissions',goal:'People only see what their role allows.',tests:[
+  ['SEC-01','Student','While logged in as a student, paste an admin page address (copied from the admin session).','Access denied or redirected. No admin data shown.'],
+  ['SEC-02','Teacher','As Teacher 1, paste the address of Teacher 2\'s class.','Access denied.'],
+  ['SEC-03','Student','Change the ID in a page address (e.g. /students/123 → /students/124).','Cannot see another student\'s data.'],
+  ['SEC-04','School Admin','Deactivate Teacher 3 and Student 9, then try to log in as each.','Both refused with a clear message.'],
+  ['SEC-05','School Admin','As the admin of a different QA school (another browser run), open an address from this school.','Access denied. Schools are separate.'],
+  ['SEC-06','Tester','Log out, then press Back.','No protected pages visible from cache.']
+ ]}
+];
+const ALL=[];PHASES.forEach(p=>p.tests.forEach(t=>ALL.push({id:t[0],who:t[1],act:t[2],exp:t[3],shot:!!t[4],phase:p.n})));
+const STATUS_LABEL={P:'Pass',F:'Fail',B:'Blocked',NA:'N/A'};
+
+// ---------- state ----------
+let results={}; // key `${code}__${id}` -> {status,note,by,at}
+let runs={};    // code -> {tester,version,os,date,school}
+let db=null,userApi=null,myId=null,names={};
+let current=load('dr-browser')||'CH';
+if(!BROWSERS.some(b=>b.code===current))current='CH';
+let filter='all',showOut=false;
+
+function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fmt(s){return esc(s).replace(/\[CONFIRM[^\]]*\]/g,m=>`<span class="cf" title="Placeholder: the QA Lead fills this in before the first run">${m.slice(1,-1)}</span>`)}
+function key(code,id){return code+'__'+id}
+function scopeOf(code,phase){const s=SCOPE[code];return s.full.includes(phase)?'full':s.smoke.includes(phase)?'smoke':'out'}
+function inScopeTests(code){return ALL.filter(t=>scopeOf(code,t.phase)!=='out')}
+function counts(code){const c={P:0,F:0,B:0,NA:0,total:0};inScopeTests(code).forEach(t=>{c.total++;const r=results[key(code,t.id)];if(r&&r.status&&c[r.status]!==undefined)c[r.status]++});c.done=c.P+c.F+c.B+c.NA;return c}
+function when(iso){if(!iso)return'';const d=new Date(iso);if(isNaN(d))return'';return d.toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}
+function nameOf(id){return id&&names[id]?names[id]:(id&&id===myId?'you':'a tester')}
+
+// ---------- views ----------
+const main=document.getElementById('main');
+function view(){const h=location.hash.replace('#','');return['overview','issues'].includes(h)?h:'run'}
+function render(){
+  const v=view();
+  document.querySelectorAll('.tabs a').forEach(a=>a.setAttribute('aria-current',a.dataset.view===v?'page':'false'));
+  document.getElementById('filterrow').hidden=v!=='run';
+  document.getElementById('browsers').hidden=v!=='run';
+  document.getElementById('progress').hidden=v!=='run';
+  renderBrowsers();renderProgress();renderIssueCount();
+  if(v==='run')renderRun();else if(v==='overview')renderOverview();else renderIssues();
+}
+function renderBrowsers(){
+  const el=document.getElementById('browsers');
+  el.innerHTML=BROWSERS.map(b=>{const c=counts(b.code);return`<button type="button" class="bchip" data-code="${b.code}" aria-pressed="${b.code===current}"><b>${b.code}</b>${esc(b.name)} <small>${c.done}/${c.total}</small></button>`}).join('');
+}
+function meterHTML(c,cls){const w=x=>c.total?(x/c.total*100).toFixed(2)+'%':'0';return`<div class="${cls}"><i class="p" style="width:${w(c.P)}"></i><i class="f" style="width:${w(c.F)}"></i><i class="b" style="width:${w(c.B)}"></i><i class="n" style="width:${w(c.NA)}"></i></div>`}
+function renderProgress(){
+  const c=counts(current),b=BROWSERS.find(x=>x.code===current);
+  document.getElementById('progress').innerHTML=`<strong style="color:var(--fg)">${esc(b.name)} · ${esc(b.os)}</strong>${meterHTML(c,'meter')}<span>${c.done} of ${c.total} marked · ${c.P} pass · ${c.F} fail · ${c.B} blocked</span>`;
+}
+function renderIssueCount(){let n=0;Object.values(results).forEach(r=>{if(r.status==='F'||r.status==='B')n++});document.getElementById('issuecount').textContent=n?`(${n})`:''}
+
+function renderRun(){
+  const b=BROWSERS.find(x=>x.code===current),run=runs[current]||{};
+  let html=`<section class="runinfo" aria-label="Run details"><h2>Run details for ${esc(b.name)} (${b.code}, priority ${b.pri})</h2>
+   ${[['tester','Tester'],['version','Browser version'],['os','OS / device'],['date','Date'],['school','School created']].map(([k,l])=>`<label>${l}<input id="run-${k}" data-run="${k}" value="${esc(run[k]||'')}" placeholder="${k==='school'?'QA Test Academy MMDD-'+b.code:''}"></label>`).join('')}
+  </section>`;
+  html+=`<div class="legend"><span><i style="background:var(--confirm-soft);outline:1px solid var(--confirm)"></i>Purple text: details the QA Lead confirms before the first run</span><span><span class="shot">Screenshot</span> save as &lt;ID&gt;_${b.code}_&lt;Pass|Fail&gt;.png</span></div>`;
+  let shown=0;
+  PHASES.forEach(p=>{
+    const sc=scopeOf(current,p.n);
+    if(sc==='out'&&!showOut)return;
+    const tests=p.tests.filter(t=>{const r=results[key(current,t[0])]||{};if(filter==='todo')return!r.status;if(filter==='bad')return r.status==='F'||r.status==='B';return true});
+    if(!tests.length)return;
+    shown+=tests.length;
+    html+=`<section class="phase" id="phase-${p.n}"><h2><span class="pn">Phase ${p.n}</span>${esc(p.title)}<span class="scope ${sc}">${sc==='full'?'Full run':sc==='smoke'?'Smoke test':'Out of scope'}</span></h2><p class="goal">${esc(p.goal)}</p>`;
+    if(sc==='smoke')html+=`<div class="smokenote">Smoke test on this browser: for each role, log in, open the main screen, do one key action, log out. Mark the other steps N/A.</div>`;
+    html+=`<div class="tests">${tests.map(t=>rowHTML(t)).join('')}</div></section>`;
+  });
+  if(!shown)html+=`<div class="empty">${filter==='bad'?'No failed or blocked steps for this browser.':filter==='todo'?'Every in-scope step on this browser is marked.':'No steps to show.'}</div>`;
+  main.innerHTML=html;
+}
+function rowHTML(t){
+  const [id,who,act,exp,shot]=t,r=results[key(current,id)]||{};
+  const human=/^Human step:/.test(act);
+  const actText=human?act.replace(/^Human step:\s*/,''):act;
+  return`<div class="t" id="t-${id}" data-id="${id}" data-s="${r.status||''}">
+   <div style="min-width:0"><div class="meta"><span class="id">${id}</span><span class="who">${esc(who)}</span>${human?'<span class="human">Human step</span>':''}${shot?'<span class="shot">Screenshot</span>':''}</div>
+   <p class="act">${fmt(actText)}</p><p class="exp"><b>Expect:</b> ${fmt(exp)}</p></div>
+   <div class="status" role="group" aria-label="Result for ${id}">${['P','F','B','NA'].map(v=>`<button type="button" data-v="${v}" aria-pressed="${r.status===v}" title="${STATUS_LABEL[v]}">${v==='NA'?'N/A':v}</button>`).join('')}</div>
+   <div class="extra">${stampHTML(r)}${noteHTML(id,r)}</div></div>`;
+}
+function stampHTML(r){return r.status?`<span class="stamp">${STATUS_LABEL[r.status]} · marked by ${esc(nameOf(r.by))} · ${when(r.at)}</span>`:''}
+function noteHTML(id,r){const open=r.note||r.status==='F'||r.status==='B';return open?`<textarea id="note-${id}" data-note="${id}" rows="2" placeholder="${r.status==='F'||r.status==='B'?'What happened? Steps, actual result, defect # if logged':'Notes'}">${esc(r.note||'')}</textarea>`:`<button type="button" class="notebtn" data-addnote="${id}">Add note</button>`}
+function refreshRow(id){
+  const el=document.getElementById('t-'+id);if(!el)return;
+  const r=results[key(current,id)]||{};
+  el.dataset.s=r.status||'';
+  el.querySelectorAll('.status button').forEach(b=>b.setAttribute('aria-pressed',r.status===b.dataset.v));
+  const ta=el.querySelector('textarea');
+  if(ta&&document.activeElement===ta)return;
+  el.querySelector('.extra').innerHTML=stampHTML(r)+noteHTML(id,r);
+}
+
+function renderOverview(){
+  let rows=BROWSERS.map(b=>{const c=counts(b.code),r=runs[b.code]||{};return`<tr><td><b class="id" style="color:var(--fg)">${b.code}</b> ${esc(b.name)}<div class="stamp">${esc(b.os)} · ${b.pri}</div></td>
+   <td>${esc(r.tester||'—')}<div class="stamp">${esc(r.version||'')}${r.date?' · '+esc(r.date):''}</div></td>
+   <td class="num">${c.done}/${c.total}${meterHTML(c,'mini')}</td><td class="num">${c.P}</td><td class="num" style="color:${c.F?'var(--fail)':'inherit'}">${c.F}</td><td class="num" style="color:${c.B?'var(--block)':'inherit'}">${c.B}</td><td class="num">${c.NA}</td>
+   <td>${c.total&&c.done===c.total?(c.F||c.B?'<span class="pill F">Done, issues open</span>':'<span class="pill" style="background:var(--pass-soft);color:var(--pass)">Complete</span>'):c.done?'In progress':'Not started'}</td>
+   <td><button class="linkish" data-open="${b.code}">Open</button></td></tr>`}).join('');
+  main.innerHTML=`<h2 class="view">All browsers</h2><p class="viewsub">Sign-off needs every P1 browser complete with no open Critical or High defects.</p>
+  <div class="tablewrap"><table><thead><tr><th>Browser</th><th>Tester</th><th class="num">Marked</th><th class="num">Pass</th><th class="num">Fail</th><th class="num">Blocked</th><th class="num">N/A</th><th>Status</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function renderIssues(){
+  const list=[];
+  Object.entries(results).forEach(([k,r])=>{if(r.status!=='F'&&r.status!=='B')return;const [code,id]=k.split('__');const t=ALL.find(x=>x.id===id);if(t)list.push({code,id,t,r})});
+  list.sort((a,b)=>(b.r.at||'').localeCompare(a.r.at||''));
+  main.innerHTML=`<h2 class="view">Fails &amp; blocked</h2><p class="viewsub">Every failed or blocked step across all browsers, newest first. Log each one in the defect tracker and put the defect number in the note.</p>`+
+  (list.length?`<div class="tablewrap"><table><thead><tr><th>Step</th><th>Browser</th><th>Result</th><th>What was expected</th><th>Note</th><th>Marked</th></tr></thead><tbody>${list.map(x=>`<tr><td><button class="linkish" data-jump="${x.code}|${x.id}">${x.id}</button></td><td>${x.code}</td><td><span class="pill ${x.r.status}">${STATUS_LABEL[x.r.status]}</span></td><td style="min-width:220px">${fmt(x.t.exp)}</td><td style="min-width:200px">${esc(x.r.note||'—')}</td><td class="stamp">${esc(nameOf(x.r.by))}<br>${when(x.r.at)}</td></tr>`).join('')}</tbody></table></div>`:`<div class="empty">No failed or blocked steps yet.</div>`);
+}
+
+// ---------- events ----------
+document.addEventListener('click',e=>{
+  const bc=e.target.closest('.bchip');if(bc){current=bc.dataset.code;save('dr-browser',current);render();return}
+  const fb=e.target.closest('.filters button');if(fb){filter=fb.dataset.f;document.querySelectorAll('.filters button').forEach(b=>b.setAttribute('aria-pressed',b===fb));renderRun();return}
+  const sb=e.target.closest('.status button');if(sb){const id=sb.closest('.t').dataset.id;const cur=(results[key(current,id)]||{}).status;setStatus(id,cur===sb.dataset.v?'':sb.dataset.v);return}
+  const an=e.target.closest('[data-addnote]');if(an){const id=an.dataset.addnote;an.outerHTML=`<textarea id="note-${id}" data-note="${id}" rows="2" placeholder="Notes"></textarea>`;document.getElementById('note-'+id).focus();return}
+  const op=e.target.closest('[data-open]');if(op){current=op.dataset.open;save('dr-browser',current);location.hash='run';return}
+  const jp=e.target.closest('[data-jump]');if(jp){const [c,id]=jp.dataset.jump.split('|');current=c;save('dr-browser',c);filter='all';showOut=true;document.getElementById('showout').checked=true;document.querySelectorAll('.filters button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f==='all'));location.hash='run';setTimeout(()=>{const el=document.getElementById('t-'+id);if(el){el.scrollIntoView({block:'center'});el.classList.add('flash')}},50);return}
+});
+document.getElementById('showout').addEventListener('change',e=>{showOut=e.target.checked;renderRun()});
+document.addEventListener('change',e=>{
+  const n=e.target.dataset&&e.target.dataset.note;if(n){setNote(n,e.target.value);return}
+  const rk=e.target.dataset&&e.target.dataset.run;if(rk){setRun(rk,e.target.value)}
+});
+window.addEventListener('hashchange',render);
+
+// ---------- writes ----------
+const pending={};
+async function writeResult(k,data){
+  if(!db)return;
+  if(pending[k]){pending[k].next=data;return}
+  pending[k]={};
+  try{await db.collection('results').doc(k).set(data)}catch(err){setSync('off',saveError(err))}
+  const nx=pending[k].next;delete pending[k];if(nx)writeResult(k,nx);
+}
+function saveError(err){return err&&err.code==='not_granted'?'You can view this run but not mark steps. Ask the page owner to give you edit access.':'A result did not save. Check your connection and mark it again.'}
+function setStatus(id,status){
+  const k=key(current,id),prev=results[k]||{};
+  const data={browser:current,test:id,status,note:prev.note||'',by:myId||'',at:new Date().toISOString()};
+  results[k]=data;refreshRow(id);renderBrowsers();renderProgress();renderIssueCount();
+  if((status==='F'||status==='B')&&!prev.note){const ta=document.getElementById('note-'+id);if(ta)ta.focus()}
+  writeResult(k,data);
+}
+function setNote(id,note){
+  const k=key(current,id),prev=results[k]||{};if((prev.note||'')===note)return;
+  const data={browser:current,test:id,status:prev.status||'',note,by:myId||prev.by||'',at:new Date().toISOString()};
+  results[k]=data;writeResult(k,data);
+}
+async function setRun(field,value){
+  const r=Object.assign({},runs[current]||{});if((r[field]||'')===value)return;r[field]=value;runs[current]=r;
+  if(db){try{await db.collection('runs').doc(current).set(r)}catch(err){setSync('off',saveError(err))}}
+}
+
+// ---------- sync ----------
+function setSync(state,text){document.getElementById('syncdot').className='dot '+(state||'');document.getElementById('synctext').textContent=text}
+async function resolveNames(){
+  if(!userApi)return;
+  const ids=[...new Set(Object.values(results).map(r=>r.by).filter(Boolean))].filter(i=>!(i in names));
+  if(!ids.length)return;
+  try{const ps=await userApi.profiles(ids);ids.forEach(i=>{names[i]=(ps[i]&&ps[i].name)||(i===myId?'you':'a tester')});rerenderLight()}catch(e){}
+}
+function rerenderLight(){
+  const v=view();renderBrowsers();renderProgress();renderIssueCount();
+  if(v==='run')ALL.forEach(t=>refreshRow(t.id));else if(v==='overview')renderOverview();else renderIssues();
+}
+function applyRuns(){
+  if(view()!=='run')return;
+  const r=runs[current]||{};
+  document.querySelectorAll('[data-run]').forEach(inp=>{if(document.activeElement!==inp)inp.value=r[inp.dataset.run]||''});
+}
+async function connect(){
+  let timer=setTimeout(()=>setSync('off','Shared results are taking a while. Your marks show here but may not be saved yet.'),10000);
+  try{
+    db=await claude.use('db');
+    userApi=await claude.use('user');
+  }catch(e){db=null}
+  if(!db){clearTimeout(timer);setSync('off','Not connected to shared results. Open this page signed in to claude.ai to save marks for the team. Marks made now are not kept.');return}
+  if(userApi){try{myId=await userApi.id()}catch(e){}}
+  let first=true;
+  db.collection('results').limit(1000).onSnapshot(snap=>{
+    clearTimeout(timer);
+    const next={};snap.docs.forEach(d=>{const x=d.data();if(x)next[d.id]=x});
+    Object.keys(pending).forEach(k=>{if(results[k])next[k]=results[k]});
+    results=next;
+    setSync('live','Live: results save for the whole team');
+    if(first){first=false;render()}else rerenderLight();
+    resolveNames();
+  },err=>{clearTimeout(timer);setSync('off','Lost the connection to shared results. Reload the page to reconnect.')});
+  db.collection('runs').onSnapshot(snap=>{const next={};snap.docs.forEach(d=>{const x=d.data();if(x)next[d.id]=x});runs=next;if(view()==='overview')renderOverview();else applyRuns()},()=>{});
+}
+document.getElementById('showout').checked=false;
+render();
+let tries=0;
+(function start(){
+  if(window.claude&&window.claude.use){connect();return}
+  if(tries++<20){setTimeout(start,250);return}
+  setSync('off','Not connected to shared results. Open this page on claude.ai to save marks for the team.');
+})();
+</script>
