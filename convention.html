@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Meet us at the show</title>
+<meta name="description" content="Sign up for free samples and our newsletter." />
+<meta name="theme-color" content="#0E1B22" />
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/png" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<style>
+  html { color-scheme: light dark; }
+  [hidden] { display: none !important; }
+  :root {
+    --ground: #F5F7F9; --surface: #FFFFFF; --surface-2: #EEF2F5; --ink: #16202B; --muted: #5C6b78; --faint: #8b98a5;
+    --border: #DEE4EA; --border-strong: #C6D0D9; --accent: #0E8C8C; --accent-soft: #DDF0F0; --good: #2E9E5B; --good-soft: #E1F3E8;
+    --warn: #B87914; --warn-soft: #FBEFD6; --crit: #C7443B; --hero: #0E1B22; --hero-ink: #EAFBFA; --sun: #FFC24B; --wave: #4FE0D6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #0D1317; --surface: #151E24; --surface-2: #1D272E; --ink: #E7EEF3; --muted: #9FADB8; --faint: #6c7b86;
+      --border: #263139; --border-strong: #33424C; --accent: #2FC3C0; --accent-soft: #10312F; --good: #46BE72; --good-soft: #12291B;
+      --warn: #D79A34; --warn-soft: #2C2211; --crit: #E0655B; --hero: #08131A;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .hero { background: var(--hero); color: var(--hero-ink); padding: 28px 16px 34px; position: relative; overflow: hidden; }
+  .hero::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 26px; opacity: .35;
+    background: repeating-linear-gradient(90deg, var(--wave) 0 2px, transparent 2px 14px);
+    mask: linear-gradient(transparent, #000);
+    -webkit-mask: linear-gradient(transparent, #000);
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; letter-spacing: .01em; }
+  .brand .logo { width: 34px; height: 34px; border-radius: 9px; background: rgba(255,255,255,.04); display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(79,224,214,.3); }
+  .eyebrow { margin-top: 22px; font-size: 12px; text-transform: uppercase; letter-spacing: .14em; color: var(--wave); font-weight: 600; }
+  h1 { font-size: 28px; line-height: 1.15; margin: 6px 0 8px; text-wrap: balance; }
+  .meta { color: #a9c3c6; font-size: 14.5px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .booth { display: inline-block; margin-top: 14px; background: var(--sun); color: #2a1d00; font-weight: 700; padding: 6px 12px; border-radius: 999px; font-size: 14px; }
+  main { padding: 0 16px 40px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin-top: -18px; position: relative; box-shadow: 0 6px 24px rgba(16,32,43,.08); }
+  .offer { font-size: 19px; font-weight: 600; margin: 0 0 4px; text-wrap: balance; }
+  .offer-sub { color: var(--muted); margin: 0 0 18px; font-size: 15px; }
+  label.field { display: block; margin-bottom: 14px; }
+  .field-label { display: block; font-size: 13.5px; color: var(--muted); margin-bottom: 6px; }
+  input[type="text"], input[type="email"], input[type="tel"] {
+    width: 100%; padding: 12px 13px; font-size: 16px; font-family: inherit;
+    background: var(--surface); color: var(--ink); border: 1px solid var(--border-strong); border-radius: 10px;
+  }
+  input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  @media (max-width: 380px) { .row2 { grid-template-columns: 1fr; } }
+  .choices { display: grid; gap: 10px; margin: 6px 0 16px; }
+  .choice { display: flex; gap: 12px; align-items: flex-start; padding: 13px 14px; border: 1px solid var(--border-strong); border-radius: 12px; cursor: pointer; }
+  .choice:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+  .choice input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--accent); flex: none; }
+  .choice b { display: block; font-size: 15px; }
+  .choice span { font-size: 13.5px; color: var(--muted); }
+  .consent { font-size: 12.5px; color: var(--faint); margin: 4px 0 16px; }
+  .btn { appearance: none; width: 100%; border: 0; border-radius: 12px; padding: 15px; font-size: 17px; font-weight: 700; font-family: inherit; background: var(--accent); color: #fff; cursor: pointer; }
+  .btn[disabled] { opacity: .6; cursor: progress; }
+  .err { color: var(--crit); font-size: 14px; margin: -4px 0 12px; }
+  .hp { position: absolute; left: -5000px; width: 1px; height: 1px; overflow: hidden; }
+  .done { text-align: center; padding: 10px 0 4px; }
+  .done .check { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto 12px; background: var(--good-soft); color: var(--good); }
+  .done h2 { margin: 0 0 6px; font-size: 22px; }
+  .done p { color: var(--muted); margin: 0 0 10px; }
+  .code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 26px; letter-spacing: .12em; font-weight: 700; padding: 10px 14px; border: 2px dashed var(--accent); border-radius: 12px; display: inline-block; margin: 6px 0 12px; }
+  .note { background: var(--warn-soft); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; margin-bottom: 14px; }
+  .list a { display: block; text-decoration: none; color: inherit; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .list a:last-child { border-bottom: 0; }
+  .list b { display: block; }
+  .list span { color: var(--muted); font-size: 14px; }
+  .linkbtn { appearance: none; background: none; border: 0; color: var(--accent); font: inherit; font-size: 14px; cursor: pointer; padding: 6px; }
+  footer { text-align: center; color: var(--faint); font-size: 12px; padding: 0 16px 30px; max-width: 560px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8.4" r="3.3" fill="#FFC24B"/>
+          <g stroke="#FFC24B" stroke-width="1.4" stroke-linecap="round"><path d="M12 2.4v1.5"/><path d="M5.6 8.4H4.2"/><path d="M19.8 8.4h-1.4"/><path d="M7.4 3.8 6.4 2.8"/><path d="M16.6 3.8l1-1"/></g>
+          <g stroke="#4FE0D6" stroke-width="1.5" stroke-linecap="round" fill="none"><path d="M2.6 17.4q1.55 -1.7 3.1 0 t3.1 0 t3.1 0 t3.1 0 t3.1 0"/><path d="M2.6 20.4q1.55 -1.7 3.1 0 t3.1 0 t3.1 0 t3.1 0 t3.1 0"/></g>
+        </svg>
+      </span>
+      <span id="brandName">Peptide Beach</span>
+    </div>
+    <div class="eyebrow" id="eyebrow">Live at the show</div>
+    <h1 id="convName">Loading…</h1>
+    <div class="meta" id="convMeta"></div>
+    <div class="booth" id="convBooth" hidden></div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="card" id="card">
+      <!-- sign-up form -->
+      <form id="form" novalidate hidden>
+        <div class="note" id="kioskNote" hidden>Booth kiosk mode — sign-ups are also saved on this device.</div>
+        <p class="offer" id="offer">Free samples + our newsletter</p>
+        <p class="offer-sub" id="offerSub">Drop in your name and we'll take care of the rest.</p>
+
+        <div class="row2">
+          <label class="field"><span class="field-label">First name</span><input type="text" id="first" autocomplete="given-name" required /></label>
+          <label class="field"><span class="field-label">Last name</span><input type="text" id="last" autocomplete="family-name" /></label>
+        </div>
+        <label class="field"><span class="field-label">Email</span><input type="email" id="email" autocomplete="email" inputmode="email" required /></label>
+        <label class="field"><span class="field-label">Phone <span style="color:var(--faint)">(optional)</span></span><input type="tel" id="phone" autocomplete="tel" inputmode="tel" /></label>
+        <label class="field" id="companyWrap"><span class="field-label">Company / practice <span style="color:var(--faint)">(optional)</span></span><input type="text" id="company" autocomplete="organization" /></label>
+
+        <div class="choices">
+          <label class="choice" id="choiceSamples"><input type="checkbox" id="wantSamples" checked /><div><b>Send me free samples</b><span id="samplesHint">Pick yours up at the booth or we'll follow up.</span></div></label>
+          <label class="choice" id="choiceNews"><input type="checkbox" id="wantNews" checked /><div><b>Sign me up for the newsletter</b><span>New research, restocks and show specials. Unsubscribe anytime.</span></div></label>
+        </div>
+
+        <div class="hp" aria-hidden="true"><label>Leave this empty <input type="text" id="website" tabindex="-1" autocomplete="off" /></label></div>
+
+        <div class="err" id="err" hidden></div>
+        <p class="consent" id="consent">By signing up you agree to be contacted about the options you checked. We never sell your information.</p>
+        <button class="btn" id="submit" type="submit">Sign me up</button>
+      </form>
+
+      <!-- thank-you -->
+      <div class="done" id="done" hidden>
+        <div class="check"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <h2 id="doneTitle">You're in!</h2>
+        <p id="doneText">Thanks for stopping by.</p>
+        <div id="doneCodeWrap" hidden>
+          <p style="margin-bottom:0">Show this code at the booth:</p>
+          <div class="code" id="doneCode"></div>
+        </div>
+        <div><button class="linkbtn" id="again" type="button">Sign up someone else</button></div>
+      </div>
+
+      <!-- no online sign-up configured -->
+      <div id="closed" hidden>
+        <p class="offer">Come say hi at the booth</p>
+        <p class="offer-sub" id="closedText">Online sign-up isn't open for this show yet. Stop by and we'll add you in person.</p>
+      </div>
+
+      <!-- list of shows (no ?c= given) -->
+      <div id="listWrap" hidden>
+        <p class="offer">Where to find us</p>
+        <p class="offer-sub">Upcoming conventions and trade shows.</p>
+        <div class="list" id="list"></div>
+      </div>
+
+      <!-- not found -->
+      <div id="missing" hidden>
+        <p class="offer">We couldn't find that show</p>
+        <p class="offer-sub">The link may be out of date. <a href="convention.html">See where we'll be next</a>.</p>
+      </div>
+    </div>
+  </div>
+</main>
+<footer id="foot">For research use only. Products are not intended for human consumption.</footer>
+
+<script>
+(function () {
+  "use strict";
+  var LEADS_KEY = "peptideBeach.leads.v1";
+  var CONV_KEY = "peptideBeach.conventions.v1";
+  var params = new URLSearchParams(location.search);
+  var slug = (params.get("c") || "").trim().toLowerCase();
+  var kiosk = params.get("kiosk") === "1";
+  var source = params.get("src") || (kiosk ? "kiosk" : "qr");
+  var feed = null, conv = null;
+
+  function $(s) { return document.querySelector(s); }
+  function show(id) { ["#form", "#done", "#closed", "#listWrap", "#missing"].forEach(function (s) { $(s).hidden = s !== id; }); }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]; }); }
+  function parseYMD(s) { if (!s) return null; var p = String(s).slice(0, 10).split("-"); var d = new Date(+p[0], +p[1] - 1, +p[2]); return isNaN(d) ? null : d; }
+  function fmtRange(a, b) {
+    var s = parseYMD(a), e = parseYMD(b) || s; if (!s) return "";
+    var o = { month: "short", day: "numeric" };
+    if (s.getTime() === e.getTime()) return s.toLocaleDateString(undefined, Object.assign({ year: "numeric" }, o));
+    var sameMonth = s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear();
+    return s.toLocaleDateString(undefined, o) + " – " + (sameMonth ? e.getDate() : e.toLocaleDateString(undefined, o)) + ", " + e.getFullYear();
+  }
+  function phase(c) {
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var s = parseYMD(c.startDate), e = parseYMD(c.endDate) || s;
+    if (!s) return "unknown";
+    if (today < s) return "upcoming";
+    if (today > e) return "ended";
+    return "live";
+  }
+
+  function loadFeed() {
+    // 1) the published feed next to this page  2) the portal's copy on this same device (preview / kiosk)
+    return fetch("conventions.json", { cache: "no-store" }).then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .catch(function () { return null; })
+      .then(function (published) {
+        var local = null;
+        try { local = JSON.parse(localStorage.getItem(CONV_KEY) || "null"); } catch (e) {}
+        var pubList = (published && published.conventions) || [];
+        var hit = slug && pubList.some(function (c) { return c.slug === slug; });
+        if (published && (hit || !slug || !local)) return published;
+        return local || published || { conventions: [] };
+      });
+  }
+
+  function renderList() {
+    var list = (feed.conventions || []).filter(function (c) { return c.siteTab === "show" && phase(c) !== "ended"; })
+      .sort(function (a, b) { return String(a.startDate).localeCompare(String(b.startDate)); });
+    $("#convName").textContent = "Meet us on the road";
+    $("#eyebrow").textContent = "Conventions & trade shows";
+    $("#list").innerHTML = list.length ? list.map(function (c) {
+      return '<a href="convention.html?c=' + encodeURIComponent(c.slug) + '&src=site"><b>' + esc(c.name) + '</b><span>' +
+        esc([fmtRange(c.startDate, c.endDate), c.city, c.booth ? "Booth " + c.booth : ""].filter(Boolean).join(" · ")) + '</span></a>';
+    }).join("") : '<p class="offer-sub" style="margin:0">No shows announced right now — check back soon.</p>';
+    show("#listWrap");
+  }
+
+  function render() {
+    if (feed.brand) { $("#brandName").textContent = feed.brand; }
+    if (!slug) { renderList(); return; }
+    conv = (feed.conventions || []).find(function (c) { return c.slug === slug; });
+    if (!conv) { $("#convName").textContent = "Show not found"; show("#missing"); return; }
+
+    var ph = phase(conv);
+    document.title = conv.name + " — " + (feed.brand || "Peptide Beach");
+    $("#eyebrow").textContent = ph === "live" ? "Live at the show" : ph === "upcoming" ? "Coming up" : "Thanks for visiting";
+    $("#convName").textContent = conv.name;
+    $("#convMeta").innerHTML = [fmtRange(conv.startDate, conv.endDate), conv.venue, conv.city].filter(Boolean).map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("");
+    if (conv.booth) { $("#convBooth").hidden = false; $("#convBooth").textContent = "Booth " + conv.booth + (conv.rep ? " · ask for " + conv.rep : ""); }
+    else if (conv.rep) { $("#convBooth").hidden = false; $("#convBooth").textContent = "Ask for " + conv.rep; }
+    if (conv.offerHeadline) $("#offer").textContent = conv.offerHeadline;
+    if (conv.offerText) $("#offerSub").textContent = conv.offerText;
+    if (conv.collectSamples === false) { $("#choiceSamples").hidden = true; $("#wantSamples").checked = false; }
+    if (conv.collectNewsletter === false) { $("#choiceNews").hidden = true; $("#wantNews").checked = false; }
+    if (ph === "ended" && conv.collectSamples !== false) $("#samplesHint").textContent = "We'll follow up by email.";
+
+    if (!feed.signupEndpoint && !kiosk) {
+      $("#closedText").textContent = "Online sign-up isn't open for this show yet." + (conv.booth ? " Stop by booth " + conv.booth + " and we'll add you in person." : " Stop by our booth and we'll add you in person.");
+      show("#closed"); return;
+    }
+    $("#kioskNote").hidden = !kiosk;
+    show("#form");
+  }
+
+  function code() {
+    var a = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", s = "";
+    var r = (window.crypto && crypto.getRandomValues) ? crypto.getRandomValues(new Uint8Array(6)) : [0, 0, 0, 0, 0, 0].map(function () { return Math.random() * 256; });
+    for (var i = 0; i < 6; i++) s += a[r[i] % a.length];
+    return s.slice(0, 3) + "-" + s.slice(3);
+  }
+
+  function saveLocal(lead) {
+    try {
+      var all = JSON.parse(localStorage.getItem(LEADS_KEY) || "[]");
+      all.push(lead);
+      localStorage.setItem(LEADS_KEY, JSON.stringify(all));
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function sendRemote(lead) {
+    if (!feed.signupEndpoint) return Promise.resolve(false);
+    var body = new URLSearchParams();
+    Object.keys(lead).forEach(function (k) { body.append(k, lead[k] == null ? "" : String(lead[k])); });
+    // no-cors: works with Google Apps Script, Formspree, Zapier/Make webhooks without CORS setup.
+    return fetch(feed.signupEndpoint, { method: "POST", mode: "no-cors", body: body, keepalive: true })
+      .then(function () { return true; }, function () { return false; });
+  }
+
+  $("#form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var err = $("#err"); err.hidden = true;
+    if ($("#website").value) { show("#done"); return; } // bot
+    var first = $("#first").value.trim(), email = $("#email").value.trim();
+    var samples = $("#wantSamples").checked, news = $("#wantNews").checked;
+    if (!first) { err.textContent = "Please enter your first name."; err.hidden = false; $("#first").focus(); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = "Please enter a valid email."; err.hidden = false; $("#email").focus(); return; }
+    if (!samples && !news) { err.textContent = "Pick free samples, the newsletter, or both."; err.hidden = false; return; }
+
+    var lead = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      code: samples ? code() : "",
+      convention: conv.slug, conventionName: conv.name,
+      firstName: first, lastName: $("#last").value.trim(), email: email,
+      phone: $("#phone").value.trim(), company: $("#company").value.trim(),
+      samples: samples ? "yes" : "no", newsletter: news ? "yes" : "no",
+      source: source, rep: conv.rep || "", booth: conv.booth || "",
+      submittedAt: new Date().toISOString()
+    };
+    var btn = $("#submit"); btn.disabled = true; btn.textContent = "Sending…";
+    if (kiosk) saveLocal(lead);
+    sendRemote(lead).then(function (ok) {
+      btn.disabled = false; btn.textContent = "Sign me up";
+      if (!ok && !kiosk) {
+        err.textContent = "We couldn't reach our server — please show this screen at the booth, or try again in a moment.";
+        err.hidden = false; return;
+      }
+      $("#doneTitle").textContent = "You're in, " + first + "!";
+      $("#doneText").textContent = samples && news ? "We'll get your free samples sorted and add you to the newsletter."
+        : samples ? "We'll get your free samples sorted." : "You're on the newsletter list.";
+      $("#doneCodeWrap").hidden = !lead.code;
+      $("#doneCode").textContent = lead.code;
+      show("#done");
+      window.scrollTo({ top: 0 });
+    });
+  });
+
+  $("#again").addEventListener("click", function () {
+    $("#form").reset(); $("#err").hidden = true; show("#form");
+    setTimeout(function () { $("#first").focus(); }, 30);
+  });
+
+  // Kiosk: reset back to a blank form after 45 s on the thank-you screen.
+  var idle = null;
+  new MutationObserver(function () {
+    clearTimeout(idle);
+    if (kiosk && !$("#done").hidden) idle = setTimeout(function () { $("#again").click(); }, 45000);
+  }).observe($("#done"), { attributes: true, attributeFilter: ["hidden"] });
+
+  loadFeed().then(function (f) { feed = f || { conventions: [] }; render(); });
+})();
+</script>
+</body>
+</html>

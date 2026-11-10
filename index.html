@@ -387,6 +387,23 @@
   .helprow { font-size: 12.5px; color: var(--muted); margin-top: 10px; display: flex; gap: 7px; align-items: flex-start; }
   .helprow code { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
   footer.foot { max-width: 1120px; margin: 8px auto 0; padding: 18px 16px 30px; color: var(--faint); font-size: 12px; text-align: center; }
+  /* ---- Conventions ---- */
+  .conv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; align-items: start; }
+  @media (max-width: 780px) { .conv-grid { grid-template-columns: 1fr; } }
+  .tab-badge.live { background: var(--good); font-family: inherit; text-transform: uppercase; letter-spacing: .04em; font-size: 10px; }
+  .conv-sub { color: var(--faint); font-size: 12.5px; }
+  .prep-meter { display: inline-flex; gap: 3px; vertical-align: middle; margin-right: 6px; }
+  .prep-meter i { width: 7px; height: 12px; border-radius: 2px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--border-strong); }
+  .prep-meter i.on { background: var(--good); box-shadow: none; }
+  .checklist { display: grid; gap: 8px; margin: 2px 0 6px; }
+  .checklist label { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; cursor: pointer; }
+  .checklist input { width: 17px; height: 17px; margin: 2px 0 0; accent-color: var(--accent); flex: none; }
+  .qr-box { background: #fff; border-radius: 12px; padding: 14px; width: min(300px, 100%); margin: 0 auto 14px; box-shadow: inset 0 0 0 1px var(--border); }
+  .qr-box svg { display: block; width: 100%; height: auto; }
+  .qr-url { font-family: "IBM Plex Mono", monospace; font-size: 12px; word-break: break-all; background: var(--surface-2); padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; }
+  .qr-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .field-check { display: flex; gap: 9px; align-items: center; font-size: 14px; margin-bottom: 10px; cursor: pointer; }
+  .field-check input { width: 17px; height: 17px; accent-color: var(--accent); }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -431,6 +448,7 @@
       <button class="tab" role="tab" data-tab="schedule" aria-selected="false" id="tabSchedule">Schedule <span class="tab-badge" id="schedBadge" hidden>0</span></button>
       <button class="tab" role="tab" data-tab="log" aria-selected="false">Dose Log</button>
       <button class="tab" role="tab" data-tab="reference" aria-selected="false">Reference</button>
+      <button class="tab" role="tab" data-tab="conventions" aria-selected="false" id="tabConv">Conventions <span class="tab-badge live" id="convBadge" hidden>live</span></button>
       <button class="tab" role="tab" data-tab="data" aria-selected="false">Data</button>
     </nav>
   </div>
@@ -646,6 +664,77 @@
     <div class="ref-grid" id="refGrid"></div>
   </section>
 
+  <!-- ============ CONVENTIONS ============ -->
+  <section class="panel" id="panel-conventions" role="tabpanel" hidden>
+    <div class="toolbar">
+      <h2>Conventions</h2>
+      <span class="count-chip" id="convCount">0</span>
+      <span class="spacer"></span>
+      <button class="btn btn-ghost btn-sm" id="convImportBtn">Paste Pat's list</button>
+      <button class="btn btn-ghost btn-sm" id="convExportBtn">Export conventions.json</button>
+      <button class="btn btn-primary btn-sm" id="convAddBtn">+ Add convention</button>
+    </div>
+    <p style="color:var(--muted); margin-top:-6px; margin-bottom:16px; max-width:76ch; font-size:13.5px;">
+      Each show gets its own landing page and a QR code to print (or 3D-print) for the booth. Attendees scan it, drop in their name, and pick <b>free samples</b>, the <b>newsletter</b>, or both. Shows set to <b>Show on website</b> also light up a Conventions tab on the marketing site around the show dates.
+    </p>
+    <div class="stat-strip" id="convStats"></div>
+
+    <div class="card">
+      <div class="table-scroll">
+        <table id="convTable">
+          <thead>
+            <tr>
+              <th>Convention</th>
+              <th>Dates</th>
+              <th>Booth</th>
+              <th>Website tab</th>
+              <th>Prep</th>
+              <th class="num">Leads</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="convBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="convEmpty" hidden>
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>
+        <div>No conventions yet. When Pat sends the 2027 list, use <b>Paste Pat's list</b> to add them all at once.</div>
+      </div>
+    </div>
+
+    <div class="conv-grid">
+      <div class="card card-pad">
+        <div class="section-title">Landing page &amp; sign-up settings</div>
+        <label class="field"><span class="field-label">Business name <span class="hint">shown on landing pages</span></span>
+          <input type="text" id="cs_brand" placeholder="Peptide Beach" maxlength="60" /></label>
+        <label class="field"><span class="field-label">Landing page URL <span class="hint">where convention.html is hosted</span></span>
+          <input type="text" class="mono" id="cs_landing" placeholder="https://example.com/convention.html" spellcheck="false" /></label>
+        <label class="field"><span class="field-label">Sign-up destination <span class="hint">form endpoint URL</span></span>
+          <input type="text" class="mono" id="cs_endpoint" placeholder="https://script.google.com/macros/s/…/exec" spellcheck="false" /></label>
+        <div class="sec-status" id="cs_status"></div>
+        <div class="helprow">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+          <span>Sign-ups from attendees' phones are posted to the destination above (a Google Sheet via Apps Script, Formspree, Zapier, Mailchimp form, etc. — see <code>docs/conventions.md</code>). Without one, the landing page asks people to stop by the booth instead. A booth tablet can also run the page in <b>kiosk mode</b>, which saves sign-ups on that tablet.</span>
+        </div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="section-title">Kiosk sign-ups on this device</div>
+        <div id="leadSummary" style="font-size:14px; color:var(--muted); margin-bottom:12px;"></div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-ghost btn-sm" id="leadCsvBtn">Download CSV</button>
+          <button class="btn btn-ghost btn-sm" id="leadRefreshBtn">Refresh</button>
+          <span style="flex:1"></span>
+          <button class="btn btn-danger btn-sm" id="leadClearBtn">Clear</button>
+        </div>
+        <div class="helprow">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.3 3.9 2.5 18a1.9 1.9 0 0 0 1.7 2.9h15.6a1.9 1.9 0 0 0 1.7-2.9L13.7 3.9a1.9 1.9 0 0 0-3.4 0Z"/></svg>
+          <span>Conventions and kiosk sign-ups are stored separately from your dosing data and are <b>not</b> encrypted by the password lock. Download and clear them after each show.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ DATA ============ -->
   <section class="panel" id="panel-data" role="tabpanel" hidden>
     <div class="toolbar"><h2>Backup &amp; data</h2></div>
@@ -728,6 +817,7 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<script src="qr.js"></script>
 <script>
 (function () {
   "use strict";
@@ -1538,11 +1628,471 @@
   }
 
   /* ---------------- events ---------------- */
+  /* ---------------- conventions (landing pages, QR codes, website tab) ---------------- */
+  var CONV_KEY = "peptideBeach.conventions.v1";   // plaintext: business data, not personal dosing data
+  var LEADS_KEY = "peptideBeach.leads.v1";        // kiosk sign-ups saved by convention.html on this device
+  var conv = { brand: "", landingUrl: "", signupEndpoint: "", conventions: [] };
+  var PREP = [
+    ["details", "Dates, venue & booth confirmed with Pat"],
+    ["published", "conventions.json published (landing page live)"],
+    ["qr", "QR code printed / 3D-printed sign made"],
+    ["tested", "Scanned the QR on a phone & sent a test sign-up"],
+    ["site", "Website tab checked (shows on the dates, or left hidden)"],
+    ["followup", "After the show: leads exported, samples & welcome email sent"]
+  ];
+  var MONTHS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+
+  function loadConv() {
+    try { var r = localStorage.getItem(CONV_KEY); if (r) conv = Object.assign(conv, JSON.parse(r)); } catch (e) {}
+    if (!Array.isArray(conv.conventions)) conv.conventions = [];
+  }
+  function saveConv() { try { localStorage.setItem(CONV_KEY, JSON.stringify(conv)); } catch (e) {} }
+  function loadLeads() { try { var a = JSON.parse(localStorage.getItem(LEADS_KEY) || "[]"); return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+
+  function defaultLanding() {
+    if (location.protocol === "http:" || location.protocol === "https:") return new URL("convention.html", location.href).href.split("?")[0];
+    return "";
+  }
+  function landingBase() { return (conv.landingUrl || "").trim() || defaultLanding(); }
+  function landingUrlFor(c, extra) {
+    var base = landingBase(); if (!base) return "";
+    return base + (base.indexOf("?") > -1 ? "&" : "?") + "c=" + encodeURIComponent(c.slug) + (extra || "");
+  }
+  function slugify(s) {
+    return String(s || "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "")
+      .replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48).replace(/-+$/, "") || "show";
+  }
+  function uniqueSlug(base, selfId) {
+    var s = base, n = 2;
+    while (conv.conventions.some(function (c) { return c.slug === s && c.id !== selfId; })) s = base + "-" + (n++);
+    return s;
+  }
+  function addDaysD(d, n) { var x = new Date(d.getTime()); x.setDate(x.getDate() + n); return x; }
+  function convPhase(c) {
+    var today = midnight(new Date());
+    var s = parseYMD(c.startDate), e = parseYMD(c.endDate) || s;
+    if (!s) return { phase: "tbd", onSite: false };
+    var lead = c.leadDays == null ? 7 : +c.leadDays, tail = c.tailDays == null ? 3 : +c.tailDays;
+    var from = addDaysD(s, -lead), to = addDaysD(e, tail);
+    var phase = today < s ? "upcoming" : today > e ? "ended" : "live";
+    return { phase: phase, from: from, to: to, onSite: c.siteTab === "show" && today >= from && today <= to };
+  }
+  function fmtDateRange(a, b) {
+    var s = parseYMD(a), e = parseYMD(b) || s; if (!s) return "TBD";
+    var o = { month: "short", day: "numeric" };
+    if (s.getTime() === e.getTime()) return s.toLocaleDateString(undefined, Object.assign({ year: "numeric" }, o));
+    var sameMonth = s.getMonth() === e.getMonth() && s.getFullYear() === e.getFullYear();
+    return s.toLocaleDateString(undefined, o) + " – " + (sameMonth ? e.getDate() : e.toLocaleDateString(undefined, o)) + ", " + e.getFullYear();
+  }
+  function shortDate(d) { return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }); }
+  function prepDone(c) { var p = c.prep || {}; return PREP.filter(function (x) { return p[x[0]]; }).length; }
+
+  function siteTabCell(c) {
+    var ph = convPhase(c);
+    if (c.siteTab !== "show") return '<span class="pill neutral" title="Landing page works from the QR code only">QR only</span>';
+    if (ph.phase === "tbd") return '<span class="pill neutral">needs dates</span>';
+    if (ph.onSite) return '<span class="pill good">on site now</span>';
+    if (midnight(new Date()) < ph.from) return '<span class="pill warn" title="Tab appears automatically">from ' + esc(shortDate(ph.from)) + '</span>';
+    return '<span class="pill neutral">ended</span>';
+  }
+
+  function renderConventions() {
+    var list = conv.conventions.slice().sort(function (a, b) { return String(a.startDate || "9999").localeCompare(String(b.startDate || "9999")); });
+    var leads = loadLeads();
+    $("#convCount").textContent = list.length;
+    var live = list.filter(function (c) { return convPhase(c).phase === "live"; });
+    $("#convBadge").hidden = !live.length;
+
+    var upcoming = list.filter(function (c) { return convPhase(c).phase === "upcoming"; });
+    var next = upcoming[0];
+    var prepOpen = list.filter(function (c) { var p = convPhase(c).phase; return p !== "ended" && prepDone(c) < PREP.length; }).length;
+    $("#convStats").innerHTML =
+      tile("Shows", list.length + (upcoming.length ? ' <small>' + upcoming.length + ' upcoming</small>' : "")) +
+      tile("Next up", next ? esc(shortDate(parseYMD(next.startDate))) + ' <small>' + esc(next.name.length > 22 ? next.name.slice(0, 21) + "…" : next.name) + '</small>' : "—") +
+      tile("Prep open", prepOpen, prepOpen ? "warn" : "") +
+      tile("Kiosk sign-ups", leads.length);
+
+    var body = $("#convBody");
+    if (!list.length) { body.innerHTML = ""; $("#convEmpty").hidden = false; }
+    else {
+      $("#convEmpty").hidden = true;
+      body.innerHTML = list.map(function (c) {
+        var ph = convPhase(c), done = prepDone(c);
+        var meter = PREP.map(function (x) { return '<i class="' + ((c.prep || {})[x[0]] ? "on" : "") + '"></i>'; }).join("");
+        var phasePill = ph.phase === "live" ? ' <span class="pill good">live</span>' : ph.phase === "ended" ? ' <span class="pill neutral">ended</span>' : "";
+        var n = leads.filter(function (l) { return l.convention === c.slug; }).length;
+        return '<tr data-id="' + c.id + '">' +
+          '<td><b>' + esc(c.name) + '</b>' + phasePill + '<div class="conv-sub">' + esc([c.city, c.rep ? "Rep: " + c.rep : ""].filter(Boolean).join(" · ")) + '</div></td>' +
+          '<td style="white-space:nowrap">' + esc(fmtDateRange(c.startDate, c.endDate)) + '</td>' +
+          '<td class="mono">' + esc(c.booth || "—") + '</td>' +
+          '<td>' + siteTabCell(c) + '</td>' +
+          '<td style="white-space:nowrap"><button class="link-btn" data-act="prep" title="Prep checklist"><span class="prep-meter">' + meter + '</span>' + done + '/' + PREP.length + '</button></td>' +
+          '<td class="num">' + n + '</td>' +
+          '<td class="row-actions">' +
+            '<button class="link-btn" data-act="qr">QR</button>' +
+            '<button class="link-btn" data-act="preview">Preview</button>' +
+            '<button class="link-btn" data-act="edit">Edit</button>' +
+            '<button class="link-btn danger" data-act="del">Del</button>' +
+          '</td></tr>';
+      }).join("");
+    }
+
+    renderConvSettings();
+
+    // leads summary
+    renderLeadSummary(leads);
+  }
+  function renderConvSettings() {
+    if (document.activeElement !== $("#cs_brand")) $("#cs_brand").value = conv.brand || "";
+    if (document.activeElement !== $("#cs_landing")) { $("#cs_landing").value = conv.landingUrl || ""; $("#cs_landing").placeholder = defaultLanding() || "https://example.com/convention.html"; }
+    if (document.activeElement !== $("#cs_endpoint")) $("#cs_endpoint").value = conv.signupEndpoint || "";
+    var st = [];
+    st.push(landingBase() ? '<span class="pill good">landing URL set</span>' : '<span class="pill crit">no landing URL — QR codes need one</span>');
+    st.push(conv.signupEndpoint ? '<span class="pill good">phone sign-ups on</span>' : '<span class="pill warn">phone sign-ups off (kiosk only)</span>');
+    $("#cs_status").innerHTML = st.join(" ");
+  }
+  function renderLeadSummary(leads) {
+    var by = {};
+    leads.forEach(function (l) { by[l.conventionName || l.convention] = (by[l.conventionName || l.convention] || 0) + 1; });
+    var keys = Object.keys(by);
+    $("#leadSummary").innerHTML = leads.length
+      ? "<b style='color:var(--ink)'>" + leads.length + "</b> sign-up" + (leads.length === 1 ? "" : "s") + " saved here: " + keys.map(function (k) { return esc(k) + " (" + by[k] + ")"; }).join(", ")
+      : "No kiosk sign-ups on this device yet. Open a show's <b>QR → Booth kiosk</b> link on the booth tablet to collect them here.";
+  }
+
+  function convFormHtml(c) {
+    c = c || {};
+    var site = c.siteTab || "show";
+    return '' +
+      '<label class="field"><span class="field-label">Convention name</span><input type="text" id="cv_name" value="' + esc(c.name || "") + '" placeholder="e.g. Natural Products Expo West 2027" /></label>' +
+      '<div class="form-2col">' +
+        '<label class="field"><span class="field-label">Start date</span><input type="date" id="cv_start" value="' + esc(c.startDate || "") + '" /></label>' +
+        '<label class="field"><span class="field-label">End date</span><input type="date" id="cv_end" value="' + esc(c.endDate || "") + '" /></label>' +
+        '<label class="field"><span class="field-label">City</span><input type="text" id="cv_city" value="' + esc(c.city || "") + '" placeholder="Anaheim, CA" /></label>' +
+        '<label class="field"><span class="field-label">Venue <span class="hint">optional</span></span><input type="text" id="cv_venue" value="' + esc(c.venue || "") + '" /></label>' +
+        '<label class="field"><span class="field-label">Booth #</span><input type="text" class="mono" id="cv_booth" value="' + esc(c.booth || "") + '" placeholder="412" /></label>' +
+        '<label class="field"><span class="field-label">Rep at the booth</span><input type="text" id="cv_rep" value="' + esc(c.rep == null ? "Pat" : c.rep) + '" /></label>' +
+      '</div>' +
+      '<div class="section-title" style="margin:6px 0 10px">Landing page</div>' +
+      '<label class="field"><span class="field-label">Headline</span><input type="text" id="cv_offer" value="' + esc(c.offerHeadline || "") + '" placeholder="Free samples + our newsletter" /></label>' +
+      '<label class="field"><span class="field-label">Sub-text <span class="hint">optional</span></span><input type="text" id="cv_offertext" value="' + esc(c.offerText || "") + '" placeholder="Drop in your name and we\'ll take care of the rest." /></label>' +
+      '<label class="field-check"><input type="checkbox" id="cv_samples"' + (c.collectSamples === false ? "" : " checked") + ' /> Offer free samples</label>' +
+      '<label class="field-check"><input type="checkbox" id="cv_news"' + (c.collectNewsletter === false ? "" : " checked") + ' /> Offer newsletter sign-up</label>' +
+      '<div class="section-title" style="margin:14px 0 10px">Marketing website tab</div>' +
+      '<label class="field"><span class="field-label">Conventions tab on the website</span><select id="cv_site">' +
+        '<option value="show"' + (site === "show" ? " selected" : "") + '>Show on website around the show dates</option>' +
+        '<option value="hidden"' + (site === "hidden" ? " selected" : "") + '>Hidden — QR code only</option>' +
+      '</select></label>' +
+      '<div class="form-2col" id="cv_windowRow">' +
+        '<label class="field"><span class="field-label">Show tab this many days before</span><input type="number" class="mono" id="cv_lead" min="0" max="90" value="' + (c.leadDays == null ? 7 : c.leadDays) + '" /></label>' +
+        '<label class="field"><span class="field-label">Keep it up this many days after</span><input type="number" class="mono" id="cv_tail" min="0" max="60" value="' + (c.tailDays == null ? 3 : c.tailDays) + '" /></label>' +
+      '</div>' +
+      '<label class="field"><span class="field-label">Internal notes <span class="hint">not published</span></span><textarea id="cv_notes" placeholder="Shipping deadline, sample count, hotel…">' + esc(c.notes || "") + '</textarea></label>';
+  }
+  function openConvModal(existing) {
+    openModal(existing ? "Edit convention" : "Add convention", convFormHtml(existing), function () {
+      var name = $("#cv_name").value.trim();
+      if (!name) { toast("Give the convention a name"); return false; }
+      var start = $("#cv_start").value, end = $("#cv_end").value || start;
+      if (start && end < start) { toast("End date is before the start date"); return false; }
+      var rec = Object.assign({}, existing || { id: uid(), prep: {} }, {
+        name: name, startDate: start, endDate: end,
+        city: $("#cv_city").value.trim(), venue: $("#cv_venue").value.trim(),
+        booth: $("#cv_booth").value.trim().replace(/^booth\s*#?\s*/i, ""), rep: $("#cv_rep").value.trim(),
+        offerHeadline: $("#cv_offer").value.trim(), offerText: $("#cv_offertext").value.trim(),
+        collectSamples: $("#cv_samples").checked, collectNewsletter: $("#cv_news").checked,
+        siteTab: $("#cv_site").value, leadDays: Math.max(0, parseInt($("#cv_lead").value, 10) || 0), tailDays: Math.max(0, parseInt($("#cv_tail").value, 10) || 0),
+        notes: $("#cv_notes").value.trim()
+      });
+      // the slug is what the printed QR points at — never change it once set
+      if (!rec.slug) rec.slug = uniqueSlug(slugify(name + (start && name.indexOf(start.slice(0, 4)) < 0 ? " " + start.slice(0, 4) : "")), rec.id);
+      if (existing) { var i = conv.conventions.findIndex(function (x) { return x.id === existing.id; }); if (i > -1) conv.conventions[i] = rec; }
+      else conv.conventions.push(rec);
+      saveConv(); renderConventions(); toast(existing ? "Saved" : "Convention added");
+    });
+    function syncWin() { $("#cv_windowRow").hidden = $("#cv_site").value !== "show"; }
+    $("#cv_site").addEventListener("change", syncWin); syncWin();
+  }
+
+  function openPrepModal(c) {
+    var p = c.prep || {};
+    var body = '<p style="margin-top:0;color:var(--muted);font-size:13.5px">Show-prep task for <b>' + esc(c.name) + '</b> (' + esc(fmtDateRange(c.startDate, c.endDate)) + ').</p>' +
+      '<div class="checklist">' + PREP.map(function (x) {
+        return '<label><input type="checkbox" data-prep="' + x[0] + '"' + (p[x[0]] ? " checked" : "") + ' /> <span>' + esc(x[1]) + '</span></label>';
+      }).join("") + '</div>';
+    openModal("Prep checklist", body, function () {
+      c.prep = {};
+      $$("#modalBody [data-prep]").forEach(function (b) { if (b.checked) c.prep[b.getAttribute("data-prep")] = true; });
+      saveConv(); renderConventions();
+    });
+  }
+
+  function qrSvgFor(url, ecc, opts) { return PBQR.toSvg(PBQR.encode(url, ecc), opts || {}); }
+  function download(name, blob) {
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  function svgToPng(svg, px, cb) {
+    var img = new Image();
+    img.onload = function () {
+      var cv = document.createElement("canvas"); cv.width = cv.height = px;
+      var ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = false; ctx.drawImage(img, 0, 0, px, px);
+      cv.toBlob(cb, "image/png");
+    };
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+  function printSign(c, url) {
+    var qr = qrSvgFor(url, "H", { border: 2 });
+    var brand = conv.brand || "Peptide Beach";
+    var w = window.open("", "_blank");
+    if (!w) { toast("Allow pop-ups to print the sign"); return; }
+    w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>' + esc(c.name) + ' — QR sign</title><style>' +
+      '@page{size:letter;margin:0.5in}body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#0E1B22;text-align:center;margin:0}' +
+      '.sign{border:3px solid #0E1B22;border-radius:24px;padding:36px 32px;max-width:7in;margin:0 auto}' +
+      '.brand{font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:15px;color:#0E8C8C}' +
+      'h1{font-size:44px;line-height:1.05;margin:14px 0 6px}.sub{font-size:20px;color:#3b4b55;margin:0 0 22px}' +
+      '.qr{width:4.6in;margin:0 auto}.qr svg{width:100%;height:auto;display:block}' +
+      '.ev{margin-top:22px;font-size:18px;font-weight:600}.url{margin-top:8px;font:12px ui-monospace,monospace;color:#5c6b78;word-break:break-all}' +
+      '</style></head><body><div class="sign"><div class="brand">' + esc(brand) + '</div>' +
+      '<h1>' + esc(c.offerHeadline || "Scan for free samples") + '</h1>' +
+      '<p class="sub">' + esc(c.offerText || "Drop in your name — free samples & our newsletter.") + '</p>' +
+      '<div class="qr">' + qr + '</div>' +
+      '<div class="ev">' + esc(c.name) + (c.booth ? " · Booth " + esc(c.booth) : "") + '</div>' +
+      '<div class="url">' + esc(url) + '</div></div>' +
+      '<script>window.onload=function(){setTimeout(function(){window.print()},150)}<\/script></body></html>');
+    w.document.close();
+  }
+  function openQrModal(c) {
+    var url = landingUrlFor(c);
+    if (!url) {
+      openModal("QR code", '<p style="margin-top:0">Set the <b>Landing page URL</b> (where <code>convention.html</code> is hosted) in the settings below the table first — the QR code has to point at a real web address.</p>', function () {});
+      $("#modalSave").textContent = "OK"; return;
+    }
+    var ecc = "H"; // high error correction: survives glare, scuffs and 3D-print imperfections
+    var qr = PBQR.encode(url, ecc);
+    var kioskUrl = landingUrlFor(c, "&kiosk=1");
+    var body = '<div class="qr-box">' + PBQR.toSvg(qr, { border: 4 }) + '</div>' +
+      '<div class="qr-url">' + esc(url) + '</div>' +
+      '<div class="qr-actions">' +
+        '<button class="btn btn-primary btn-sm" data-qr="print">Print booth sign</button>' +
+        '<button class="btn btn-ghost btn-sm" data-qr="svg">SVG (3D print / sign shop)</button>' +
+        '<button class="btn btn-ghost btn-sm" data-qr="png">PNG</button>' +
+        '<button class="btn btn-ghost btn-sm" data-qr="copy">Copy link</button>' +
+      '</div>' +
+      '<div class="helprow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>' +
+        '<span>Version ' + qr.version + ' · ' + qr.size + '×' + qr.size + ' modules · high error correction. For a <b>3D-printed</b> plaque, import the SVG into your slicer or CAD tool and raise the dark squares 1–2 mm on a light base; keep it at least 2.5 cm (1 in) wide per meter of scanning distance and keep the white border. The link stays the same if you edit the show, so print once.</span></div>' +
+      '<div class="helprow"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>' +
+        '<span><b>Booth kiosk link</b> (open on the booth tablet — sign-ups are also saved on that tablet): <button class="link-btn" data-qr="kiosk" style="padding:0">copy</button></span></div>';
+    openModal(c.name, body, function () {});
+    $("#modalSave").textContent = "Done";
+    var file = c.slug + "-qr";
+    $("#modalBody").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-qr]"); if (!b) return;
+      var act = b.getAttribute("data-qr");
+      if (act === "print") printSign(c, url);
+      else if (act === "svg") { download(file + ".svg", new Blob([PBQR.toSvg(qr, { border: 4 })], { type: "image/svg+xml" })); }
+      else if (act === "png") svgToPng(PBQR.toSvg(qr, { border: 4 }), 2048, function (blob) { if (blob) download(file + ".png", blob); });
+      else if (act === "copy" || act === "kiosk") {
+        var t = act === "copy" ? url : kioskUrl;
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function () { toast("Link copied"); }, function () { prompt("Copy this link", t); });
+        else prompt("Copy this link", t);
+      }
+    });
+  }
+
+  function publicFeed() {
+    return {
+      brand: conv.brand || "Peptide Beach",
+      landingUrl: landingBase(),
+      signupEndpoint: (conv.signupEndpoint || "").trim(),
+      updatedAt: new Date().toISOString(),
+      conventions: conv.conventions.map(function (c) {
+        return {
+          slug: c.slug, name: c.name, startDate: c.startDate || "", endDate: c.endDate || c.startDate || "",
+          city: c.city || "", venue: c.venue || "", booth: c.booth || "", rep: c.rep || "",
+          offerHeadline: c.offerHeadline || "", offerText: c.offerText || "",
+          collectSamples: c.collectSamples !== false, collectNewsletter: c.collectNewsletter !== false,
+          siteTab: c.siteTab || "show", leadDays: c.leadDays == null ? 7 : c.leadDays, tailDays: c.tailDays == null ? 3 : c.tailDays
+        };
+      }).sort(function (a, b) { return String(a.startDate).localeCompare(String(b.startDate)); })
+    };
+  }
+
+  /* --- "Paste Pat's list" importer: CSV, tab-separated (from a spreadsheet) or pipe-separated --- */
+  function parseDateLoose(s) {
+    s = String(s || "").trim().replace(/(\d)(st|nd|rd|th)\b/gi, "$1");
+    if (!s) return null;
+    var m;
+    if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) return mk(+m[1], +m[2], +m[3]);
+    if ((m = s.match(/^(\d{1,2})[\/.](\d{1,2})[\/.](\d{2,4})$/))) return mk(+m[3] < 100 ? 2000 + +m[3] : +m[3], +m[1], +m[2]);
+    if ((m = s.match(/^([A-Za-z]{3,})\.?\s+(\d{1,2}),?\s+(\d{4})$/))) { var mi = MONTHS.indexOf(m[1].slice(0, 3).toLowerCase()); if (mi > -1) return mk(+m[3], mi + 1, +m[2]); }
+    if ((m = s.match(/^(\d{1,2})\s+([A-Za-z]{3,})\.?,?\s+(\d{4})$/))) { var mj = MONTHS.indexOf(m[2].slice(0, 3).toLowerCase()); if (mj > -1) return mk(+m[3], mj + 1, +m[1]); }
+    return null;
+    function mk(y, mo, d) { var dt = new Date(y, mo - 1, d); return (dt.getMonth() === mo - 1 && dt.getDate() === d) ? ymd(dt) : null; }
+  }
+  function parseDateRange(s) {
+    s = String(s || "").trim().replace(/(\d)(st|nd|rd|th)\b/gi, "$1");
+    var one = parseDateLoose(s); if (one) return [one, one];
+    var m;
+    // "March 4-6, 2027" / "Mar 4 – 6 2027"
+    if ((m = s.match(/^([A-Za-z]{3,})\.?\s+(\d{1,2})\s*(?:-|–|—|to)\s*(\d{1,2}),?\s+(\d{4})$/i))) {
+      var a = parseDateLoose(m[1] + " " + m[2] + ", " + m[4]), b = parseDateLoose(m[1] + " " + m[3] + ", " + m[4]); if (a && b) return [a, b];
+    }
+    // "March 30 - April 2, 2027"
+    if ((m = s.match(/^([A-Za-z]{3,})\.?\s+(\d{1,2})\s*(?:-|–|—|to)\s*([A-Za-z]{3,})\.?\s+(\d{1,2}),?\s+(\d{4})$/i))) {
+      var c1 = parseDateLoose(m[1] + " " + m[2] + ", " + m[5]), c2 = parseDateLoose(m[3] + " " + m[4] + ", " + m[5]); if (c1 && c2) return [c1, c2];
+    }
+    // "3/14-3/16/2027" or "3/14/2027 - 3/16/2027"
+    var parts = s.split(/\s*(?:–|—|\bto\b|\s-\s)\s*/i);
+    if (parts.length !== 2) parts = s.split(/-(?=\d{1,2}\/)/);
+    if (parts.length === 2) {
+      var e = parseDateLoose(parts[1]);
+      var st = parseDateLoose(parts[0]) || (e && parseDateLoose(parts[0] + "/" + e.slice(0, 4)));
+      if (st && e) return [st, e];
+    }
+    return null;
+  }
+  function splitRow(line, delim) {
+    if (delim !== ",") return line.split(delim).map(function (x) { return x.trim(); });
+    var out = [], cur = "", q = false;
+    for (var i = 0; i < line.length; i++) {
+      var ch = line[i];
+      if (q) { if (ch === '"' && line[i + 1] === '"') { cur += '"'; i++; } else if (ch === '"') q = false; else cur += ch; }
+      else if (ch === '"') q = true; else if (ch === ",") { out.push(cur.trim()); cur = ""; } else cur += ch;
+    }
+    out.push(cur.trim()); return out;
+  }
+  function parseConventionList(text) {
+    var lines = String(text || "").split(/\r?\n/).filter(function (l) { return l.trim(); });
+    if (!lines.length) return { rows: [], skipped: [] };
+    var delim = lines[0].indexOf("\t") > -1 ? "\t" : lines[0].indexOf("|") > -1 ? "|" : ",";
+    var head = splitRow(lines[0], delim).map(function (h) { return h.toLowerCase(); });
+    var col = {}, hasHeader = false;
+    var KEYS = { name: /^(name|convention|show|event|expo|title)/, city: /^(city|location|where)/, venue: /^venue/, start: /^(start|from|begin)/, end: /^(end|to|until|thru|through)/, dates: /^dates?$/, booth: /^booth/, rep: /^(rep|staff|who)/, notes: /^(notes?|comments?)/ };
+    head.forEach(function (h, i) { Object.keys(KEYS).forEach(function (k) { if (col[k] == null && KEYS[k].test(h)) { col[k] = i; hasHeader = true; } }); });
+    if (hasHeader && col.name == null) hasHeader = false;
+    var rows = [], skipped = [];
+    lines.slice(hasHeader ? 1 : 0).forEach(function (line) {
+      var cells = splitRow(line, delim), r = {};
+      if (hasHeader) {
+        ["name", "city", "venue", "booth", "rep", "notes"].forEach(function (k) { if (col[k] != null) r[k] = cells[col[k]] || ""; });
+        var rg = col.dates != null ? parseDateRange(cells[col.dates]) : null;
+        r.startDate = col.start != null ? parseDateLoose(cells[col.start]) : rg && rg[0];
+        r.endDate = col.end != null ? parseDateLoose(cells[col.end]) : rg && rg[1];
+        if (!r.startDate && col.start != null) { var rr = parseDateRange(cells[col.start]); if (rr) { r.startDate = rr[0]; r.endDate = r.endDate || rr[1]; } }
+      } else {
+        var dates = [], other = [];
+        cells.forEach(function (x) {
+          if (!x) return;
+          var range = parseDateRange(x);
+          if (range) { dates.push(range[0]); if (range[1] !== range[0]) dates.push(range[1]); }
+          else other.push(x);
+        });
+        r.startDate = dates[0] || ""; r.endDate = dates[1] || dates[0] || "";
+        other.forEach(function (x) {
+          if (!r.booth && /^(booth\s*)?#?\s*[a-z]?\d{1,5}[a-z]?$/i.test(x) && r.name) r.booth = x;
+          else if (!r.name) r.name = x;
+          else if (!r.city) r.city = x;
+          else r.notes = (r.notes ? r.notes + "; " : "") + x;
+        });
+      }
+      r.name = (r.name || "").trim();
+      if (r.booth) r.booth = String(r.booth).replace(/^booth\s*#?\s*/i, "").trim();
+      if (!r.name) skipped.push(line); else rows.push(r);
+    });
+    return { rows: rows, skipped: skipped };
+  }
+  function openImportModal() {
+    var body = '<p style="margin-top:0;color:var(--muted);font-size:13.5px">Paste the list Pat sends — copy the rows straight from a spreadsheet, a CSV, or one show per line. A header row (Name, City, Start, End, Booth, Rep…) helps but isn\'t required. Dates like <code>2027-03-04</code>, <code>3/4/2027</code>, <code>Mar 4, 2027</code> or <code>March 4–6, 2027</code> all work.</p>' +
+      '<label class="field"><span class="field-label">Conventions</span><textarea class="mono" id="imp_text" style="min-height:170px;font-size:12.5px" placeholder="Name, City, Start, End, Booth\nNatural Products Expo West, Anaheim CA, 2027-03-03, 2027-03-06, 412\nA4M Spring Congress | Las Vegas NV | May 13-15, 2027 | 1207"></textarea></label>' +
+      '<label class="field"><span class="field-label">Rep for all of these</span><input type="text" id="imp_rep" value="Pat" /></label>' +
+      '<div id="imp_preview" style="font-size:13px;color:var(--muted)"></div>';
+    openModal("Paste Pat's list", body, function () {
+      var res = parseConventionList($("#imp_text").value), added = 0, updated = 0;
+      if (!res.rows.length) { toast("Nothing to import"); return false; }
+      var rep = $("#imp_rep").value.trim();
+      res.rows.forEach(function (r) {
+        var existing = conv.conventions.find(function (c) { return c.name.toLowerCase() === r.name.toLowerCase() && (!r.startDate || !c.startDate || c.startDate.slice(0, 4) === r.startDate.slice(0, 4)); });
+        if (existing) {
+          ["city", "venue", "booth", "startDate", "endDate"].forEach(function (k) { if (r[k]) existing[k] = r[k]; });
+          if (r.rep) existing.rep = r.rep;
+          if (r.notes) existing.notes = existing.notes ? existing.notes + "\n" + r.notes : r.notes;
+          updated++;
+        } else {
+          var rec = { id: uid(), prep: {}, name: r.name, city: r.city || "", venue: r.venue || "", booth: r.booth || "", rep: r.rep || rep,
+            startDate: r.startDate || "", endDate: r.endDate || r.startDate || "", notes: r.notes || "", siteTab: "show", leadDays: 7, tailDays: 3,
+            collectSamples: true, collectNewsletter: true, offerHeadline: "", offerText: "" };
+          rec.slug = uniqueSlug(slugify(r.name + (r.startDate && r.name.indexOf(r.startDate.slice(0, 4)) < 0 ? " " + r.startDate.slice(0, 4) : "")), rec.id);
+          conv.conventions.push(rec); added++;
+        }
+      });
+      saveConv(); renderConventions();
+      toast("Added " + added + (updated ? ", updated " + updated : "") + (res.skipped.length ? " · skipped " + res.skipped.length : ""));
+    });
+    $("#modalSave").textContent = "Import";
+    $("#imp_text").addEventListener("input", function () {
+      var res = parseConventionList($("#imp_text").value);
+      $("#imp_preview").innerHTML = res.rows.length ? "<b>" + res.rows.length + "</b> show" + (res.rows.length === 1 ? "" : "s") + " found: " + res.rows.slice(0, 8).map(function (r) {
+        return esc(r.name) + (r.startDate ? " (" + esc(fmtDateRange(r.startDate, r.endDate)) + ")" : ' <span style="color:var(--warn)">(no date)</span>');
+      }).join(", ") + (res.rows.length > 8 ? "…" : "") + (res.skipped.length ? ' · <span style="color:var(--warn)">' + res.skipped.length + " line(s) skipped</span>" : "") : "";
+    });
+  }
+
+  function leadsCsv(leads) {
+    var cols = ["submittedAt", "conventionName", "convention", "firstName", "lastName", "email", "phone", "company", "samples", "newsletter", "code", "source", "rep", "booth"];
+    function cell(v) { v = v == null ? "" : String(v); if (/^[=+\-@]/.test(v)) v = "'" + v; return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+    return cols.join(",") + "\n" + leads.map(function (l) { return cols.map(function (k) { return cell(l[k]); }).join(","); }).join("\n") + "\n";
+  }
+
+  $("#convAddBtn").addEventListener("click", function () { openConvModal(null); });
+  $("#convImportBtn").addEventListener("click", openImportModal);
+  $("#convExportBtn").addEventListener("click", function () {
+    if (!conv.conventions.length) { toast("Add a convention first"); return; }
+    download("conventions.json", new Blob([JSON.stringify(publicFeed(), null, 2) + "\n"], { type: "application/json" }));
+    toast("Upload conventions.json next to convention.html");
+  });
+  $("#convBody").addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-act]"); if (!btn) return;
+    var id = btn.closest("tr").getAttribute("data-id");
+    var c = conv.conventions.find(function (x) { return x.id === id; }); if (!c) return;
+    var act = btn.getAttribute("data-act");
+    if (act === "edit") openConvModal(c);
+    else if (act === "prep") openPrepModal(c);
+    else if (act === "qr") openQrModal(c);
+    else if (act === "preview") {
+      var u = landingUrlFor(c) || ("convention.html?c=" + encodeURIComponent(c.slug));
+      window.open(u + "&src=preview", "_blank");
+    }
+    else if (act === "del") {
+      if (confirm("Delete \"" + c.name + "\"? Any printed QR code for it will stop working once you re-publish conventions.json.")) {
+        conv.conventions = conv.conventions.filter(function (x) { return x.id !== id; }); saveConv(); renderConventions(); toast("Convention deleted");
+      }
+    }
+  });
+  [["#cs_brand", "brand"], ["#cs_landing", "landingUrl"], ["#cs_endpoint", "signupEndpoint"]].forEach(function (p) {
+    $(p[0]).addEventListener("change", function () {
+      var v = $(p[0]).value.trim();
+      if (p[1] !== "brand" && v && !/^https?:\/\//i.test(v)) { toast("Use a full https:// address"); $(p[0]).value = conv[p[1]] || ""; return; }
+      conv[p[1]] = v; saveConv(); renderConvSettings(); toast("Saved");
+    });
+  });
+  $("#leadCsvBtn").addEventListener("click", function () {
+    var leads = loadLeads(); if (!leads.length) { toast("No kiosk sign-ups yet"); return; }
+    download("convention-signups-" + ymd(new Date()) + ".csv", new Blob([leadsCsv(leads)], { type: "text/csv" }));
+  });
+  $("#leadRefreshBtn").addEventListener("click", function () { renderConventions(); toast("Refreshed"); });
+  $("#leadClearBtn").addEventListener("click", function () {
+    var n = loadLeads().length; if (!n) { toast("Nothing to clear"); return; }
+    if (confirm("Delete " + n + " kiosk sign-up(s) from this device? Download the CSV first.")) { try { localStorage.removeItem(LEADS_KEY); } catch (e) {} renderConventions(); toast("Cleared"); }
+  });
+  window.addEventListener("storage", function (e) { if (e.key === LEADS_KEY || e.key === CONV_KEY) { if (e.key === CONV_KEY) loadConv(); renderConventions(); } });
+
   // tabs
   function activateTab(name) {
     $$(".tab").forEach(function (t) { t.setAttribute("aria-selected", t.getAttribute("data-tab") === name ? "true" : "false"); });
     $$(".panel").forEach(function (p) { p.hidden = p.id !== "panel-" + name; });
     if (name === "schedule") { renderSchedules(); updateReminderBar(); }
+    if (name === "conventions") renderConventions();
     if (name === "data") { $("#dataBox").value = JSON.stringify(payload(), null, 2); updateSecurityUI(); }
     window.scrollTo({ top: 0, behavior: "auto" });
   }
@@ -1853,6 +2403,8 @@
   updateOwnerChip();
   renderCalc();
   renderReference();
+  loadConv();
+  renderConventions();
   updateSecurityUI();
   updateLockBtn();
   if (locked) {

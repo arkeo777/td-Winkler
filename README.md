@@ -34,6 +34,14 @@ browser (`localStorage`); nothing is sent anywhere.
   (BPC‑157, TB‑500, Ipamorelin, CJC‑1295, Semaglutide, Tirzepatide,
   Retatrutide, GHK‑Cu, and more). One tap loads a peptide into the calculator
   or inventory.
+- **Conventions** — trade-show manager for the sales team. Paste the year's
+  show list, and each show gets a mobile **landing page** (`convention.html`)
+  where attendees sign up for free samples and/or the newsletter, plus a
+  **QR code** you can print as a booth sign or export as SVG for 3D printing.
+  There's a booth-tablet kiosk mode and a per-show prep checklist. A drop-in
+  script (`convention-tab.js`) adds a **Conventions tab to the marketing
+  website** that appears only around show dates. See
+  [`docs/conventions.md`](docs/conventions.md).
 - **Backup & restore** — copy/paste JSON to back up or move your data. Includes
   light/dark themes.
 

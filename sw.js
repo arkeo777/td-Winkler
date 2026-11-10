@@ -1,10 +1,12 @@
 /* Peptide Beach service worker — offline caching + notification handling.
    Bump CACHE when you change any cached file; installed apps pick up the new
    version automatically on the next launch. */
-var CACHE = "peptide-beach-v1";
+var CACHE = "peptide-beach-v2";
 var ASSETS = [
   "./",
   "./index.html",
+  "./qr.js",
+  "./convention.html",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -33,8 +35,16 @@ self.addEventListener("fetch", function (e) {
   // Navigations: network first, fall back to cached shell when offline.
   if (req.mode === "navigate") {
     e.respondWith(
-      fetch(req).catch(function () { return caches.match("./index.html"); })
+      fetch(req).catch(function () {
+        return caches.match(req, { ignoreSearch: true }).then(function (hit) { return hit || caches.match("./index.html"); });
+      })
     );
+    return;
+  }
+
+  // The conventions feed and the website-tab script must always be fresh.
+  if (sameOrigin && /\/(conventions\.json|convention-tab\.js)$/.test(url.pathname)) {
+    e.respondWith(fetch(req).catch(function () { return caches.match(req); }));
     return;
   }
 
