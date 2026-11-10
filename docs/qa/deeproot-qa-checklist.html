@@ -1,4 +1,4 @@
-<title>DeepRoot Portal QA Run</title>
+<title>DeepRoots Portal QA Run</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -121,8 +121,8 @@ p.viewsub{color:var(--muted);margin:0 0 14px;font-size:14px}
 </style>
 
 <header class="top wrap">
-  <h1>DeepRoot Portal QA Run</h1>
-  <p class="sub">The end-to-end test, step by step: marketing, website, demo request, purchase, school setup, admin roster, then a teacher and a student working through a full class cycle. Pick your browser, follow the steps in order, and mark each one. Results save for the whole team.</p>
+  <h1>DeepRoots Portal QA Run</h1>
+  <p class="sub">The end-to-end test, step by step: marketing, website, demo request, purchase, school setup, admin roster, then a teacher and a student working through a full class cycle. Pick your browser, follow the steps in order, and mark each one. Results save for the whole team. Most Portal screens are still being built, so mark anything not built yet as N/A and write "not built" in the note.</p>
   <div class="sync" id="sync"><span class="dot" id="syncdot"></span><span id="synctext">Connecting to shared results…</span></div>
 </header>
 
@@ -163,49 +163,52 @@ const BROWSERS=[
 ];
 // phase numbers in full scope / smoke scope per browser (phase 0 = setup, always full)
 const SCOPE={
- CH:{full:[0,1,2,3,4,5,6,7,8,9,10],smoke:[]},
- SF:{full:[0,1,2,3,4,5,6,7,8,9,10],smoke:[]},
- CB:{full:[0,7,8,9],smoke:[1,2,3,4,5,6]},
- iP:{full:[0,1,2,3,4,7,8,9],smoke:[]},
- ED:{full:[0,1,2,3,4,5,6],smoke:[7,8,9]},
- FF:{full:[0,1,2,3,4,5,6],smoke:[7,8,9]},
+ CH:{full:[0,1,2,3,4,5,5.5,6,6.5,7,8,9,10],smoke:[]},
+ SF:{full:[0,1,2,3,4,5,5.5,6,7,8,9,10],smoke:[]},
+ CB:{full:[0,7,8,9],smoke:[1,2,3,4,5,5.5,6]},
+ iP:{full:[0,1,2,3,4,6.5,7,8,9],smoke:[]},
+ ED:{full:[0,1,2,3,4,5,5.5,6],smoke:[7,8,9]},
+ FF:{full:[0,1,2,3,4,5,5.5,6],smoke:[7,8,9]},
  iS:{full:[0,1,2,3,8],smoke:[]},
  AN:{full:[0,1,2,3,8],smoke:[]}
 };
 // [id, who, action, expected, screenshot?]
 const PHASES=[
  {n:0,title:'Before you start',goal:'Do this at the start of every browser run so no login or cookie carries over.',tests:[
-  ['PRE-01','Tester','Close every window of the browser under test, then open a new private/incognito window (or a fresh browser profile).','Nothing is signed in. No DeepRoot cookies.'],
+  ['PRE-01','Tester','Close every window of the browser under test, then open a new private/incognito window (or a fresh browser profile).','Nothing is signed in. No DeepRoots cookies.'],
   ['PRE-02','Tester','Write the browser version (Help → About), OS, your name, and today\'s date in "Run details" above.','Run details are filled in for this browser.'],
   ['PRE-03','Tester','Open the QA inbox on a different browser or device.','Email checks won\'t disturb the session under test.'],
   ['PRE-04','Tester','Confirm the test data for this run: school name QA Test Academy <MMDD>-<browser code>, plus-addressed emails like deeproot.qa+admin-<MMDD>-<code>@…','Names are unique to this browser run.'],
   ['PRE-05','Tester','Confirm you are on the staging site [CONFIRM: staging URLs] and the payment processor is in TEST mode.','Never a live site or a real card.']
  ]},
- {n:1,title:'Marketing & discovery',goal:'A prospect can find DeepRoot from each marketing channel, and link tracking works.',tests:[
+ {n:1,title:'Marketing & discovery',goal:'A prospect can find DeepRoots from each marketing channel, and link tracking works.',tests:[
   ['MKT-01','Prospect','Click the link in the current marketing email or newsletter [CONFIRM: campaign name].','Lands on the correct landing page. URL keeps its UTM tags (utm_source, utm_medium, utm_campaign).',1],
   ['MKT-02','Prospect','Click the current social or paid ad link [CONFIRM: LinkedIn/Facebook/Google Ads test link].','Correct landing page. UTMs present. No 404 and no mixed-content warning.'],
-  ['MKT-03','Prospect','Search Google for "DeepRoot Portal" and click the organic result.','Lands on the homepage. Page title and description are correct in the search result.'],
+  ['MKT-03','Prospect','Search Google for "DeepRoots Portal" and click the organic result.','Lands on the homepage. Page title and description are correct in the search result.'],
   ['MKT-04','Prospect','Type the website address directly.','Homepage loads over https with a valid padlock in about 3 seconds or less.'],
   ['MKT-05','Prospect','Accept, then decline, the cookie/consent banner (if present).','Banner behaves correctly and remembers the choice on refresh.'],
   ['MKT-06','QA','Check analytics or the tag manager for the visit [CONFIRM: GA4 / other].','The session appears with the correct source and campaign.']
  ]},
  {n:2,title:'Website exploration',goal:'The site explains the product, and every path to buy or talk to sales works.',tests:[
+  ['WEB-00','Prospect','Visit each planned page: Home, Why, Curriculum, Testimonials, FAQ, Resources, Shop, Events, Contact.','Each page exists with real DeepRoots content. Curriculum shows K–6 alignment, with missing grades marked "coming soon".'],
   ['WEB-01','Prospect','Click every item in the main navigation and footer.','Every link loads the right page. No 404s and no placeholder text.'],
   ['WEB-02','Prospect','Open the Features / Product page.','Content, images, and videos load and play. Screenshots match the current Portal.'],
   ['WEB-03','Prospect','Open the Pricing page [CONFIRM: public prices or "contact us"?].','Plans, prices, and per-student or per-school terms display correctly. Monthly/annual toggle works.',1],
   ['WEB-04','Prospect','Open FAQ, About, Privacy Policy, Terms, and Accessibility pages.','All load. Privacy and Terms are current and cover student data (FERPA/COPPA) [CONFIRM].'],
   ['WEB-05','Prospect','Shrink the window to phone width (or use the phone in the matrix).','Layout adapts. Menu collapses and opens and closes. No sideways scrolling.'],
   ['WEB-06','Prospect','Move through the homepage with only the keyboard (Tab, Shift+Tab, Enter).','Focus is visible on every link and button. All buttons and links can be reached.'],
-  ['WEB-07','Prospect','Click "Log in" on the marketing site.','Goes to the Portal login page.']
+  ['WEB-07','Prospect','Click "Log in" on the marketing site.','Goes to the right login, Portal or learning platform [CONFIRM].'],
+  ['WEB-08','Prospect','Use site search for "assessment", then for a nonsense word.','Relevant results for the real word. A clear "no results" message for the nonsense word.'],
+  ['WEB-09','Prospect','Open Events and register for one, if registration exists [CONFIRM].','Registration confirmation and email.']
  ]},
- {n:3,title:'Interest & lead capture',goal:'A prospect can express interest, and a person at DeepRoot receives it and follows up.',tests:[
+ {n:3,title:'Interest & lead capture',goal:'A prospect can express interest, and a person at DeepRoots receives it and follows up.',tests:[
   ['LEAD-01','Prospect','Open Request a Demo / Contact Us [CONFIRM name] and click Submit with every field empty.','Required-field errors show next to each field. Form does not submit.'],
   ['LEAD-02','Prospect','Enter an invalid email (abc@) and an invalid phone number.','Clear validation messages.'],
   ['LEAD-03','Prospect','Fill in valid data (name, Prospect email, school, role, number of students, phone, message) and submit. Double-click Submit once.','Thank-you message or page. Only one submission is created.',1],
   ['LEAD-04','Prospect','Check the QA inbox.','Confirmation email arrives within [CONFIRM: 5 min]. Branding, links, and sender are correct. Not in spam.',1],
-  ['LEAD-05','Sales/Ops','Check the CRM or lead inbox.','Lead is there with every field and the UTM source. Assigned to the right rep.'],
-  ['LEAD-06','Sales/Ops','Human step: the rep sends the follow-up email or books the demo [CONFIRM: booking link?].','Prospect gets the email. Booking works and both people get the calendar invite.'],
-  ['LEAD-07','Sales/Ops','Human step: the rep sends the quote or purchase link [CONFIRM: self-serve vs. sales quote/invoice].','Prospect gets a link or quote with the right plan, seat count, and price.']
+  ['LEAD-05','DeepRoots Staff','In the staff portal, open the Marketing section, then check Salesforce.','The submission is in Marketing (forms feed it directly) and in Salesforce with every field and the UTM source. Assigned to the right rep.'],
+  ['LEAD-06','DeepRoots Staff','Human step: the rep sends the follow-up email or books the demo [CONFIRM: booking link?].','Prospect gets the email. Booking works and both people get the calendar invite.'],
+  ['LEAD-07','DeepRoots Staff','Human step: the rep sends the quote or purchase link [CONFIRM: self-serve vs. sales quote/invoice].','Prospect gets a link or quote with the right plan, seat count, and price.']
  ]},
  {n:4,title:'Purchase',goal:'The school can pay (or commit to pay) and an account is created. Run the invoice/PO steps once, on Chrome, if that path exists.',tests:[
   ['BUY-01','Purchaser','From Pricing or the quote link, choose the plan and enter the seat or student count.','Total updates correctly, including tax, discounts, and monthly vs. annual.'],
@@ -215,10 +218,10 @@ const PHASES=[
   ['BUY-05','Purchaser','Pay with the 3-D Secure test card and complete the challenge.','Challenge window opens (not blocked) and payment succeeds.'],
   ['BUY-06','Purchaser','If BUY-05 was not used: pay with the success test card, accept Terms, submit. Then press Back and refresh.','Confirmation page with an order number. Back or refresh does not charge twice.',1],
   ['BUY-07','Purchaser','Check the QA inbox.','Receipt with the correct amount, plan, and company name. Welcome / "set up your school" email with a working link.',1],
-  ['BUY-08','Sales/Ops','Check the payment dashboard (test mode) and the CRM.','Payment recorded once. CRM deal moves to Closed/Won [CONFIRM].'],
+  ['BUY-08','DeepRoots Staff','Check the payment dashboard (test mode) and the CRM.','Payment recorded once. CRM deal moves to Closed/Won [CONFIRM].'],
   ['BUY-10','Purchaser','Invoice path: choose "Pay by invoice/PO" and enter a PO number.','Order accepted as "pending payment".'],
-  ['BUY-11','Sales/Ops','Human step: create and send the invoice from the billing system.','Purchaser receives an invoice PDF that shows the PO number.'],
-  ['BUY-12','Sales/Ops','Human step: mark the invoice paid (test) or approve setup before payment [CONFIRM policy].','Account activates and the welcome email is sent.']
+  ['BUY-11','DeepRoots Staff','Human step: create and send the invoice from the billing system.','Purchaser receives an invoice PDF that shows the PO number.'],
+  ['BUY-12','DeepRoots Staff','Human step: mark the invoice paid (test) or approve setup before payment [CONFIRM policy].','Account activates and the welcome email is sent.']
  ]},
  {n:5,title:'New school setup',goal:'The purchaser registers the new school and hands it to a School Admin.',tests:[
   ['SCH-01','Purchaser','Click the setup link in the welcome email. Later, click it again.','Opens setup. The link works once and expires after [CONFIRM]. A second click shows a sensible message.'],
@@ -227,8 +230,20 @@ const PHASES=[
   ['SCH-04','Purchaser','Enter school details: name, address, district, timezone, grades, school year dates, logo [CONFIRM fields].','All fields save. Logo previews. Timezone default makes sense.',1],
   ['SCH-05','Purchaser','Try to save with a duplicate school name or an invalid ZIP.','Correct validation messages.'],
   ['SCH-06','Purchaser','Name the School Admin: "I am the admin" or invite the School Admin email.','Invite sent and shown as pending.'],
-  ['SCH-07','Sales/Ops','Human step (if required): in the back office, approve the school and check seat limits match the purchase.','School is Active. Seat count is correct.'],
+  ['SCH-07','DeepRoots Staff','In the staff portal, open Workflows and find the new-school sign-up.','A step-by-step tracker for this school shows the current step and who it is waiting on.',1],
+  ['SCH-07a','DeepRoots Staff','Human step: Sales completes their steps.','Tracker hands off to Customer Success automatically, and Success is notified.'],
+  ['SCH-07b','DeepRoots Staff','Human step: Customer Success completes onboarding (seat count matches the purchase), then hands off to Finance.','Hand-off to Finance happens automatically. Nothing is left waiting on the wrong team.'],
+  ['SCH-07c','DeepRoots Staff','Open the Schools directory in the School Portal during and after onboarding.','Listed under Onboarding with a progress tracker, then moves to Active when onboarding completes. State filter and map are correct.'],
+  ['SCH-07d','DeepRoots Staff','Open the school\'s page.','Logo, partner tier badge, contacts, and Salesforce billing history are correct.'],
   ['SCH-08','Purchaser','Log out, then press Back.','Returns to login. Back does not show protected pages.']
+ ]},
+ {n:5.5,label:'5S',title:'DeepRoots Staff sign-in',goal:'Only invited staff can get into the staff portal.',tests:[
+  ['STF-01','DeepRoots Staff','At the Portal sign-in, enter an approved staff email and request a code.','Email arrives with a one-time link and a 6-digit code.'],
+  ['STF-02','DeepRoots Staff','Sign in with the 6-digit code. Sign out. Try the same code again.','First use works. Reuse is refused.'],
+  ['STF-03','DeepRoots Staff','Request a code, wait past its expiry [CONFIRM], then use it.','Refused with a clear "expired, request a new one" message.'],
+  ['STF-04','Prospect','Request a code with an email that is not on the approved list.','No access. The message does not reveal whether the email exists.'],
+  ['STF-05','Tester','Check the sign-in page on staging and live.','"Dev sign-in (local only)" is not visible.'],
+  ['STF-06','DeepRoots Staff','Open Settings → Connections & Vault as a non-admin staff member.','Cannot change connections. No passwords or keys are ever shown.']
  ]},
  {n:6,title:'School Admin setup',goal:'The admin builds the whole school by hand and by spreadsheet upload: teachers, classes, students, enrollments.',tests:[
   ['ADM-01','School Admin','Open the invite email and click Accept.','Activation page. Email is pre-filled and locked.'],
@@ -251,6 +266,12 @@ const PHASES=[
   ['ADM-35','School Admin','Human step: hand out student logins (print login cards, export PDF, or email) [CONFIRM method].','Printout is readable with correct usernames. No passwords in plain text unless intended.',1],
   ['ADM-36','School Admin','Open the dashboard and reports.','5 teachers, 10 students, 2+ classes.'],
   ['ADM-37','School Admin','Log out.','Session ends.']
+ ]},
+ {n:6.5,label:'6H',title:'Homeschool variant',goal:'A homeschool parent buys, sets up children, and the children log in.',tests:[
+  ['HS-01','Homeschool parent','Buy a homeschool plan in the Shop.','Checkout and receipt work. Account is set up as a homeschool, not a school.'],
+  ['HS-02','Homeschool parent','Sign in, add 2 children, and assign grade levels.','Children created. No school-admin-only screens shown.'],
+  ['HS-03','Homeschool parent','Ask the Rooted Helper "Reset my child\'s password?" and follow its answer.','Answer is right for a homeschool parent. The reset works.'],
+  ['HS-04','Student','Log in as each child.','Each sees only their own grade\'s curriculum.']
  ]},
  {n:7,title:'Teacher journey',goal:'Teacher 1 goes from invite to daily use. Use a separate private window or a Chromebook.',tests:[
   ['TCH-01','Teacher','Open the invite email and click Accept.','Activation page. An old link shows an expired message after [CONFIRM].'],
@@ -281,7 +302,9 @@ const PHASES=[
   ['LOOP-02','Teacher','Grade Student 1: 8/10 with written feedback. Publish or return it.','Grade saved.'],
   ['LOOP-03','Student','Log in as Student 1 and open grades and feedback.','Sees 8/10 and the feedback. Notification arrives if designed.',1],
   ['LOOP-04','Teacher','After the due date (or move it to the past), check a student who did not submit.','Marked Missing/Late per design.'],
-  ['LOOP-05','School Admin','Log in and open reports or the gradebook [CONFIRM].','Assignment and grade activity visible. Usage shows the teacher and student logins.'],
+  ['LOOP-05','School Admin','Log in and open reports or the gradebook in the learning platform [CONFIRM].','Assignment and grade activity visible. Usage shows the teacher and student logins.'],
+  ['LOOP-05a','DeepRoots Staff','Open the school\'s page in the School Portal.','Curriculum login analytics show today\'s teacher and student logins. The "last updated" stamp is recent.'],
+  ['LOOP-07','School Admin','Send DeepRoots a tech question and a content question [CONFIRM: where schools send messages].','In the staff Inbox, tech goes to Technology and content to Editorial. Each shows as a ticket in the Support queue.'],
   ['LOOP-06','Teacher','Send a message to Student 1 and have the student reply, if messaging exists [CONFIRM].','Delivered both ways within school messaging rules.']
  ]},
  {n:10,title:'Security & permissions',goal:'People only see what their role allows.',tests:[
@@ -290,7 +313,11 @@ const PHASES=[
   ['SEC-03','Student','Change the ID in a page address (e.g. /students/123 → /students/124).','Cannot see another student\'s data.'],
   ['SEC-04','School Admin','Deactivate Teacher 3 and Student 9, then try to log in as each.','Both refused with a clear message.'],
   ['SEC-05','School Admin','As the admin of a different QA school (another browser run), open an address from this school.','Access denied. Schools are separate.'],
-  ['SEC-06','Tester','Log out, then press Back.','No protected pages visible from cache.']
+  ['SEC-06','Tester','Log out, then press Back.','No protected pages visible from cache.'],
+  ['SEC-07','Teacher','Ask the Rooted Helper an internal question ("Which schools renew soon?" or "Where\'s the Employee Handbook?").','Helper gives no internal information. A school never sees internal-only answers.'],
+  ['SEC-08','Tester','As teacher, school admin, and staff, ask the Rooted Helper each role\'s example question ("How do I fill out our roster?", "Add another teacher?", "Which schools renew soon?").','Each answer fits that role and is accurate.'],
+  ['SEC-09','School Admin','Open the staff portal address with a school account.','Access denied.'],
+  ['SEC-10','DeepRoots Staff','Open any dashboard section.','Shows a "last updated" stamp. Anything illustrative is clearly labelled.']
  ]}
 ];
 const ALL=[];PHASES.forEach(p=>p.tests.forEach(t=>ALL.push({id:t[0],who:t[1],act:t[2],exp:t[3],shot:!!t[4],phase:p.n})));
@@ -351,7 +378,7 @@ function renderRun(){
     const tests=p.tests.filter(t=>{const r=results[key(current,t[0])]||{};if(filter==='todo')return!r.status;if(filter==='bad')return r.status==='F'||r.status==='B';return true});
     if(!tests.length)return;
     shown+=tests.length;
-    html+=`<section class="phase" id="phase-${p.n}"><h2><span class="pn">Phase ${p.n}</span>${esc(p.title)}<span class="scope ${sc}">${sc==='full'?'Full run':sc==='smoke'?'Smoke test':'Out of scope'}</span></h2><p class="goal">${esc(p.goal)}</p>`;
+    html+=`<section class="phase" id="phase-${String(p.label||p.n)}"><h2><span class="pn">Phase ${p.label||p.n}</span>${esc(p.title)}<span class="scope ${sc}">${sc==='full'?'Full run':sc==='smoke'?'Smoke test':'Out of scope'}</span></h2><p class="goal">${esc(p.goal)}</p>`;
     if(sc==='smoke')html+=`<div class="smokenote">Smoke test on this browser: for each role, log in, open the main screen, do one key action, log out. Mark the other steps N/A.</div>`;
     html+=`<div class="tests">${tests.map(t=>rowHTML(t)).join('')}</div></section>`;
   });
