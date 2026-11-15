@@ -151,6 +151,18 @@ Suggested starting point (all editable):
   app-category traffic rules. It can't unlock a single app on a phone — that's Pinwheel /
   Screen Time territory (later phase).
 
+### Family devices
+- **Older son: Pinwheel (Android).** The kid app ships through Google Play and is approved
+  in Pinwheel's Caregiver Portal; Settings/uninstall stay locked by Pinwheel.
+  Open item: confirm Pinwheel can install from a Play *testing* track. New personal
+  Play developer accounts must run a closed test (12 testers, 14 days) before a public
+  release; an organization account (needs a D-U-N-S number) skips that.
+- **Younger son: older iPhone.** Needs iOS 15.1+ for the app (iPhone 6s/SE 1st gen or
+  newer). Distributed via TestFlight (Apple developer account). His Apple ID should be a
+  child account in Family Sharing so Screen Time can block deleting apps and changing
+  settings.
+- **Parents/caregivers:** any iPhone or Android, same app with an adult login.
+
 ## 6. Phases
 1. **Core loop** — rules engine ✅ (started), Supabase schema + auth, kid/parent apps:
    quests, timers, approvals, coins, gates, shout-outs, penalties, shop.
