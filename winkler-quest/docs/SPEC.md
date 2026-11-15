@@ -1,4 +1,4 @@
-# Winkler Quest — Product Spec (draft v0.2)
+# Winkler Quest — Product Spec (draft v0.3)
 
 A family quest app: the boys earn coins for chores, school, reading, memory work,
 skin care, lifting and more, then spend them on TV, gaming, car time and real-world
@@ -25,8 +25,16 @@ results; they never decide balances.
 - Activities pay a fixed amount (check / photo-proof) or per minute (timed), with
   optional min/max minutes and a daily cap.
 
+### Household chores (starter list)
+- **Chickens, daily:** collect eggs; food and water full (photo proof).
+- **Chickens, weekly:** clean the coop.
+- **Yard, weekly:** mow (about 5 hours in one sitting, pays the most), weed eating.
+- **House:** clean own bathroom (weekly), room clean (daily), make bed (daily), homework.
+- **Growth:** reading, memory work, lifting, skin care, supervised driving (older son).
+- **Mom's asks:** whatever comes up during the day (see below).
+
 ### Tiers
-`must` (mowing, homework, dishes) · `growth` (reading, memory, lifting, skin care,
+`must` (mowing, coop, homework) · `growth` (reading, memory, lifting, skin care,
 driving practice) · `easy` (make bed) · `bonus`. **Must-dos pay the most.**
 
 ### Gates — "you have to do this to unlock the rest"
@@ -53,6 +61,41 @@ The answer to "they do the fun stuff and skip the mowing":
 - It must be unsolicited. Fishing for compliments doesn't count; the parent decides.
 - Later idea: a "shout-out" QR card the kid can't fill in, so a coach can send a
   note straight to the parent app.
+
+### Separate reward system per son
+One son is a doer, one needs a push, so each son has his own economy:
+- his own pay rate per activity (e.g. the coop pays son2 120, son1 80),
+- his own reward prices (e.g. gaming costs son2 100, son1 80),
+- his own gates and strictness (which chores need a photo check, whether missed
+  asks cost coins, whether reading is held until chores are done),
+- his own compliment value and level curve.
+
+Suggested starting point (all editable):
+
+| | Doer | Needs a push |
+|---|---|---|
+| Must-dos pay | standard | ~50% more |
+| Easy stuff pays | standard | less |
+| Daily gate holds | easy only | everything (reading, lifting, easy) |
+| Mom's asks | trusted, no penalty | photo/confirm, part of the daily gate, missed = lose its value |
+| Missed day | held coins released | held coins forfeited |
+
+### Parents and caregivers
+- **Parents** (Mom, Dad): can do everything, including undoing any entry.
+- **Caregivers** (older sibling, grandparent, guardian, sitter): a parent adds them and
+  picks exactly what they can do: approve chores, hand out asks, log compliments,
+  give bonuses, take away coins. Optionally limited to certain kids, with daily caps
+  (e.g. big sister can take away at most 15 coins a day).
+- Every action shows who did it. Parents can undo a caregiver's penalty or bonus.
+- Caregivers can be switched off (e.g. a sitter only on weekends) without deleting history.
+- Anything attempted without permission is ignored and shown to parents.
+
+### Mom's asks (chores handed out during the day)
+- Any adult with permission can send a son a one-off ask from their phone:
+  "Unload the dishwasher before dinner — 20 coins".
+- The son marks it done; the adult confirms (per son's settings).
+- Asks can be part of the daily gate (the shop stays locked until they're done)
+  and, for the son who needs a push, missing the due time costs the ask's value.
 
 ### Approvals, penalties, bonuses
 - Any activity can require parent approval (photo proof is recommended for big chores).
@@ -81,7 +124,9 @@ The answer to "they do the fun stuff and skip the mowing":
   from a kid device. Server stamps every time — the phone clock is ignored.
 - Kid accounts can't reach parent screens; parent actions need PIN or Face ID.
 - Photo proof + parent approval for anything worth real time.
-- Full audit log visible to parents.
+- Full audit log visible to parents, with who did what.
+- Redemptions record the price paid, so price changes never rewrite history.
+  Config changes are versioned the same way in the backend.
 - Device level: Pinwheel Caregiver Portal / iOS Screen Time to prevent uninstalling.
   UniFi: device matching with private-MAC turned off on the boys' devices.
 
@@ -107,6 +152,8 @@ The answer to "they do the fun stuff and skip the mowing":
 4. Approve everything, or auto-count small habits?
 5. UniFi gateway model; is there a Pi/home server that can stay on?
 6. OK with Apple/Google developer accounts?
-7. Second parent account needed?
-8. Shout-out value (default 150) and whether held coins should be forfeited or just
+7. Who does the chickens, mowing and weed eating, and is it the same every week or rotated?
+8. Which son is the doer and which needs a push?
+9. Which caregivers, and what each may do (and their daily limits)?
+10. Shout-out value (default 150) and whether held coins should be forfeited or just
    delayed when must-dos are missed.
