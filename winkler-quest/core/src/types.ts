@@ -39,6 +39,8 @@ export interface KidEconomy {
 export interface Kid {
   id: string;
   name: string;
+  /** "MM-DD". Real values live only in the private database, never in this repo. */
+  birthday?: string;
   economy: KidEconomy;
 }
 

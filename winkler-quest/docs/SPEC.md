@@ -64,8 +64,8 @@ The answer to "they do the fun stuff and skip the mowing":
 
 ### Separate reward system per son
 One son is a doer, one needs a push, so each son has his own economy:
-- his own pay rate per activity (e.g. the coop pays son2 120, son1 80),
-- his own reward prices (e.g. gaming costs son2 100, son1 80),
+- his own pay rate per activity (e.g. the coop pays younger 120, older 80),
+- his own reward prices (e.g. gaming costs younger 100, older 80),
 - his own gates and strictness (which chores need a photo check, whether missed
   asks cost coins, whether reading is held until chores are done),
 - his own compliment value and level curve.
