@@ -62,6 +62,11 @@ export interface Activity {
   dailyCap?: number;
   /** If true, coins only count once an adult approves. */
   requiresApproval: boolean;
+  /**
+   * Shared chore that takes turns (e.g. chickens: one son per day).
+   * Only the kid on duty earns for it and needs it for his gates.
+   */
+  rotation?: { kidIds: string[]; period: Period };
 }
 
 export type Period = "day" | "week";
@@ -198,6 +203,13 @@ export interface RedemptionEvent extends Base {
   cost: number;
 }
 
+/** Parent-only: end a running digital reward now (no refund). */
+export interface AccessEndEvent extends Base {
+  type: "access-end";
+  unifiGroup: string;
+  by: string;
+}
+
 /** Parent-only: cancel any event (e.g. undo a caregiver's penalty). */
 export interface VoidEvent extends Base {
   type: "void";
@@ -213,4 +225,5 @@ export type LedgerEvent =
   | ComplimentEvent
   | AdjustEvent
   | RedemptionEvent
+  | AccessEndEvent
   | VoidEvent;

@@ -25,6 +25,12 @@ results; they never decide balances.
 - Activities pay a fixed amount (check / photo-proof) or per minute (timed), with
   optional min/max minutes and a daily cap.
 
+### Who does what
+- **Older son:** the doer; mows (weekly, ~5 hours). Driver's-license track.
+- **Younger son:** needs a push; weed eats (weekly).
+- **Both:** chickens. Daily eggs + food/water alternate by day (only the son on
+  duty earns it and is gated on it); both clean the coop weekly.
+
 ### Household chores (starter list)
 - **Chickens, daily:** collect eggs; food and water full (photo proof).
 - **Chickens, weekly:** clean the coop.
@@ -108,6 +114,13 @@ Suggested starting point (all editable):
   device group in UniFi and re-blocks it when time runs out.
 - **Physical** (pizza party, cash, outing): parent fulfils it and marks it as delivered.
 - **Car time**: older son only; unlocked through the driver's-license track.
+
+### UniFi bridge (built, needs your network details)
+- Digital rewards open a device group (`tv`, `consoles`, ...) for their minutes;
+  redeeming more while open stacks onto the end.
+- Parents can cut access off now (no refund) or void a redemption (refund).
+- The bridge polls the backend, blocks/unblocks the group's devices to match,
+  and fails closed if it loses contact. See `bridge/README.md`.
 
 ## 3. Game layer (Phase 3)
 - Board map: the kid advances along a path by XP; milestones every level.

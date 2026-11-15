@@ -1,6 +1,7 @@
 // Starter config — placeholder names and values. Parents edit all of this in the app.
-// older = 14, turning 15 (driver's-license track). Set up as the "doer" for now.
-// younger = 13, turning 14. Set up as the one who "needs a push" for now. Swap if backwards.
+// older = 14, turning 15: the doer, driver's-license track, mows.
+// younger = 13, turning 14: needs a push, weed eats.
+// Chickens: daily chores alternate by day; both clean the coop weekly.
 import type { Config } from "./types.ts";
 
 export const sampleConfig: Config = {
@@ -26,6 +27,7 @@ export const sampleConfig: Config = {
           eggs: { points: 15, requiresApproval: true },
           "feed-water": { points: 15, requiresApproval: true },
           "coop-clean": { points: 120 },
+          "weed-eat": { points: 200 },
           bathroom: { points: 90 },
           "room-clean": { points: 25, requiresApproval: true },
           "make-bed": { points: 2 },
@@ -58,12 +60,12 @@ export const sampleConfig: Config = {
 
   activities: [
     // ---- Chickens (daily + weekly) ----
-    { id: "eggs", name: "Collect the eggs", kidIds: ["older", "younger"], tier: "must", kind: "proof", points: 10, dailyCap: 1, requiresApproval: false },
-    { id: "feed-water", name: "Chicken food & water full", kidIds: ["older", "younger"], tier: "must", kind: "proof", points: 10, dailyCap: 1, requiresApproval: false },
+    { id: "eggs", name: "Collect the eggs", kidIds: ["older", "younger"], rotation: { kidIds: ["older", "younger"], period: "day" }, tier: "must", kind: "proof", points: 10, dailyCap: 1, requiresApproval: false },
+    { id: "feed-water", name: "Chicken food & water full", kidIds: ["older", "younger"], rotation: { kidIds: ["older", "younger"], period: "day" }, tier: "must", kind: "proof", points: 10, dailyCap: 1, requiresApproval: false },
     { id: "coop-clean", name: "Clean the chicken coop", kidIds: ["older", "younger"], tier: "must", kind: "proof", points: 80, requiresApproval: true },
     // ---- Yard (weekly) ----
-    { id: "mow", name: "Mow the yard (~5 hrs)", kidIds: ["older", "younger"], tier: "must", kind: "proof", points: 400, requiresApproval: true },
-    { id: "weed-eat", name: "Weed eating", kidIds: ["older", "younger"], tier: "must", kind: "proof", points: 150, requiresApproval: true },
+    { id: "mow", name: "Mow the yard (~5 hrs)", kidIds: ["older"], tier: "must", kind: "proof", points: 400, requiresApproval: true },
+    { id: "weed-eat", name: "Weed eating", kidIds: ["younger"], tier: "must", kind: "proof", points: 150, requiresApproval: true },
     // ---- House ----
     { id: "bathroom", name: "Clean your bathroom", kidIds: ["older", "younger"], tier: "must", kind: "proof", points: 60, requiresApproval: true },
     { id: "room-clean", name: "Room clean", kidIds: ["older", "younger"], tier: "must", kind: "proof", points: 15, dailyCap: 1, requiresApproval: false },
@@ -81,12 +83,12 @@ export const sampleConfig: Config = {
     // older (doer): daily gate only holds the easy stuff; weekly yard + bathroom lock the shop.
     {
       id: "older-daily", name: "Daily must-dos", kidId: "older", period: "day",
-      requiredActivityIds: ["homework"],
+      requiredActivityIds: ["eggs", "feed-water", "homework"],
       holdsTiers: ["easy"], blocksRedemption: true, onMiss: "release",
     },
     {
       id: "older-weekly", name: "Weekly must-dos", kidId: "older", period: "week",
-      requiredActivityIds: ["mow", "weed-eat", "bathroom"],
+      requiredActivityIds: ["mow", "coop-clean", "bathroom"],
       holdsTiers: ["easy"], blocksRedemption: true, onMiss: "forfeit",
     },
     // younger (needs a push): chickens + homework + Mom's asks hold EVERYTHING else.
@@ -97,7 +99,7 @@ export const sampleConfig: Config = {
     },
     {
       id: "younger-weekly", name: "Weekly must-dos", kidId: "younger", period: "week",
-      requiredActivityIds: ["coop-clean", "bathroom"],
+      requiredActivityIds: ["weed-eat", "coop-clean", "bathroom"],
       holdsTiers: ["easy"], blocksRedemption: true, onMiss: "forfeit",
     },
   ],

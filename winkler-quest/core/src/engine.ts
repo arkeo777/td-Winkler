@@ -26,7 +26,8 @@ export type EntryStatus =
   | "too-short" // timed session under the minimum
   | "over-limit" // caregiver hit their daily penalty/bonus limit (partially applied)
   | "unauthorized" // someone without permission tried it — ignored, shown to parents
-  | "missed"; // an ask passed its due time undone
+  | "missed" // an ask passed its due time undone
+  | "not-your-turn"; // shared chore on the other kid's day
 
 export interface HistoryEntry {
   eventId: string;
@@ -102,6 +103,19 @@ export function timedMinutes(ev: CompletionEvent): number {
   if (!ev.startedAt || !ev.endedAt) return 0;
   const ms = Date.parse(ev.endedAt) - Date.parse(ev.startedAt);
   return Math.max(0, Math.floor(ms / 60000));
+}
+
+/** Sequential number of the day/week a period key falls in (for rotations). */
+function periodIndex(pk: string, period: Period): number {
+  const days = Math.floor(Date.parse(pk + "T00:00:00Z") / 86400000);
+  return period === "day" ? days : Math.floor((days + 3) / 7); // epoch was a Thursday
+}
+
+/** Is this kid on duty for a rotating chore in the period containing `iso`? */
+export function onDuty(a: Activity, kidId: string, iso: string, tz: string): boolean {
+  if (!a.rotation) return true;
+  const { kidIds, period } = a.rotation;
+  return kidIds[periodIndex(periodKey(iso, tz, period), period) % kidIds.length] === kidId;
 }
 
 // ---------- per-kid economy + permissions ----------
@@ -224,7 +238,7 @@ export function computeKid(
   for (const e of events) {
     if (e.type !== "completion") continue;
     const a = unitFor(e);
-    if (!a || countStatus(a, e) !== "ok") continue;
+    if (!a || countStatus(a, e) !== "ok" || !onDuty(a, kidId, e.at, tz)) continue;
     if (e.askId && !askDone.has(e.askId)) askDone.set(e.askId, e.at);
     for (const g of gates) {
       const k = `${g.id}|${periodKey(e.at, tz, g.period)}`;
@@ -235,7 +249,13 @@ export function computeKid(
   const gateRemaining = (g: Gate, pk: string): string[] => {
     const s = done.get(`${g.id}|${pk}`);
     const out = g.requiredActivityIds
-      .filter((id) => !s?.has(id))
+      .filter((id) => {
+        const a = activities.get(id);
+        if (!a || !a.kidIds.includes(kidId)) return false;
+        // A rotating chore is only required on this kid's turn.
+        if (a.rotation && (a.rotation.period !== g.period || !onDuty(a, kidId, pk + "T12:00:00Z", "UTC"))) return false;
+        return !s?.has(id);
+      })
       .map((id) => activities.get(id)?.name ?? id);
     if (g.includeAsks) {
       for (const ask of asks.values()) {
@@ -305,6 +325,7 @@ export function computeKid(
         const status = countStatus(a, e);
         const { pts, tooShort } = basePoints(a, e);
         if (status === "rejected") { push({ label, delta: 0, status: "rejected" }); break; }
+        if (!onDuty(a, kidId, e.at, tz)) { push({ label, delta: 0, status: "not-your-turn" }); break; }
         if (tooShort) { push({ label, delta: 0, status: "too-short" }); break; }
 
         // Daily cap (activities) / pay-once (asks). Pending attempts hold a slot.
@@ -512,4 +533,55 @@ export function checkAdultAction(
     }
   }
   return { ok: true };
+}
+
+// ---------- digital access (what the home bridge enforces) ----------
+
+export interface AccessWindow {
+  group: string;
+  open: boolean;
+  /** When access ends (ISO). */
+  until?: string;
+  /** Who redeemed the time that's running. */
+  kidIds: string[];
+}
+
+/**
+ * Which UniFi device groups should be unblocked right now.
+ * Redeeming time while a group is already open stacks onto the end.
+ * A parent's "access-end" stops it immediately; a parent void of the
+ * redemption removes it (and refunds the coins).
+ */
+export function accessWindows(config: Config, ledger: LedgerEvent[], now: string): AccessWindow[] {
+  const nowMs = Date.parse(now);
+  const parents = new Set(config.actors.filter((a) => a.active && a.role === "parent").map((a) => a.id));
+  const voided = new Set(
+    ledger.filter((e) => e.type === "void" && parents.has(e.by)).map((e) => (e as { targetId: string }).targetId),
+  );
+  const groups = new Map<string, { end: number; kidIds: Set<string> }>();
+  for (const r of config.rewards) if (r.unifiGroup) groups.set(r.unifiGroup, { end: 0, kidIds: new Set() });
+
+  const events = ledger
+    .filter((e) => !voided.has(e.id) && Date.parse(e.at) <= nowMs)
+    .sort((a, b) => a.at.localeCompare(b.at));
+  for (const e of events) {
+    if (e.type === "redemption") {
+      const r = config.rewards.find((x) => x.id === e.rewardId);
+      if (!r?.unifiGroup || !r.minutes) continue;
+      const g = groups.get(r.unifiGroup)!;
+      const t = Date.parse(e.at);
+      if (g.end <= t) g.kidIds.clear();
+      g.end = Math.max(g.end, t) + r.minutes * 60000;
+      g.kidIds.add(e.kidId);
+    } else if (e.type === "access-end" && parents.has(e.by)) {
+      const g = groups.get(e.unifiGroup);
+      if (g) g.end = Math.min(g.end, Date.parse(e.at));
+    }
+  }
+  return [...groups.entries()].map(([group, g]) => {
+    const open = g.end > nowMs;
+    return open
+      ? { group, open, until: new Date(g.end).toISOString(), kidIds: [...g.kidIds] }
+      : { group, open, kidIds: [] };
+  });
 }

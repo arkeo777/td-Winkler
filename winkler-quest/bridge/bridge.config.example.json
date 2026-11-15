@@ -1,0 +1,18 @@
+{
+  "unifi": {
+    "baseUrl": "https://192.168.1.1",
+    "username": "wq-bridge",
+    "passwordEnv": "WQ_UNIFI_PASSWORD",
+    "site": "default"
+  },
+  "backend": {
+    "url": "https://YOUR-BACKEND/functions/v1/access-windows",
+    "tokenEnv": "WQ_BRIDGE_TOKEN"
+  },
+  "groups": {
+    "tv": ["00:00:00:00:00:01"],
+    "consoles": ["00:00:00:00:00:02", "00:00:00:00:00:03"]
+  },
+  "pollSeconds": 15,
+  "graceSeconds": 120
+}

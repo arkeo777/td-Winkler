@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { canRedeem, checkAdultAction, computeKid, periodKey, rewardCost } from "../src/engine.ts";
+import { accessWindows, canRedeem, checkAdultAction, computeKid, periodKey, rewardCost } from "../src/engine.ts";
 import { sampleConfig as cfg } from "../src/sample-config.ts";
 import type { LedgerEvent } from "../src/types.ts";
 
@@ -94,10 +94,10 @@ test("older: weekly yard + bathroom lock the shop until approved", () => {
   assert.equal(s.shopLocked, true, "pending mowing doesn't unlock anything");
   assert.equal(canRedeem(cfg, ledger, "older", "gaming-1h", MON_LATER).ok, false);
 
-  ledger.push(approve(mow), ...did("older", "weed-eat", MON_LATER), ...did("older", "bathroom", MON_LATER));
+  ledger.push(approve(mow), ...did("older", "coop-clean", MON_LATER), ...did("older", "bathroom", MON_LATER));
   s = computeKid(cfg, ledger, "older", MON_LATER);
   assert.equal(s.shopLocked, false);
-  assert.equal(s.available, 30 + 400 + 150 + 60);
+  assert.equal(s.available, 30 + 400 + 80 + 60);
   const r = canRedeem(cfg, ledger, "older", "gaming-1h", MON_LATER);
   assert.ok(r.ok && r.cost === 80);
 });
@@ -243,4 +243,51 @@ test("new week resets the weekly gate", () => {
   const s = computeKid(cfg, did("older", "mow", MON), "older", NEXT_MON);
   assert.equal(s.gates.find((g) => g.gateId === "older-weekly")!.met, false);
   assert.equal(s.available, 400);
+});
+
+// ---------- assignments & rotation ----------
+
+test("mowing is the older son's job, weed eating the younger's", () => {
+  assert.equal(computeKid(cfg, did("younger", "mow", MON), "younger", MON_LATER).available, 0);
+  assert.equal(computeKid(cfg, did("older", "weed-eat", MON), "older", MON_LATER).available, 0);
+  assert.equal(computeKid(cfg, did("younger", "weed-eat", MON), "younger", MON_LATER).available, 200);
+});
+
+test("daily chickens alternate: only the son on duty earns and is gated", () => {
+  // Monday is the younger son's turn, Tuesday the older's.
+  const mon = computeKid(cfg, did("older", "eggs", MON), "older", MON_LATER);
+  assert.equal(mon.available, 0);
+  assert.equal(mon.history[0].status, "not-your-turn");
+  assert.deepEqual(mon.gates.find((g) => g.gateId === "older-daily")!.remaining, ["Homework done"]);
+
+  const tue = computeKid(cfg, [], "older", TUE);
+  assert.deepEqual(tue.gates.find((g) => g.gateId === "older-daily")!.remaining.sort(), [
+    "Chicken food & water full", "Collect the eggs", "Homework done",
+  ]);
+  const yTue = computeKid(cfg, [], "younger", TUE);
+  assert.deepEqual(yTue.gates.find((g) => g.gateId === "younger-daily")!.remaining, ["Homework done"]);
+});
+
+// ---------- digital access windows (UniFi) ----------
+
+test("redeeming TV opens the tv group for 60 minutes; stacking extends it", () => {
+  const r1: LedgerEvent = { id: id(), type: "redemption", kidId: "older", at: MON, rewardId: "tv-1h", cost: 60 };
+  const r2: LedgerEvent = { id: id(), type: "redemption", kidId: "younger", at: "2026-11-16T18:30:00.000Z", rewardId: "tv-1h", cost: 60 };
+  let w = accessWindows(cfg, [r1], "2026-11-16T18:59:00.000Z").find((x) => x.group === "tv")!;
+  assert.equal(w.open, true);
+  assert.equal(w.until, "2026-11-16T19:00:00.000Z");
+  assert.equal(accessWindows(cfg, [r1], "2026-11-16T19:00:00.000Z").find((x) => x.group === "tv")!.open, false);
+
+  w = accessWindows(cfg, [r1, r2], "2026-11-16T19:30:00.000Z").find((x) => x.group === "tv")!;
+  assert.equal(w.until, "2026-11-16T20:00:00.000Z");
+  assert.deepEqual(w.kidIds.sort(), ["older", "younger"]);
+  assert.equal(accessWindows(cfg, [r1], MON).find((x) => x.group === "consoles")!.open, false);
+});
+
+test("a parent can cut access off now; a caregiver can't", () => {
+  const r: LedgerEvent = { id: id(), type: "redemption", kidId: "older", at: MON, rewardId: "gaming-1h", cost: 80 };
+  const cut = (by: string): LedgerEvent => ({ id: id(), type: "access-end", kidId: "older", at: "2026-11-16T18:10:00.000Z", unifiGroup: "consoles", by });
+  const at = "2026-11-16T18:20:00.000Z";
+  assert.equal(accessWindows(cfg, [r, cut("big-sister")], at).find((x) => x.group === "consoles")!.open, true);
+  assert.equal(accessWindows(cfg, [r, cut("dad")], at).find((x) => x.group === "consoles")!.open, false);
 });
