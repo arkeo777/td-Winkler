@@ -157,11 +157,14 @@ Suggested starting point (all editable):
   Open item: confirm Pinwheel can install from a Play *testing* track. New personal
   Play developer accounts must run a closed test (12 testers, 14 days) before a public
   release; an organization account (needs a D-U-N-S number) skips that.
-- **Younger son: older iPhone.** Needs iOS 15.1+ for the app (iPhone 6s/SE 1st gen or
-  newer). Distributed via TestFlight (Apple developer account). His Apple ID should be a
+- **Younger son: iPhone 15 (Pro) Max.** Fully supported. Distributed via TestFlight (Apple developer account). His Apple ID should be a
   child account in Family Sharing so Screen Time can block deleting apps and changing
   settings.
 - **Parents/caregivers:** any iPhone or Android, same app with an adult login.
+- **Network:** UniFi Cloud Gateway Fiber (192.168.1.1). **Bridge host:** Mac mini M4,
+  run as a launchd service, never sleeps, restarts after power loss.
+
+Open decisions are tracked in [`DECISIONS.md`](DECISIONS.md).
 
 ## 6. Phases
 1. **Core loop** — rules engine ✅ (started), Supabase schema + auth, kid/parent apps:
