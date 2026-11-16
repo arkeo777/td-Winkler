@@ -41,6 +41,8 @@ test("tick applies actions through the controller", async () => {
     blockedMacs: async () => new Set(blocked),
     block: async (m) => void blocked.add(m),
     unblock: async (m) => void blocked.delete(m),
+    ruleStates: async () => new Map(),
+    setRule: async () => {},
   };
   await tick(fake, groups, async () => [open("tv"), closed("consoles")], () => {});
   assert.deepEqual([...blocked].sort(), ["aa:aa:aa:aa:aa:02", "aa:aa:aa:aa:aa:03"]);
@@ -73,4 +75,12 @@ test("legacy client: logs in, sends CSRF + cookie, re-logs in on 401", async () 
   assert.deepEqual(JSON.parse(last.init.body), { cmd: "unblock-sta", mac: "aa:aa:aa:aa:aa:01" });
   assert.equal(last.init.headers.cookie, "TOKEN=t2");
   assert.equal(last.init.headers["x-csrf-token"], "c2");
+});
+
+test("YouTube rule: enabled (blocking) unless YouTube time is running", () => {
+  const g = { "tv-youtube": { blockRule: "r1" } };
+  assert.deepEqual(reconcile(g, [closed("tv-youtube")], new Set(), new Map([["r1", false]])).map((a) => a.kind === "rule" && a.enable), [true]);
+  assert.deepEqual(reconcile(g, [open("tv-youtube")], new Set(), new Map([["r1", true]])).map((a) => a.kind === "rule" && a.enable), [false]);
+  assert.deepEqual(reconcile(g, [open("tv-youtube")], new Set(), new Map([["r1", false]])), []);
+  assert.deepEqual(reconcile(g, null, new Set(), new Map([["r1", false]])).map((a) => a.kind === "rule" && a.enable), [true]);
 });

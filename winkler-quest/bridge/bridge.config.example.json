@@ -10,8 +10,10 @@
     "tokenEnv": "WQ_BRIDGE_TOKEN"
   },
   "groups": {
-    "tv": ["00:00:00:00:00:01"],
-    "consoles": ["00:00:00:00:00:02", "00:00:00:00:00:03"]
+    "tv-youtube": { "blockRule": "ID-OF-UNIFI-RULE-BLOCKING-YOUTUBE-ON-THE-TV" },
+    "xbox": ["00:00:00:00:00:01"],
+    "switch": ["00:00:00:00:00:02"],
+    "desktop": ["00:00:00:00:00:03"]
   },
   "pollSeconds": 15,
   "graceSeconds": 120

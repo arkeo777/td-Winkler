@@ -21,22 +21,22 @@ Full chore / reward / character list: [`CATALOG.md`](CATALOG.md). ✅ = decided.
   600-coin screen-time bank cap
 - ✅ Private scores + a brothers team goal; Mom has full parent access
 
+- ✅ Desktop: used only by the boys for games, so the whole computer is blocked outside their time
+- ✅ Samsung TV: only YouTube is blocked (a UniFi rule the bridge switches on/off); streaming TV stays on
+- ✅ The boys' Nintendo Switch is controlled; the other household Switch is not
+- ✅ Offline games: consoles' own parental-control daily limits as a backstop
+- ✅ Family movie-night button (parents only; opens devices for everyone, no coins)
+- ✅ Trash night: both boys, photo of the can at the road
+- ✅ Cash-out: 10 coins = $1, max $20 per week each
+- ✅ Helpers: adult brother, two sisters, sister-in-law. They can take coins away
+  (talking back, chore not done) or add them (exceptional work, very helpful),
+  up to 50 coins each way per son per day. Parents can undo anything.
+
 ## Still open
-1. **The desktop** — whose is it? Blocking it on the network would also block
-   whoever else uses it. Default: block only Fortnite/Epic on that computer
-   (the rest of the internet keeps working), plus a parent "I'm using it" unlock.
-2. **Samsung TV** — streaming only, or also cable/antenna? The router can stop
-   YouTube and streaming apps, not antenna/cable TV.
-3. **Wii** — is there a Wii as well as the Switch?
-4. **Offline games** — the router only stops online play (Fortnite, YouTube).
-   Offline Switch/Xbox games need the consoles' own parental-control daily limits
-   as a backstop. OK to set those up?
-5. **Family-time unlock** — a parent button to open the TV/consoles for everyone
-   (movie night) without spending anyone's coins. Default: yes.
-6. **Trash night** — who takes the can down? Default: alternate weeks.
-7. **Cash-out rate** — 10 coins = $1 (mowing ≈ $40, gaming hour ≈ $8). Weekly cash-out cap?
-8. **Month / year prizes and the younger son's big goal** for the end of his map.
-9. **Caregivers** — who, and what each may do.
-10. **Accounts** — Supabase (free), Apple Developer ($99/yr), Google Play ($25).
-11. **Pinwheel support** — can the Caregiver Portal approve an app in a Google Play
-    closed-testing track?
+1. **Younger son's map** and his big end goal.
+2. **Monthly and yearly prizes.**
+3. **Accounts:** Supabase (free), Apple Developer ($99/yr), Google Play ($25).
+4. **Pinwheel support:** can the Caregiver Portal approve an app in a Google Play
+   closed-testing track?
+5. **On-site setup day** (needs you home): pick devices in UniFi, create the
+   YouTube rule, bridge account, Mac mini service.

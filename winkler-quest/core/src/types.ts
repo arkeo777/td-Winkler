@@ -62,6 +62,10 @@ export interface Activity {
   dailyCap?: number;
   /** If true, coins only count once an adult approves. */
   requiresApproval: boolean;
+  /** Only on these weekdays (0 = Sunday ... 6 = Saturday), e.g. trash night = [1]. */
+  weekdays?: number[];
+  /** Only in these months (1-12), e.g. mowing = April-October. Off-season it isn't required or paid. */
+  activeMonths?: number[];
   /**
    * Shared chore that takes turns (e.g. chickens: one son per day).
    * Only the kid on duty earns for it and needs it for his gates.
@@ -98,11 +102,13 @@ export interface Reward {
   name: string;
   /** Default price; a kid's economy can override it. */
   cost: number;
-  kind: "digital" | "physical";
+  kind: "digital" | "physical" | "cash";
+  /** Cash rewards: dollars paid out. */
+  dollars?: number;
   /** Digital: minutes of access granted on redeem. */
   minutes?: number;
-  /** Digital: which UniFi device group the home bridge unlocks. */
-  unifiGroup?: string;
+  /** Digital: device groups the kid can choose from when redeeming (e.g. xbox / switch / desktop). */
+  unifiGroups?: string[];
   /** Restrict a reward to certain kids (e.g. car time). */
   kidIds?: string[];
 }
@@ -138,6 +144,8 @@ export interface Config {
   /** Default coins for an unsolicited compliment from an adult outside the family. */
   compliment: { points: number };
   allowNegativeBalance: boolean;
+  /** Max dollars each kid can cash out per week. */
+  cashOutWeeklyMaxDollars?: number;
   /** Default lifetime XP needed per level (index = level - 1). */
   levelThresholds: number[];
 }
@@ -199,6 +207,8 @@ export interface AdjustEvent extends Base {
 export interface RedemptionEvent extends Base {
   type: "redemption";
   rewardId: string;
+  /** Digital rewards: the device group the kid picked. */
+  unifiGroup?: string;
   /** Price at the moment of purchase (so later price changes don't rewrite history). */
   cost: number;
 }
@@ -207,6 +217,14 @@ export interface RedemptionEvent extends Base {
 export interface AccessEndEvent extends Base {
   type: "access-end";
   unifiGroup: string;
+  by: string;
+}
+
+/** Parent-only: open device groups for everyone (family movie night), no coins spent. */
+export interface AccessGrantEvent extends Base {
+  type: "access-grant";
+  unifiGroups: string[];
+  minutes: number;
   by: string;
 }
 
@@ -226,4 +244,5 @@ export type LedgerEvent =
   | AdjustEvent
   | RedemptionEvent
   | AccessEndEvent
+  | AccessGrantEvent
   | VoidEvent;

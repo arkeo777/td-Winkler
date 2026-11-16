@@ -6,6 +6,9 @@ export interface UnifiController {
   blockedMacs(): Promise<Set<string>>;
   block(mac: string): Promise<void>;
   unblock(mac: string): Promise<void>;
+  /** Traffic rules (e.g. "Block YouTube on the Samsung TV"): id -> enabled. */
+  ruleStates(): Promise<Map<string, boolean>>;
+  setRule(id: string, enabled: boolean): Promise<void>;
 }
 
 export interface LegacyOptions {
@@ -53,9 +56,17 @@ export class LegacyUnifiClient implements UnifiController {
     this.csrf = res.headers.get("x-csrf-token") ?? "";
   }
 
-  private async call(path: string, init: { method: string; body?: unknown }, retried = false): Promise<any> {
+  private call(path: string, init: { method: string; body?: unknown }): Promise<any> {
+    return this.request(`/proxy/network/api/s/${this.site}${path}`, init);
+  }
+
+  private callV2(path: string, init: { method: string; body?: unknown }): Promise<any> {
+    return this.request(`/proxy/network/v2/api/site/${this.site}${path}`, init);
+  }
+
+  private async request(path: string, init: { method: string; body?: unknown }, retried = false): Promise<any> {
     if (!this.cookie) await this.login();
-    const res = await this.f(`${this.opts.baseUrl}/proxy/network/api/s/${this.site}${path}`, {
+    const res = await this.f(`${this.opts.baseUrl}${path}`, {
       method: init.method,
       headers: {
         "content-type": "application/json",
@@ -66,7 +77,7 @@ export class LegacyUnifiClient implements UnifiController {
     });
     if (res.status === 401 && !retried) {
       this.cookie = "";
-      return this.call(path, init, true);
+      return this.request(path, init, true);
     }
     const updated = res.headers.get("x-updated-csrf-token");
     if (updated) this.csrf = updated;
@@ -86,5 +97,21 @@ export class LegacyUnifiClient implements UnifiController {
 
   async unblock(mac: string): Promise<void> {
     await this.call("/cmd/stamgr", { method: "POST", body: { cmd: "unblock-sta", mac: mac.toLowerCase() } });
+  }
+
+  // Traffic rules (Settings -> Security / Traffic & Firewall Rules). Endpoint names vary by
+  // Network version; verify on the console during setup.
+  private rulesCache = new Map<string, any>();
+
+  async ruleStates(): Promise<Map<string, boolean>> {
+    const rows: any[] = (await this.callV2("/trafficrules", { method: "GET" })) ?? [];
+    this.rulesCache = new Map(rows.map((r) => [r._id, r]));
+    return new Map(rows.map((r) => [r._id as string, Boolean(r.enabled)]));
+  }
+
+  async setRule(id: string, enabled: boolean): Promise<void> {
+    const rule = this.rulesCache.get(id);
+    if (!rule) throw new Error(`Unknown traffic rule ${id}`);
+    await this.callV2(`/trafficrules/${id}`, { method: "PUT", body: { ...rule, enabled } });
   }
 }

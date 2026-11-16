@@ -111,11 +111,34 @@ function periodIndex(pk: string, period: Period): number {
   return period === "day" ? days : Math.floor((days + 3) / 7); // epoch was a Thursday
 }
 
-/** Is this kid on duty for a rotating chore in the period containing `iso`? */
+function weekdayOf(day: string): number {
+  return new Date(day + "T00:00:00Z").getUTCDay();
+}
+function monthOf(day: string): number {
+  return Number(day.slice(5, 7));
+}
+
+/** Is this kid on duty for this chore at `iso` (season, weekday, rotation)? */
 export function onDuty(a: Activity, kidId: string, iso: string, tz: string): boolean {
+  const day = localDate(iso, tz);
+  if (a.activeMonths && !a.activeMonths.includes(monthOf(day))) return false;
+  if (a.weekdays && !a.weekdays.includes(weekdayOf(day))) return false;
   if (!a.rotation) return true;
   const { kidIds, period } = a.rotation;
   return kidIds[periodIndex(periodKey(iso, tz, period), period) % kidIds.length] === kidId;
+}
+
+/** Is this chore required by gate `g` for the period starting `pk`? */
+function requiredInPeriod(a: Activity, kidId: string, g: Gate, pk: string): boolean {
+  if (!a.kidIds.includes(kidId)) return false;
+  if (a.activeMonths && !a.activeMonths.includes(monthOf(pk))) return false;
+  if (g.period === "day" && a.weekdays && !a.weekdays.includes(weekdayOf(pk))) return false;
+  if (a.rotation) {
+    if (a.rotation.period !== g.period) return false;
+    const { kidIds, period } = a.rotation;
+    return kidIds[periodIndex(pk, period) % kidIds.length] === kidId;
+  }
+  return true;
 }
 
 // ---------- per-kid economy + permissions ----------
@@ -251,9 +274,7 @@ export function computeKid(
     const out = g.requiredActivityIds
       .filter((id) => {
         const a = activities.get(id);
-        if (!a || !a.kidIds.includes(kidId)) return false;
-        // A rotating chore is only required on this kid's turn.
-        if (a.rotation && (a.rotation.period !== g.period || !onDuty(a, kidId, pk + "T12:00:00Z", "UTC"))) return false;
+        if (!a || !requiredInPeriod(a, kidId, g, pk)) return false;
         return !s?.has(id);
       })
       .map((id) => activities.get(id)?.name ?? id);
@@ -468,12 +489,26 @@ export function canRedeem(
   kidId: string,
   rewardId: string,
   now: string,
+  unifiGroup?: string,
 ): { ok: true; reward: Reward; cost: number } | { ok: false; reason: string } {
   const kid = getKid(config, kidId);
   const reward = config.rewards.find((r) => r.id === rewardId);
   if (!reward) return { ok: false, reason: "No such reward." };
   if (reward.kidIds && !reward.kidIds.includes(kidId)) {
     return { ok: false, reason: "This reward isn't available to you." };
+  }
+  if (reward.unifiGroups && unifiGroup !== undefined && !reward.unifiGroups.includes(unifiGroup)) {
+    return { ok: false, reason: `Pick one of: ${reward.unifiGroups.join(", ")}.` };
+  }
+  if (reward.kind === "cash" && config.cashOutWeeklyMaxDollars !== undefined) {
+    const week = periodKey(now, config.timezone, "week");
+    const spent = ledger
+      .filter((e) => e.type === "redemption" && e.kidId === kidId && periodKey(e.at, config.timezone, "week") === week)
+      .reduce((sum, e) => sum + (config.rewards.find((r) => r.id === (e as { rewardId: string }).rewardId)?.dollars ?? 0), 0);
+    if (spent + (reward.dollars ?? 0) > config.cashOutWeeklyMaxDollars) {
+      const left = Math.max(0, config.cashOutWeeklyMaxDollars - spent);
+      return { ok: false, reason: `Weekly cash-out limit is $${config.cashOutWeeklyMaxDollars}; $${left} left this week.` };
+    }
   }
   const cost = rewardCost(kid, reward);
   const s = computeKid(config, ledger, kidId, now);
@@ -559,7 +594,7 @@ export function accessWindows(config: Config, ledger: LedgerEvent[], now: string
     ledger.filter((e) => e.type === "void" && parents.has(e.by)).map((e) => (e as { targetId: string }).targetId),
   );
   const groups = new Map<string, { end: number; kidIds: Set<string> }>();
-  for (const r of config.rewards) if (r.unifiGroup) groups.set(r.unifiGroup, { end: 0, kidIds: new Set() });
+  for (const r of config.rewards) for (const g of r.unifiGroups ?? []) groups.set(g, { end: 0, kidIds: new Set() });
 
   const events = ledger
     .filter((e) => !voided.has(e.id) && Date.parse(e.at) <= nowMs)
@@ -567,12 +602,22 @@ export function accessWindows(config: Config, ledger: LedgerEvent[], now: string
   for (const e of events) {
     if (e.type === "redemption") {
       const r = config.rewards.find((x) => x.id === e.rewardId);
-      if (!r?.unifiGroup || !r.minutes) continue;
-      const g = groups.get(r.unifiGroup)!;
+      const group = e.unifiGroup ?? r?.unifiGroups?.[0];
+      if (!r?.minutes || !group || !r.unifiGroups?.includes(group)) continue;
+      const g = groups.get(group)!;
       const t = Date.parse(e.at);
       if (g.end <= t) g.kidIds.clear();
       g.end = Math.max(g.end, t) + r.minutes * 60000;
       g.kidIds.add(e.kidId);
+    } else if (e.type === "access-grant" && parents.has(e.by)) {
+      const t = Date.parse(e.at);
+      for (const name of e.unifiGroups) {
+        const g = groups.get(name);
+        if (!g) continue;
+        if (g.end <= t) g.kidIds.clear();
+        g.end = Math.max(g.end, t + e.minutes * 60000);
+        g.kidIds.add("family");
+      }
     } else if (e.type === "access-end" && parents.has(e.by)) {
       const g = groups.get(e.unifiGroup);
       if (g) g.end = Math.min(g.end, Date.parse(e.at));

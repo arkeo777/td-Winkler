@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { accessWindows, canRedeem, checkAdultAction, computeKid, periodKey, rewardCost } from "../src/engine.ts";
-import { sampleConfig as cfg } from "../src/sample-config.ts";
+import { fixtureConfig as cfg } from "./fixture-config.ts";
 import type { LedgerEvent } from "../src/types.ts";
 
 // Times are UTC; household is America/Chicago (UTC-6 in November).

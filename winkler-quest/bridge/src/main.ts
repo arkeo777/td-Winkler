@@ -28,9 +28,16 @@ export async function tick(
 ): Promise<void> {
   const windows = await getWindows();
   const blocked = await unifi.blockedMacs();
-  for (const a of reconcile(groups, windows, blocked)) {
-    await (a.action === "block" ? unifi.block(a.mac) : unifi.unblock(a.mac));
-    log(`${new Date().toISOString()} ${a.action} ${a.mac} (${a.reason})`);
+  const usesRules = Object.values(groups).some((g) => !Array.isArray(g));
+  const rules = usesRules ? await unifi.ruleStates() : new Map<string, boolean>();
+  for (const a of reconcile(groups, windows, blocked, rules)) {
+    if (a.kind === "device") {
+      await (a.action === "block" ? unifi.block(a.mac) : unifi.unblock(a.mac));
+      log(`${new Date().toISOString()} ${a.action} ${a.mac} (${a.reason})`);
+    } else {
+      await unifi.setRule(a.ruleId, a.enable);
+      log(`${new Date().toISOString()} rule ${a.ruleId} ${a.enable ? "on" : "off"} (${a.reason})`);
+    }
   }
 }
 
