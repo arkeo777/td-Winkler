@@ -4,6 +4,7 @@
 
 import type {
   Activity,
+  ActivityTuning,
   Actor,
   AskEvent,
   CompletionEvent,
@@ -151,7 +152,38 @@ function getKid(config: Config, kidId: string): Kid {
 
 /** The activity as this kid experiences it (his own pay rates and strictness). */
 export function activityFor(kid: Kid, a: Activity): Activity {
-  return { ...a, ...(kid.economy.activityTuning?.[a.id] ?? {}) };
+  const tuned = { ...a, ...(kid.economy.activityTuning?.[a.id] ?? {}) };
+  const m = kid.economy.payMultiplier ?? 1;
+  if (m === 1) return tuned;
+  return {
+    ...tuned,
+    points: tuned.points === undefined ? undefined : Math.round(tuned.points * m),
+    pointsPerMinute: tuned.pointsPerMinute === undefined ? undefined : tuned.pointsPerMinute * m,
+  };
+}
+
+/**
+ * The settings page's suggested value for a chore, from how hard it is and how
+ * long it takes. Rounded to the nearest 5. Parents can accept it or nudge it.
+ */
+export function suggestedPoints(config: Config, a: Activity): number | undefined {
+  if (!config.payScale || !a.typicalMinutes || !a.difficulty) return undefined;
+  const raw = a.typicalMinutes * config.payScale.coinsPerMinute * config.payScale.difficultyMultipliers[a.difficulty - 1];
+  return Math.max(5, Math.round(raw / 5) * 5);
+}
+
+/** The pay settings to stamp onto a completion when it's recorded (see CompletionEvent.snapshot). */
+export function snapshotFor(config: Config, kidId: string, activityId: string): ActivityTuning | undefined {
+  const a = config.activities.find((x) => x.id === activityId);
+  if (!a) return undefined;
+  const eff = activityFor(getKid(config, kidId), a);
+  return {
+    points: eff.points,
+    pointsPerMinute: eff.pointsPerMinute,
+    minMinutes: eff.minMinutes,
+    maxMinutes: eff.maxMinutes,
+    tier: eff.tier,
+  };
 }
 
 /** This kid's price for a reward. */
@@ -169,6 +201,10 @@ export function isAllowed(config: Config, actorId: string, kidId: string, perm: 
 
 function isParent(config: Config, actorId: string): boolean {
   return config.actors.some((a) => a.id === actorId && a.active && a.role === "parent");
+}
+
+function stripUndefined<T extends object>(o: T): Partial<T> {
+  return Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined)) as Partial<T>;
 }
 
 // ---------- engine ----------
@@ -245,7 +281,9 @@ export function computeKid(
       return ask ? askAsActivity(kid, ask) : undefined;
     }
     const a = e.activityId ? activities.get(e.activityId) : undefined;
-    return a && a.kidIds.includes(kidId) ? a : undefined;
+    if (!a || !a.kidIds.includes(kidId)) return undefined;
+    // Pay as it was when the work was done, not as it's set today.
+    return e.snapshot ? { ...a, ...stripUndefined(e.snapshot) } : a;
   };
   const countStatus = (a: Activity, e: CompletionEvent): CountStatus => {
     const r = reviews.get(e.id) ?? "none";

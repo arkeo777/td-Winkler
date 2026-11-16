@@ -158,3 +158,25 @@ Map stages: 📘 Permit test passed → 🚗 10 h → 25 h → 🌙 10 night hou
 8. **Penalties stay small** next to rewards; the app is mostly about catching them doing good.
 9. **Per-son difficulty.** Younger son starts with easy wins and the bar rises as
    his streaks grow; older son gets bigger, longer goals (license, cooking).
+
+## Settings page (parents only)
+Change values any time; changes apply **from now on** (coins already earned never change).
+
+**Chores**: each chore shows a card:
+- **Hardness:** 1–5 (Easy · Normal · Tough · Hard · Brutal) and **usual time** in minutes.
+- **Suggested value** = minutes × 1 coin × hardness (×0.5 / ×1 / ×1.25 / ×1.5 / ×2),
+  rounded to 5. Mowing (5 h, Hard) suggests 450; making a bed (3 min, Easy) suggests 5.
+- **Value:** accept the suggestion, or nudge it with − / + (5 coins a tap).
+- **Per son:** a separate value for each son if you want (e.g. coop pays the younger more).
+- Also on the card: photo required? needs a tap to approve? who does it / taking turns,
+  which days, which months, on or off.
+
+**Rewards**: the same − / + on every reward's price, per son.
+
+**Whole-son dial**: scale all of one son's chore pay up or down (e.g. +20% for a month
+to build momentum). Compliments and bonuses aren't affected.
+
+**Pay scale**: the coins-per-minute and the hardness multipliers behind the suggestions.
+
+**Other settings**: screen-time limits and quiet hours, cash-out rate and weekly cap,
+helpers and their limits, devices.

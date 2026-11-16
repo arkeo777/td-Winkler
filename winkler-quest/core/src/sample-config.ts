@@ -12,26 +12,26 @@ const SEASON = [4, 5, 6, 7, 8, 9, 10];
 
 const activities: Activity[] = [
   // ---- Every day, each son ----
-  { id: "make-bed", name: "Make bed", kidIds: both, tier: "must", kind: "proof", points: 5, dailyCap: 1, requiresApproval: false },
-  { id: "room-clean", name: "Room clean", kidIds: both, tier: "must", kind: "proof", points: 15, dailyCap: 1, requiresApproval: false },
-  { id: "homework", name: "Homework done", kidIds: both, tier: "must", kind: "proof", points: 30, dailyCap: 1, requiresApproval: false },
-  { id: "skincare", name: "Skin care (AM / PM)", kidIds: both, tier: "growth", kind: "check", points: 5, dailyCap: 2, requiresApproval: false },
+  { id: "make-bed", difficulty: 1, typicalMinutes: 3, name: "Make bed", kidIds: both, tier: "must", kind: "proof", points: 5, dailyCap: 1, requiresApproval: false },
+  { id: "room-clean", difficulty: 2, typicalMinutes: 15, name: "Room clean", kidIds: both, tier: "must", kind: "proof", points: 15, dailyCap: 1, requiresApproval: false },
+  { id: "homework", difficulty: 3, typicalMinutes: 45, name: "Homework done", kidIds: both, tier: "must", kind: "proof", points: 30, dailyCap: 1, requiresApproval: false },
+  { id: "skincare", difficulty: 1, typicalMinutes: 5, name: "Skin care (AM / PM)", kidIds: both, tier: "growth", kind: "check", points: 5, dailyCap: 2, requiresApproval: false },
   // ---- Every day, taking turns ----
-  { id: "eggs", name: "Collect eggs", kidIds: both, rotation: dayAB, tier: "must", kind: "proof", points: 10, dailyCap: 1, requiresApproval: false },
-  { id: "feed-water", name: "Chicken food + water full", kidIds: both, rotation: dayAB, tier: "must", kind: "proof", points: 10, dailyCap: 1, requiresApproval: false },
-  { id: "kitchen", name: "Kitchen clean after dinner", kidIds: both, rotation: dayBA, tier: "must", kind: "proof", points: 25, dailyCap: 1, requiresApproval: false },
-  { id: "dishwashers", name: "Unload the dishwashers", kidIds: both, rotation: dayBA, tier: "must", kind: "proof", points: 15, dailyCap: 1, requiresApproval: false },
+  { id: "eggs", difficulty: 1, typicalMinutes: 5, name: "Collect eggs", kidIds: both, rotation: dayAB, tier: "must", kind: "proof", points: 10, dailyCap: 1, requiresApproval: false },
+  { id: "feed-water", difficulty: 2, typicalMinutes: 10, name: "Chicken food + water full", kidIds: both, rotation: dayAB, tier: "must", kind: "proof", points: 10, dailyCap: 1, requiresApproval: false },
+  { id: "kitchen", difficulty: 3, typicalMinutes: 25, name: "Kitchen clean after dinner", kidIds: both, rotation: dayBA, tier: "must", kind: "proof", points: 25, dailyCap: 1, requiresApproval: false },
+  { id: "dishwashers", difficulty: 2, typicalMinutes: 10, name: "Unload the dishwashers", kidIds: both, rotation: dayBA, tier: "must", kind: "proof", points: 15, dailyCap: 1, requiresApproval: false },
   // ---- A few times a week ----
-  { id: "vacuum-kitchen", name: "Vacuum + sweep kitchen", kidIds: both, weekdays: [2, 5], rotation: dayAB, tier: "must", kind: "proof", points: 20, dailyCap: 1, requiresApproval: false },
+  { id: "vacuum-kitchen", difficulty: 2, typicalMinutes: 15, name: "Vacuum + sweep kitchen", kidIds: both, weekdays: [2, 5], rotation: dayAB, tier: "must", kind: "proof", points: 20, dailyCap: 1, requiresApproval: false },
   // ---- Weekly ----
-  { id: "trash", name: "Trash can down to the road (Monday night)", kidIds: both, weekdays: [1], tier: "must", kind: "proof", points: 20, dailyCap: 1, requiresApproval: false },
-  { id: "laundry", name: "Wash your clothes", kidIds: both, tier: "must", kind: "proof", points: 40, requiresApproval: false },
-  { id: "bedding", name: "Wash your bedding", kidIds: both, tier: "must", kind: "proof", points: 30, requiresApproval: false },
-  { id: "bathroom", name: "Clean your bathroom", kidIds: both, tier: "must", kind: "proof", points: 60, requiresApproval: false },
-  { id: "coop-clean", name: "Clean the chicken coop", kidIds: both, tier: "must", kind: "proof", points: 80, requiresApproval: false },
+  { id: "trash", difficulty: 2, typicalMinutes: 10, name: "Trash can down to the road (Monday night)", kidIds: both, weekdays: [1], tier: "must", kind: "proof", points: 20, dailyCap: 1, requiresApproval: false },
+  { id: "laundry", difficulty: 2, typicalMinutes: 30, name: "Wash your clothes", kidIds: both, tier: "must", kind: "proof", points: 40, requiresApproval: false },
+  { id: "bedding", difficulty: 2, typicalMinutes: 25, name: "Wash your bedding", kidIds: both, tier: "must", kind: "proof", points: 30, requiresApproval: false },
+  { id: "bathroom", difficulty: 4, typicalMinutes: 40, name: "Clean your bathroom", kidIds: both, tier: "must", kind: "proof", points: 60, requiresApproval: false },
+  { id: "coop-clean", difficulty: 5, typicalMinutes: 45, name: "Clean the chicken coop", kidIds: both, tier: "must", kind: "proof", points: 80, requiresApproval: false },
   // ---- Seasonal ----
-  { id: "mow", name: "Mow the yard (~5 h)", kidIds: ["older"], activeMonths: SEASON, tier: "must", kind: "proof", points: 400, requiresApproval: false },
-  { id: "weed-eat", name: "Weed eating", kidIds: ["younger"], activeMonths: SEASON, tier: "must", kind: "proof", points: 150, requiresApproval: false },
+  { id: "mow", difficulty: 4, typicalMinutes: 300, name: "Mow the yard (~5 h)", kidIds: ["older"], activeMonths: SEASON, tier: "must", kind: "proof", points: 400, requiresApproval: false },
+  { id: "weed-eat", difficulty: 4, typicalMinutes: 90, name: "Weed eating", kidIds: ["younger"], activeMonths: SEASON, tier: "must", kind: "proof", points: 150, requiresApproval: false },
   // ---- Growth ----
   { id: "reading", name: "Reading", kidIds: both, tier: "growth", kind: "timed", pointsPerMinute: 1, minMinutes: 10, maxMinutes: 60, requiresApproval: false },
   { id: "lifting", name: "Lift weights", kidIds: both, tier: "growth", kind: "timed", pointsPerMinute: 1, minMinutes: 20, maxMinutes: 60, requiresApproval: false },
@@ -137,6 +137,8 @@ export const sampleConfig: Config = {
 
   compliment: { points: 200 },
   allowNegativeBalance: false,
+  // 1 coin per minute of normal work; harder work pays more per minute.
+  payScale: { coinsPerMinute: 1, difficultyMultipliers: [0.5, 1, 1.25, 1.5, 2] },
   cashOutWeeklyMaxDollars: 20,
   levelThresholds: [0, 200, 500, 1000, 2000, 3500, 5500, 8000, 11000, 15000],
 };

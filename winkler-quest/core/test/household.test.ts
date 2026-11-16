@@ -1,7 +1,7 @@
 // Tests for the real household setup (src/sample-config.ts) and the newer features.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { accessWindows, canRedeem, computeKid } from "../src/engine.ts";
+import { accessWindows, canRedeem, computeKid, snapshotFor, suggestedPoints } from "../src/engine.ts";
 import { sampleConfig as cfg } from "../src/sample-config.ts";
 import type { LedgerEvent } from "../src/types.ts";
 
@@ -97,4 +97,31 @@ test("cash-out is capped per week", () => {
   assert.equal(r.ok, false);
   assert.match((r as { reason: string }).reason, /\$5 left/);
   assert.equal(canRedeem({ ...cfg, gates: [] }, ledger, "older", "cash-5", MON).ok, true);
+});
+
+// ---------- settings page: adjusting values ----------
+
+test("raising a chore's value only affects work done after the change", () => {
+  const before: LedgerEvent = { id: id(), type: "completion", kidId: "older", activityId: "bathroom", at: MON, snapshot: snapshotFor(cfg, "older", "bathroom") };
+  const raised = { ...cfg, activities: cfg.activities.map((a) => (a.id === "bathroom" ? { ...a, points: 100 } : a)) };
+  const after: LedgerEvent = { id: id(), type: "completion", kidId: "older", activityId: "laundry", at: MON, snapshot: snapshotFor(raised, "older", "laundry") };
+  const after2: LedgerEvent = { id: id(), type: "completion", kidId: "older", activityId: "bathroom", at: TUE, snapshot: snapshotFor(raised, "older", "bathroom") };
+  const s = computeKid(raised, [before, after, after2], "older", TUE);
+  assert.deepEqual(s.history.map((h) => h.delta), [60, 40, 100]);
+});
+
+test("suggested value comes from difficulty x time", () => {
+  const scaled = { ...cfg, payScale: { coinsPerMinute: 1, difficultyMultipliers: [0.5, 1, 1.25, 1.5, 2] as [number, number, number, number, number] } };
+  assert.equal(suggestedPoints(scaled, { ...cfg.activities[0], typicalMinutes: 300, difficulty: 4 }), 450); // mowing-like
+  assert.equal(suggestedPoints(scaled, { ...cfg.activities[0], typicalMinutes: 5, difficulty: 1 }), 5);
+  assert.equal(suggestedPoints(cfg, { ...cfg.activities[0], typicalMinutes: 5, difficulty: 1 }), cfg.payScale ? 5 : undefined);
+});
+
+test("per-son pay multiplier scales chore pay but not compliments", () => {
+  const boosted = { ...cfg, kids: cfg.kids.map((k) => (k.id === "older" ? { ...k, economy: { ...k.economy, payMultiplier: 1.5 } } : k)) };
+  const ledger: LedgerEvent[] = [
+    done("older", "laundry", MON),
+    { id: id(), type: "compliment", kidId: "older", at: MON, from: "Teacher", relationship: "teacher", note: "x", loggedBy: "dad" },
+  ];
+  assert.deepEqual(computeKid(boosted, ledger, "older", MON).history.map((h) => h.delta), [60, 200]);
 });

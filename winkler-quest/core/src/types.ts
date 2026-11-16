@@ -21,6 +21,8 @@ export type ActivityTuning = Partial<
  * get different prices, pay rates and strictness.
  */
 export interface KidEconomy {
+  /** Scale all of this kid's chore pay up or down (1 = normal, 1.2 = +20%). Not applied to compliments or bonuses. */
+  payMultiplier?: number;
   /** Per-activity pay/strictness for this kid (by activity id). */
   activityTuning?: Record<string, ActivityTuning>;
   /** Per-reward price for this kid (by reward id). */
@@ -62,6 +64,10 @@ export interface Activity {
   dailyCap?: number;
   /** If true, coins only count once an adult approves. */
   requiresApproval: boolean;
+  /** How hard it is, 1 (easy) to 5 (brutal). Drives the suggested value on the settings page. */
+  difficulty?: 1 | 2 | 3 | 4 | 5;
+  /** How long it usually takes, in minutes. Drives the suggested value. */
+  typicalMinutes?: number;
   /** Only on these weekdays (0 = Sunday ... 6 = Saturday), e.g. trash night = [1]. */
   weekdays?: number[];
   /** Only in these months (1-12), e.g. mowing = April-October. Off-season it isn't required or paid. */
@@ -144,6 +150,8 @@ export interface Config {
   /** Default coins for an unsolicited compliment from an adult outside the family. */
   compliment: { points: number };
   allowNegativeBalance: boolean;
+  /** Settings-page pay scale: suggested coins = minutes x coinsPerMinute x multiplier[difficulty - 1]. */
+  payScale?: { coinsPerMinute: number; difficultyMultipliers: [number, number, number, number, number] };
   /** Max dollars each kid can cash out per week. */
   cashOutWeeklyMaxDollars?: number;
   /** Default lifetime XP needed per level (index = level - 1). */
@@ -169,6 +177,11 @@ export interface CompletionEvent extends Base {
   startedAt?: string;
   endedAt?: string;
   proofUrl?: string;
+  /**
+   * The chore's pay settings at the moment it was done, stamped by the server.
+   * Changing a chore's value on the settings page then only affects future work.
+   */
+  snapshot?: ActivityTuning;
 }
 
 /** A one-off chore handed out during the day ("take the trash out before dinner"). */
