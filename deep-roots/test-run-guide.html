@@ -1,0 +1,764 @@
+<title>Deep Roots Test Runs</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one long field guide. Sticky section nav, readable column for the guide, wider grid for the run board and checklist. */
+:root{
+  --bg:#f5f7f4; --surface:#ffffff; --sunk:#eaeee8; --line:#d5ddd3;
+  --fg:#18231b; --muted:#56655a; --accent:#2f6b3f; --accent-ink:#ffffff; --accent-soft:#dcebdf;
+  --pass:#2f7a46; --pass-soft:#dff1e4; --fail:#b3361f; --fail-soft:#f8e1dc; --warn:#9a6a00; --warn-soft:#f7ecd0;
+  --font-display:"Manrope",system-ui,sans-serif; --font-body:"Public Sans",system-ui,sans-serif; --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111713; --surface:#18201b; --sunk:#0d120f; --line:#2b372f;
+  --fg:#e3ebe4; --muted:#9aaa9e; --accent:#7cc48f; --accent-ink:#0d1a11; --accent-soft:#1f3326;
+  --pass:#79c98f; --pass-soft:#1b3323; --fail:#f08d78; --fail-soft:#3a1d17; --warn:#e3b54f; --warn-soft:#352a12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111713; --surface:#18201b; --sunk:#0d120f; --line:#2b372f;
+  --fg:#e3ebe4; --muted:#9aaa9e; --accent:#7cc48f; --accent-ink:#0d1a11; --accent-soft:#1f3326;
+  --pass:#79c98f; --pass-soft:#1b3323; --fail:#f08d78; --fail-soft:#3a1d17; --warn:#e3b54f; --warn-soft:#352a12; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--font-body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--font-display);text-wrap:balance;line-height:1.2;margin:0}
+h1{font-size:clamp(28px,4.4vw,40px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:24px;font-weight:800}
+h3{font-size:17px;font-weight:700}
+p{margin:0}
+.prose{max-width:68ch;display:grid;gap:10px}
+.muted{color:var(--muted)}
+.mono{font-family:var(--font-mono);font-size:13px}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+header.top{background:var(--surface);border-bottom:1px solid var(--line)}
+header.top .wrap{padding-block:28px 22px;display:grid;gap:12px}
+.eyebrow{font:600 12px/1 var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.devnote{display:flex;gap:10px;align-items:flex-start;background:var(--warn-soft);color:var(--fg);border:1px solid color-mix(in srgb,var(--warn) 35%,transparent);border-radius:var(--r);padding:10px 14px;max-width:68ch}
+.devnote b{color:var(--warn)}
+
+nav.sect{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+nav.sect .wrap{display:flex;gap:4px;overflow-x:auto;padding-block:8px}
+nav.sect a{flex:none;text-decoration:none;color:var(--muted);font-weight:600;font-size:14px;padding:6px 12px;border-radius:999px}
+nav.sect a:hover{color:var(--fg);background:var(--sunk)}
+
+section{padding-block:40px;border-bottom:1px solid var(--line)}
+section > .wrap{display:grid;gap:20px}
+.sec-head{display:grid;gap:6px}
+
+/* Journey strip */
+.journey{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;counter-reset:j}
+.jstep{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:4px;counter-increment:j}
+.jstep::before{content:counter(j);font:500 12px var(--font-mono);color:var(--accent)}
+.jstep b{font-family:var(--font-display);font-size:15px}
+.jstep span{font-size:13px;color:var(--muted)}
+
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:grid;gap:10px;min-width:0}
+.panel ul,.panel ol{margin:0;padding-left:20px;display:grid;gap:6px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.card-num{font:500 13px var(--font-mono);background:var(--sunk);padding:2px 6px;border-radius:5px;white-space:nowrap}
+
+.field{display:grid;gap:4px}
+.field label{font-weight:600;font-size:13px}
+input[type=email],input[type=text],select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+textarea{resize:vertical}
+
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;font-weight:600;font-size:14px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+/* Run board */
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.run{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:8px;text-align:left;cursor:pointer;width:100%}
+.run:hover{border-color:var(--accent)}
+.run.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.run-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.run-top b{font-family:var(--font-display);font-size:15px}
+.run .meta{font-size:13px;color:var(--muted)}
+.bar{height:6px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.go{background:var(--accent-soft);color:var(--accent)}
+.pill.ok{background:var(--pass-soft);color:var(--pass)}
+.pill.bad{background:var(--fail-soft);color:var(--fail)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--muted)}
+
+.syncnote{font-size:13px;color:var(--muted)}
+.syncnote.warn{color:var(--warn)}
+
+/* Checklist */
+.runhead{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px}
+@media (max-width:760px){.runhead{grid-template-columns:1fr}}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.stage > summary{list-style:none;cursor:pointer;padding:14px 18px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.stage > summary::-webkit-details-marker{display:none}
+.stage > summary h3{display:flex;gap:10px;align-items:baseline}
+.stage > summary .sn{font:500 13px var(--font-mono);color:var(--accent)}
+.stage[open] > summary{border-bottom:1px solid var(--line)}
+.bts{margin:14px 18px 4px;padding:10px 14px;background:var(--sunk);border-radius:8px;font-size:14px}
+.bts b{font-family:var(--font-display)}
+.steps{list-style:none;margin:0;padding:6px 0 10px}
+.step{padding:12px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:start;border-top:1px solid color-mix(in srgb,var(--line) 55%,transparent)}
+.step:first-child{border-top:0}
+.step .what{display:grid;gap:3px;min-width:0}
+.step .kind{font:600 11px/1 var(--font-body);letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.step.check .kind{color:var(--accent)}
+.step .detail{font-size:13.5px;color:var(--muted)}
+.step .note{grid-column:1/-1}
+.step .note input{font-size:13px;padding:6px 9px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;flex:none}
+.seg button{border:0;background:transparent;padding:6px 10px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed=true].p{background:var(--pass-soft);color:var(--pass)}
+.seg button[aria-pressed=true].f{background:var(--fail-soft);color:var(--fail)}
+.seg button[aria-pressed=true].n{background:var(--warn-soft);color:var(--warn)}
+.seg button[aria-pressed=true].d{background:var(--accent-soft);color:var(--accent)}
+@media (max-width:560px){.step{grid-template-columns:1fr}}
+
+table{border-collapse:collapse;width:100%;font-size:14px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.05em;text-transform:uppercase;background:var(--sunk)}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--font-mono);font-size:13px}
+tr:last-child td{border-bottom:0}
+
+.qs{display:grid;gap:12px;counter-reset:q}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;display:grid;gap:4px;counter-increment:q}
+.q h3::before{content:"Q" counter(q) "  ";font:500 13px var(--font-mono);color:var(--accent)}
+.q .why{font-size:14px;color:var(--muted)}
+.cardtest{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.cardtest div{background:var(--sunk);border-radius:8px;padding:10px 12px;display:grid;gap:2px}
+.cardtest .mono{font-size:15px}
+footer{padding-block:28px;color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <span class="eyebrow">Deep Roots · Portal testing, development site</span>
+    <h1>Test Run Guide</h1>
+    <p class="prose muted">Each team member creates two fake schools and takes each one all the way from <b>Get a Sample</b> to <b>Ready to Teach</b>. An observer watches over screen share. At every step you check that the automation did its job. Your check-offs save here, so the whole team can see progress.</p>
+    <div class="devnote"><b>Dev only.</b><span>All of this happens on the development portal. Nothing goes to Salesforce, the LMS, or a real school. Payments use Stripe's test card, so no money moves.</span></div>
+  </div>
+</header>
+
+<nav class="sect" aria-label="Sections">
+  <div class="wrap">
+    <a href="#guide">How it works</a>
+    <a href="#setup">Before you start</a>
+    <a href="#runs">Run board</a>
+    <a href="#checklist">Checklist</a>
+    <a href="#rosters">Roster files</a>
+    <a href="#observers">For observers</a>
+    <a href="#questions">Open questions</a>
+  </div>
+</nav>
+
+<section id="guide">
+  <div class="wrap">
+    <div class="sec-head"><h2>How it works</h2><p class="muted">One fake school goes through eight stages. Every stage has things you <b>do</b> and things you <b>check</b>.</p></div>
+    <div class="journey">
+      <div class="jstep"><b>Get a sample</b><span>Website form, as a school</span></div>
+      <div class="jstep"><b>Request a quote</b><span>Grades and student counts</span></div>
+      <div class="jstep"><b>Order</b><span>Accept the quote</span></div>
+      <div class="jstep"><b>Pay</b><span>Stripe test card</span></div>
+      <div class="jstep"><b>Log in</b><span>Welcome email, set password</span></div>
+      <div class="jstep"><b>Onboard</b><span>Admins, contacts, school settings</span></div>
+      <div class="jstep"><b>Roster</b><span>Import students, then edit</span></div>
+      <div class="jstep"><b>Ready to teach</b><span>Teachers see their classes</span></div>
+    </div>
+    <div class="two">
+      <div class="panel">
+        <h3>Two kinds of steps</h3>
+        <ul>
+          <li><b>Do</b> steps are actions you take. Mark them <i>Done</i>.</li>
+          <li><b>Check</b> steps are things the system should do on its own: send an email, create a record, change a status. Mark each one <i>Worked</i>, <i>Problem</i>, or <i>Didn't see it</i>.</li>
+          <li>Anything other than <i>Worked</i> needs a short note saying what you saw.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Why the checks matter</h3>
+        <p>Once we go live, schools will order and set up with no one from Deep Roots stepping in. The checks prove that each handoff happens automatically. If you had to nudge something, ask a teammate, or refresh a page to make it happen, record it as a <i>Problem</i>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="setup">
+  <div class="wrap">
+    <div class="sec-head"><h2>Before you start</h2><p class="muted">About 10 minutes, once. After that, each run takes 45–60 minutes.</p></div>
+    <div class="two">
+      <div class="panel">
+        <h3>1. Your test email addresses</h3>
+        <p>You don't need a second email account. Add <span class="mono">+something</span> to your work address and the mail still lands in your own inbox. Each fake person gets their own address this way: the buyer, a second admin, teachers.</p>
+        <div class="field">
+          <label for="baseEmail">Your work email (saved only on this device)</label>
+          <input id="baseEmail" type="email" placeholder="you@yourdomain.org" autocomplete="email">
+        </div>
+        <p class="detail muted" id="aliasPreview" style="font-size:13.5px">Enter your email to see your test addresses.</p>
+        <p class="muted" style="font-size:13.5px">Before your first run, send one email to your <span class="mono">+r01</span> address. Make sure it arrives.</p>
+      </div>
+      <div class="panel">
+        <h3>2. Browser and call</h3>
+        <ol>
+          <li>Open a <b>private / incognito window</b> for the test, so you aren't signed in as your real Deep Roots self.</li>
+          <li>Join the video call with your observer and <b>share your whole screen</b>, not one tab. That way they can see emails arrive.</li>
+          <li>Keep your inbox open in a second tab.</li>
+          <li>Download your roster file from <a href="#rosters">Roster files</a>.</li>
+        </ol>
+      </div>
+      <div class="panel">
+        <h3>3. Stripe test cards</h3>
+        <div class="cardtest">
+          <div><span class="muted" style="font-size:12px">Payment succeeds</span><span class="mono">4242 4242 4242 4242</span></div>
+          <div><span class="muted" style="font-size:12px">Card is declined</span><span class="mono">4000 0000 0000 0002</span></div>
+        </div>
+        <p class="muted" style="font-size:13.5px">Use any future expiry date (12/34), any 3-digit CVC (123), and any ZIP (12345). These only work while the portal's Stripe account is in test mode. Never type a real card.</p>
+      </div>
+      <div class="panel">
+        <h3>4. Name everything TEST</h3>
+        <p>Use the school name from your scenario exactly as written, including <b>(TEST)</b>. This makes test schools easy to find and delete later. Use a made-up street address. Never use a real school's name.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="runs">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Run board</h2>
+      <p class="muted">16 runs: two per person. School sizes run from 10 to 30 students per grade, and the paths are mixed so that together we cover every branch. Click a run to open its checklist.</p>
+      <p class="syncnote" id="syncNote">Connecting to shared progress…</p>
+    </div>
+    <div class="board" id="board"></div>
+  </div>
+</section>
+
+<section id="checklist">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Checklist</h2>
+      <div class="field" style="max-width:420px">
+        <label for="runSelect">Run</label>
+        <select id="runSelect"></select>
+      </div>
+    </div>
+    <div class="runhead" id="runHead"></div>
+    <div id="stages" style="display:grid;gap:12px"></div>
+  </div>
+</section>
+
+<section id="rosters">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Roster files</h2>
+      <p class="muted prose">Each run comes with a ready-made roster: fake student names by grade, plus a teacher for each class. You import it during onboarding, so nobody types students in one at a time. Teacher emails use your <span class="mono">+</span> addresses, so their invites come to you. Names are generated the same way every time, so the observer sees the same list you do.</p>
+    </div>
+    <div class="two" style="grid-template-columns:minmax(0,1fr)">
+      <div class="panel">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end">
+          <div class="field" style="flex:1 1 260px"><label for="rosterRun">Roster for run</label><select id="rosterRun"></select></div>
+          <button class="btn primary" id="dlCsv" type="button">Download CSV</button>
+          <button class="btn" id="copyCsv" type="button">Copy CSV</button>
+        </div>
+        <p class="syncnote" id="dlNote"></p>
+        <div id="rosterSummary"></div>
+        <div class="tablewrap" style="max-height:340px;overflow:auto"><table id="rosterTable"></table></div>
+        <textarea id="csvFallback" rows="6" hidden aria-label="CSV text"></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="observers">
+  <div class="wrap">
+    <div class="sec-head"><h2>For observers</h2><p class="muted">The tester drives and the observer watches. Your job is to see what a real school would experience.</p></div>
+    <div class="two">
+      <div class="panel">
+        <h3>During the run</h3>
+        <ol>
+          <li>Open this page on the same run. You can tick the <b>Check</b> steps while the tester drives.</li>
+          <li>Ask the tester to <b>think out loud</b>: what they expect, what confuses them.</li>
+          <li><b>Don't help</b> unless they've been stuck for 2 minutes. When they get stuck, that's a finding: note it on the step.</li>
+          <li>Note how long each email takes to arrive. More than 5 minutes is a <i>Problem</i>.</li>
+          <li>Record the call if you can. It makes bug reports much easier.</li>
+        </ol>
+      </div>
+      <div class="panel">
+        <h3>What counts as a problem</h3>
+        <ul>
+          <li>Something that should be automatic needed a person to do it.</li>
+          <li>An email didn't arrive, arrived late, or had wrong or blank details.</li>
+          <li>A number didn't match: student count, price, grades.</li>
+          <li>A change didn't stick after refreshing the page.</li>
+          <li>The tester couldn't tell what to do next.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Suggested rhythm</h3>
+        <p><b>Run A</b> is observed live, so we learn together and fix the obvious things.</p>
+        <p><b>Run B</b> can be done solo with a screen recording once that person's Run A is complete. This keeps calendars lighter, and the recording still shows every step.</p>
+        <p>Schedule each observed run for 60–75 minutes.</p>
+      </div>
+      <div class="panel">
+        <h3>After the run</h3>
+        <ol>
+          <li>Every step has a mark, and every <i>Problem</i> has a note.</li>
+          <li>Log each problem on the portal QA page with the run and step number (for example <span class="mono">R05 · 7.4</span>).</li>
+          <li>Click <b>Mark run complete</b> at the bottom of the checklist.</li>
+          <li>Leave the test school in place. The dev team will clear test data in one batch.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="questions">
+  <div class="wrap">
+    <div class="sec-head"><h2>Open questions for the dev team</h2><p class="muted prose">Answer these before the first run. Some steps in this guide assume an answer. Where the real button names differ from the ones written here, update the steps.</p></div>
+    <div class="qs">
+      <div class="q"><h3>Which grades does the portal cover?</h3><p class="why">The scenarios assume K–8 (bands K–5, 6–8 and K–8). If you include pre-K or 9–12, add those grades to the runs.</p></div>
+      <div class="q"><h3>Do the website's Get a Sample and Request a Quote forms feed the dev portal?</h3><p class="why">If they go to production, test submissions will create real leads in Salesforce. We need a dev copy of the website or a test flag.</p></div>
+      <div class="q"><h3>Can a sample request in dev ever trigger a real shipment?</h3><p class="why">There will be 16 sample requests with fake addresses. Make sure none of them reaches fulfillment.</p></div>
+      <div class="q"><h3>Is Stripe in test mode on dev?</h3><p class="why">The 4242 card only works in test mode. Who can open the Stripe test dashboard to confirm that payments landed?</p></div>
+      <div class="q"><h3>Does dev send real emails, and does it accept "+" addresses?</h3><p class="why">Half of the checks are "did the email arrive." If dev sends to a catch-all inbox instead, testers need access to it.</p></div>
+      <div class="q"><h3>What roster format does the import expect?</h3><p class="why">The files here use: student_id, first_name, last_name, grade, section, teacher_name, teacher_email. Change the columns to match the portal, or add a dev-only "Load sample roster" button.</p></div>
+      <div class="q"><h3>Where does staff see each automation happen?</h3><p class="why">For example: a lead list, a quote list, order statuses, an onboarding tracker. Give testers the exact page names so the Check steps can point to them.</p></div>
+      <div class="q"><h3>How will test schools be cleaned up?</h3><p class="why">Every test school has (TEST) in its name. Confirm that a batch delete is possible before release.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">This page is a working guide. Once the portal's QA page has its own checklist, these steps and checks can move there.</div></footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- Scenarios ---------- */
+const BANDS = { "K–5":["K","1","2","3","4","5"], "6–8":["6","7","8"], "K–8":["K","1","2","3","4","5","6","7","8"] };
+// sizes: number = same per grade; array = per grade
+const RUNS = [
+  {n:1, who:"Troy",     school:"Cedar Hollow Academy (TEST)",     band:"K–5", size:10, path:"sample", pay:"ok"},
+  {n:2, who:"Troy",     school:"Bluewater Middle School (TEST)",  band:"6–8", size:30, path:"quote",  pay:"decline"},
+  {n:3, who:"Danielle", school:"Juniper Ridge Elementary (TEST)", band:"K–5", size:20, path:"sample", pay:"ok"},
+  {n:4, who:"Danielle", school:"Harbor Light Christian (TEST)",   band:"K–8", size:12, path:"quote",  pay:"ok"},
+  {n:5, who:"Kim",      school:"Maple Fork Charter (TEST)",       band:"K–8", size:25, path:"sample", pay:"ok"},
+  {n:6, who:"Kim",      school:"Stonebridge Middle (TEST)",       band:"6–8", size:15, path:"quote",  pay:"decline"},
+  {n:7, who:"Cat",      school:"Willow Creek Prep (TEST)",        band:"K–5", size:30, path:"sample", pay:"ok"},
+  {n:8, who:"Cat",      school:"Riverbend Micro-School (TEST)",   band:"K–8", size:10, path:"quote",  pay:"ok"},
+  {n:9, who:"Tyler",    school:"Pine Summit Elementary (TEST)",   band:"K–5", size:15, path:"sample", pay:"decline"},
+  {n:10,who:"Tyler",    school:"Lakeshore Academy (TEST)",        band:"K–8", size:30, path:"quote",  pay:"ok"},
+  {n:11,who:"Zach",     school:"Foxglove Montessori (TEST)",      band:"K–5", size:[10,12,15,18,20,25], path:"sample", pay:"ok"},
+  {n:12,who:"Zach",     school:"Granite Peak Middle (TEST)",      band:"6–8", size:[30,26,22], path:"quote", pay:"ok"},
+  {n:13,who:"Todd",     school:"Aspen Valley School (TEST)",      band:"K–8", size:20, path:"sample", pay:"ok"},
+  {n:14,who:"Todd",     school:"Sunfield Elementary (TEST)",      band:"K–5", size:25, path:"quote",  pay:"decline"},
+  {n:15,who:"Bob",      school:"Oak Meadow Christian (TEST)",     band:"K–5", size:12, path:"sample", pay:"ok"},
+  {n:16,who:"Bob",      school:"Silver Lake Middle (TEST)",       band:"6–8", size:20, path:"quote",  pay:"ok"},
+];
+RUNS.forEach((r,i)=>{
+  r.id = "r"+String(r.n).padStart(2,"0");
+  r.label = "R"+String(r.n).padStart(2,"0");
+  r.which = (i%2===0)?"A":"B";
+  r.grades = BANDS[r.band];
+  r.perGrade = r.grades.map((g,j)=>Array.isArray(r.size)?r.size[j]:r.size);
+  r.total = r.perGrade.reduce((a,b)=>a+b,0);
+  r.sizeLabel = Array.isArray(r.size) ? (Math.min(...r.size)+"–"+Math.max(...r.size)+" per grade, mixed") : (r.size+" per grade");
+});
+const byId = Object.fromEntries(RUNS.map(r=>[r.id,r]));
+
+/* ---------- Steps ---------- */
+// kind: do | check.  only: "sample" | "decline" limits a step to some runs.
+const STAGES = [
+ {id:"0", title:"Get ready", bts:"Nothing automatic yet. This stage makes sure the call, the browser, and your test inbox are working before you start.", steps:[
+  {id:"0.1",k:"do",t:"Join the call with your observer and share your whole screen.",d:"Start recording if you can."},
+  {id:"0.2",k:"do",t:"Open a private / incognito browser window.",d:"Keep your inbox open in a normal tab next to it."},
+  {id:"0.3",k:"do",t:"Download this run's roster file.",d:"See Roster files below. Note the student total so you can compare it later."},
+  {id:"0.4",k:"check",t:"A test email to your buyer address arrived in your inbox.",d:"If it didn't, the + address isn't working. Stop and sort that out first."},
+ ]},
+ {id:"1", title:"Request a sample", only:"sample", bts:"The website form should create a <b>lead</b> in the portal and send the school a confirmation without anyone at Deep Roots touching it. Once we're live, this is also where Salesforce would get the lead. In dev it doesn't.", steps:[
+  {id:"1.1",k:"do",t:"On the website, click Get a Sample.",d:"Use the dev website link from the dev team."},
+  {id:"1.2",k:"do",t:"Fill in the form as the school: exact school name, your buyer address, a made-up street address, grades of interest.",d:""},
+  {id:"1.3",k:"check",t:"A confirmation page appeared after you submitted.",d:"It should tell the school what happens next."},
+  {id:"1.4",k:"check",t:"A sample confirmation email arrived at the buyer address.",d:"Check that the school name and contact are right. Note how many minutes it took."},
+  {id:"1.5",k:"check",t:"The request shows up for staff in the portal (lead or sample-request list).",d:"The observer can check this in their own window."},
+  {id:"1.6",k:"check",t:"No real shipment or fulfillment task was created.",d:"Ask the dev team where to look if you aren't sure."},
+ ]},
+ {id:"2", title:"Request a quote", bts:"The quote form should work out the price from grades and student counts, create a <b>quote</b> record, and email it to the school. When a sample came first, the quote should attach to the same lead instead of making a duplicate.", steps:[
+  {id:"2.1",k:"do",t:"Click Request a Quote and enter the school's grades and student counts from this run's scenario.",d:""},
+  {id:"2.2",k:"check",t:"A quote email (or PDF) arrived at the buyer address.",d:""},
+  {id:"2.3",k:"check",t:"The quote lists the right grades and student counts, and the math adds up.",d:"Compare against the scenario card above."},
+  {id:"2.4",k:"check",t:"Staff can see the quote in the portal with a status such as Sent.",d:""},
+  {id:"2.5",k:"check",t:"The quote is linked to the earlier sample request, with no duplicate school.",d:"", only:"sample"},
+ ]},
+ {id:"3", title:"Place the order", bts:"When the school accepts the quote, the portal should turn it into an <b>order</b> waiting for payment. The quote's status should change by itself.", steps:[
+  {id:"3.1",k:"do",t:"Open the quote from the email and accept it.",d:""},
+  {id:"3.2",k:"check",t:"The checkout page shows the same items and total as the quote.",d:""},
+  {id:"3.3",k:"check",t:"Staff see the quote change to Accepted and a new order marked waiting for payment.",d:""},
+ ]},
+ {id:"4", title:"Pay", bts:"Stripe takes the card. When it succeeds, the portal should mark the order <b>Paid</b>, send a receipt, and create the school's portal account automatically. That last step is the big handoff.", steps:[
+  {id:"4.1",k:"do",t:"Enter the declined card first: 4000 0000 0000 0002.",d:"This run tests what a school sees when a card fails.", only:"decline"},
+  {id:"4.2",k:"check",t:"A clear 'card declined' message appeared, and the order is still unpaid.",d:"Nothing should be marked paid. No receipt should arrive.", only:"decline"},
+  {id:"4.3",k:"do",t:"Pay with 4242 4242 4242 4242, expiry 12/34, CVC 123, ZIP 12345.",d:""},
+  {id:"4.4",k:"check",t:"A payment success page appeared.",d:""},
+  {id:"4.5",k:"check",t:"A receipt email arrived with the correct amount.",d:""},
+  {id:"4.6",k:"check",t:"Staff see the order marked Paid.",d:"If someone can open the Stripe test dashboard, confirm the payment is there too."},
+ ]},
+ {id:"5", title:"Log in to the portal", bts:"Payment should trigger a <b>welcome / account invite</b> email. The school's account should already exist, with its name and order details filled in from the purchase.", steps:[
+  {id:"5.1",k:"check",t:"A welcome or set-up-your-account email arrived without anyone at Deep Roots sending it.",d:"Note the minutes after payment."},
+  {id:"5.2",k:"do",t:"Use the email link to set a password and log in.",d:""},
+  {id:"5.3",k:"check",t:"You land on onboarding, and the school name and grades are already filled in from the order.",d:"You shouldn't have to retype anything you entered on the quote."},
+ ]},
+ {id:"6", title:"Onboard the school", bts:"This is where the school admin sets things up. Every change should save immediately. Adding a person should send them an invite automatically.", steps:[
+  {id:"6.1",k:"do",t:"Confirm or complete the school profile: address, phone, school year start and end dates.",d:""},
+  {id:"6.2",k:"do",t:"Set yourself (buyer address) as the primary admin.",d:""},
+  {id:"6.3",k:"do",t:"Add a second admin using your admin2 address.",d:"See the scenario card for the exact address."},
+  {id:"6.4",k:"check",t:"The second admin received an invite email.",d:""},
+  {id:"6.5",k:"do",t:"Set the support contact: the person Deep Roots should reach when there's a problem. Use your help address.",d:""},
+  {id:"6.6",k:"do",t:"Set the remaining school options: grades offered, schedule, anything else the portal asks for.",d:""},
+  {id:"6.7",k:"do",t:"Change one setting (for example the support contact's name), then refresh the page.",d:""},
+  {id:"6.8",k:"check",t:"After the refresh, every setting is still there, including the change.",d:""},
+  {id:"6.9",k:"check",t:"The onboarding progress tracker moved forward on its own.",d:""},
+ ]},
+ {id:"7", title:"Roster students and teachers", bts:"The import should create every student in the right grade and every teacher. Each teacher should get an invite. Edits should update counts right away, without duplicates.", steps:[
+  {id:"7.1",k:"do",t:"Import this run's roster CSV.",d:"Or use the prefilled sample roster, if the dev team adds one."},
+  {id:"7.2",k:"check",t:"The student count for each grade matches the scenario card, and the total matches.",d:""},
+  {id:"7.3",k:"check",t:"Every teacher was created and placed in the right grade and section.",d:""},
+  {id:"7.4",k:"check",t:"Teachers received invite emails at your teacher addresses.",d:"Spot-check two of them."},
+  {id:"7.5",k:"do",t:"Rename two students.",d:"Any two. Write down the old and new names in the note."},
+  {id:"7.6",k:"do",t:"Move one student to a different grade.",d:""},
+  {id:"7.7",k:"do",t:"Add one new student by hand, and remove one.",d:""},
+  {id:"7.8",k:"check",t:"All four edits show correctly after a refresh, and the counts updated.",d:""},
+  {id:"7.9",k:"do",t:"Import the same CSV a second time.",d:"A real admin will do this by accident."},
+  {id:"7.10",k:"check",t:"The second import didn't create duplicate students, or it clearly warned you first.",d:""},
+ ]},
+ {id:"8", title:"Ready to teach", bts:"With setup done, the school should switch to <b>Ready to Teach</b> by itself. Teachers should be able to sign in and see their class and the curriculum. Staff should see the school as fully onboarded.", steps:[
+  {id:"8.1",k:"check",t:"The school's status shows Ready to Teach.",d:""},
+  {id:"8.2",k:"check",t:"A 'you're ready' email or notice went to the admin.",d:"If the portal isn't meant to send one, mark Didn't see it and note that."},
+  {id:"8.3",k:"do",t:"In a second private window, accept one teacher invite and log in as that teacher.",d:""},
+  {id:"8.4",k:"check",t:"The teacher sees only their own class roster and can open the curriculum.",d:""},
+  {id:"8.5",k:"check",t:"Staff see the school as onboarded, with the right student and teacher counts.",d:""},
+ ]},
+ {id:"9", title:"Wrap up", bts:"Nothing automatic here. Make sure what you found gets recorded.", steps:[
+  {id:"9.1",k:"do",t:"Every Problem and Didn't-see-it step has a note.",d:""},
+  {id:"9.2",k:"do",t:"Log each problem on the portal QA page with the run and step number.",d:"For example R05 · 7.4"},
+  {id:"9.3",k:"do",t:"Write down roughly how long the run took.",d:"Use the note on this step."},
+ ]},
+];
+function stepsFor(run){
+  const out=[];
+  STAGES.forEach(s=>{
+    if(s.only && !matches(run,s.only)) return;
+    const st = s.steps.filter(x=>!x.only || matches(run,x.only));
+    out.push({...s, steps:st});
+  });
+  return out;
+}
+function matches(run,only){ return only==="sample" ? run.path==="sample" : only==="decline" ? run.pay==="decline" : true; }
+function stepCount(run){ return stepsFor(run).reduce((a,s)=>a+s.steps.length,0); }
+
+/* ---------- Email aliases ---------- */
+const LS = {
+  get(k){ try{return localStorage.getItem(k)}catch(e){return null} },
+  set(k,v){ try{localStorage.setItem(k,v)}catch(e){} }
+};
+function baseEmail(){ const v=(document.getElementById("baseEmail").value||"").trim(); return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)?v:""; }
+function alias(tag){
+  const b=baseEmail(); if(!b) return "you+"+tag+"@yourdomain";
+  const [local,dom]=b.split("@"); return local.split("+")[0]+"+"+tag+"@"+dom;
+}
+
+/* ---------- Fake names (seeded, same for everyone) ---------- */
+const FIRST=["Ava","Liam","Noah","Emma","Mia","Elijah","Sofia","Mateo","Amara","Leo","Harper","Kai","Zara","Ezra","Nora","Isaac","Layla","Jonah","Aaliyah","Caleb","Maya","Owen","Priya","Luca","Hazel","Diego","Ruby","Miles","Ivy","Theo","Chloe","Arjun","Stella","Jude","Naomi","Silas","Leah","Rafael","Aria","Gabriel","Willow","Omar","Lucy","Ethan","Hana","Felix","Grace","Samuel","Iris","Malik","Clara","Wyatt","Esme","Rowan","Lena","Asher","Talia","Nico","June","Elias","Freya","Cyrus","Mila","Ronan","Ada","Tobias","Selah","Dante","Pearl","Hugo","Keira","Ellis","Mei","August","Yara","Bodhi","Vera","Reid","Anya","Cole"];
+const LAST=["Alvarez","Bennett","Chen","Dawson","Ellison","Fischer","Garcia","Hollis","Ibarra","Jensen","Kowalski","Lindqvist","Morales","Nakamura","Okafor","Patel","Quinlan","Ramirez","Sato","Thornton","Underwood","Valdez","Whitaker","Xu","Yilmaz","Zimmerman","Abbott","Brennan","Castillo","Delgado","Everett","Flores","Grant","Huang","Iverson","Joseph","Kim","Lopez","Mercer","Nguyen","Ortiz","Price","Reyes","Silva","Tran","Vance","Walsh","Young","Adeyemi","Brooks","Cruz","Dunn","Estrada","Foster","Gupta","Hayes","Ito","Kaur","Larsen","Moreno"];
+const TFIRST=["Ms. Rivera","Mr. Coleman","Mrs. Park","Ms. Okoro","Mr. Haddad","Ms. Lindgren","Mrs. Duarte","Mr. Whitfield","Ms. Osei","Mr. Bauer","Mrs. Tanaka","Ms. Fontaine","Mr. Abara","Ms. Kellerman","Mrs. Ruiz","Mr. Sorensen","Ms. Mahmoud","Mr. Galloway"];
+function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function buildRoster(run){
+  const rand=rng(run.n*7919+13); const used=new Set(); const rows=[]; const teachers=[];
+  let tIdx=Math.floor(rand()*TFIRST.length); let sid=1;
+  run.grades.forEach((g,gi)=>{
+    const count=run.perGrade[gi]; const sections = count>24 ? 2 : 1;
+    const secT=[];
+    for(let s=0;s<sections;s++){
+      const sec = sections>1 ? String.fromCharCode(65+s) : "A";
+      const name = TFIRST[tIdx%TFIRST.length]; tIdx++;
+      const t={grade:g,section:sec,name, email:alias(run.id+"-t"+g.toLowerCase()+sec.toLowerCase())};
+      teachers.push(t); secT.push(t);
+    }
+    for(let i=0;i<count;i++){
+      let f,l,key,guard=0;
+      do{ f=FIRST[Math.floor(rand()*FIRST.length)]; l=LAST[Math.floor(rand()*LAST.length)]; key=f+" "+l; guard++; }while(used.has(key)&&guard<50);
+      used.add(key);
+      const t=secT[i%secT.length];
+      rows.push({student_id:run.label+"-"+String(sid++).padStart(4,"0"),first_name:f,last_name:l,grade:g,section:t.section,teacher_name:t.name,teacher_email:t.email});
+    }
+  });
+  return {rows,teachers};
+}
+function toCSV(rows){
+  const cols=["student_id","first_name","last_name","grade","section","teacher_name","teacher_email"];
+  const esc=v=>/[",\n]/.test(v)?'"'+String(v).replace(/"/g,'""')+'"':String(v);
+  return cols.join(",")+"\n"+rows.map(r=>cols.map(c=>esc(r[c])).join(",")).join("\n")+"\n";
+}
+
+/* ---------- State + sync ---------- */
+let runsData = {};            // id -> doc body
+let selected = LS.get("drt.sel") || "r01";
+if(!byId[selected]) selected="r01";
+let db=null, canWrite=true, mode="local";
+const queues={};              // per-doc serialized writes
+
+function loadLocal(){ try{ runsData=JSON.parse(LS.get("drt.local")||"{}")||{}; }catch(e){ runsData={}; } }
+function saveLocal(){ LS.set("drt.local", JSON.stringify(runsData)); }
+
+function deepMerge(a,b){ const o={...(a||{})}; for(const k in b){ o[k]=(b[k]&&typeof b[k]==="object"&&!Array.isArray(b[k]))?deepMerge(o[k],b[k]):b[k]; } return o; }
+
+function writeRun(id, patch){
+  patch.updatedAt = new Date().toISOString();
+  runsData[id] = deepMerge(runsData[id], patch);
+  renderBoard(); renderProgress(id);
+  if(mode!=="shared"){ saveLocal(); return; }
+  const prev = queues[id] || Promise.resolve();
+  queues[id] = prev.then(async()=>{
+    const ref = db.doc("runs/"+id);
+    try{
+      const snap = await ref.get();
+      if(snap.exists) await ref.update(patch); else await ref.set(runsData[id]);
+    }catch(e){
+      if(e && e.code==="invalid_argument"){ canWrite=false; setSync("You can view progress but not save changes. Ask Todd for Contributor access to this page.", true); renderChecklist(); }
+      else if(e && e.code==="unavailable"){ await new Promise(r=>setTimeout(r,800+Math.random()*800)); try{ await ref.update(patch); }catch(_){ setSync("A change didn't save. Check your connection and try again.", true); } }
+      else setSync("A change didn't save. Check your connection and try again.", true);
+    }
+  });
+}
+
+function setSync(msg,warn){ const el=document.getElementById("syncNote"); el.textContent=msg; el.classList.toggle("warn",!!warn); }
+
+function progress(run){
+  const d=runsData[run.id]||{}; const checks=d.checks||{};
+  let done=0, probs=0, total=0;
+  stepsFor(run).forEach(s=>s.steps.forEach(st=>{ total++; const c=checks[st.id]; if(c&&c.s){ done++; if(c.s==="fail"||c.s==="none") probs++; } }));
+  return {done,total,probs,pct: total?Math.round(done/total*100):0, complete:!!d.completedAt, started: done>0||!!d.startedAt};
+}
+function statusPill(p){
+  if(p.complete) return p.probs? '<span class="pill bad">Complete · '+p.probs+' issue'+(p.probs>1?'s':'')+'</span>' : '<span class="pill ok">Complete</span>';
+  if(p.started) return '<span class="pill go">In progress</span>'+(p.probs?' <span class="pill bad">'+p.probs+' issue'+(p.probs>1?'s':'')+'</span>':'');
+  return '<span class="pill">Not started</span>';
+}
+
+/* ---------- Render ---------- */
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function renderBoard(){
+  const el=document.getElementById("board");
+  el.innerHTML = RUNS.map(r=>{
+    const p=progress(r);
+    return '<button type="button" class="run'+(r.id===selected?' sel':'')+'" data-run="'+r.id+'">'+
+      '<div class="run-top"><b>'+esc(r.who)+' · Run '+r.which+'</b><span class="card-num">'+r.label+'</span></div>'+
+      '<div>'+esc(r.school)+'</div>'+
+      '<div class="meta">'+r.band+' · '+r.sizeLabel+' · '+r.total+' students</div>'+
+      '<div class="tags"><span class="tag">'+(r.path==="sample"?"Sample → Quote → Order":"Quote → Order")+'</span>'+(r.pay==="decline"?'<span class="tag">Declined card first</span>':'')+'</div>'+
+      '<div class="bar"><i style="width:'+p.pct+'%"></i></div>'+
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">'+statusPill(p)+'<span class="meta">'+p.done+'/'+p.total+'</span></div>'+
+    '</button>';
+  }).join("");
+}
+
+function renderRunHead(){
+  const r=byId[selected]; const d=runsData[r.id]||{}; const p=progress(r);
+  const gradeRows = r.grades.map((g,i)=>'<tr><td>'+(g==="K"?"Kindergarten":"Grade "+g)+'</td><td class="num">'+r.perGrade[i]+'</td><td class="num">'+(r.perGrade[i]>24?2:1)+'</td></tr>').join("");
+  document.getElementById("runHead").innerHTML =
+   '<div class="panel">'+
+     '<div class="run-top"><h3>'+esc(r.school)+'</h3><span class="card-num">'+r.label+'</span></div>'+
+     '<dl class="kv">'+
+       '<dt>Tester</dt><dd>'+esc(r.who)+' (Run '+r.which+')</dd>'+
+       '<dt>Grades</dt><dd>'+r.band+' · '+r.total+' students · '+r.sizeLabel+'</dd>'+
+       '<dt>Path</dt><dd>'+(r.path==="sample"?"Get a Sample, then Request a Quote, then Order":"Request a Quote, then Order (no sample)")+'</dd>'+
+       '<dt>Payment</dt><dd>'+(r.pay==="decline"?"Declined card first, then 4242":"4242 test card")+'</dd>'+
+       '<dt>Buyer / admin</dt><dd class="mono">'+esc(alias(r.id))+'</dd>'+
+       '<dt>Second admin</dt><dd class="mono">'+esc(alias(r.id+"-admin2"))+'</dd>'+
+       '<dt>Support contact</dt><dd class="mono">'+esc(alias(r.id+"-help"))+'</dd>'+
+       '<dt>Teachers</dt><dd class="mono">'+esc(alias(r.id+"-t{grade}{section}"))+'</dd>'+
+     '</dl>'+
+     '<div class="field"><label for="observer">Observer</label><input id="observer" type="text" placeholder="Who is watching this run?" value="'+esc(d.observer||"")+'"'+(canWrite?'':' disabled')+'></div>'+
+   '</div>'+
+   '<div class="panel">'+
+     '<h3>Students per grade</h3>'+
+     '<div class="tablewrap"><table><thead><tr><th>Grade</th><th>Students</th><th>Classes</th></tr></thead><tbody>'+gradeRows+'<tr><td><b>Total</b></td><td class="num"><b>'+r.total+'</b></td><td></td></tr></tbody></table></div>'+
+     '<div id="runProg" style="display:grid;gap:6px"></div>'+
+   '</div>';
+  const obs=document.getElementById("observer");
+  obs.addEventListener("change",()=>{ if(canWrite) writeRun(r.id,{observer:obs.value.trim()}); });
+  renderProgress(r.id);
+}
+function renderProgress(id){
+  if(id!==selected) return;
+  const el=document.getElementById("runProg"); if(!el) return;
+  const r=byId[id]; const p=progress(r); const d=runsData[id]||{};
+  el.innerHTML='<div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><span>'+statusPill(p)+'</span><span class="muted">'+p.done+' of '+p.total+' steps marked</span></div><div class="bar"><i style="width:'+p.pct+'%"></i></div>'+
+    (d.updatedAt?'<span class="muted" style="font-size:12.5px">Last change '+new Date(d.updatedAt).toLocaleString()+'</span>':'');
+}
+
+function segButtons(st, cur){
+  const opts = st.k==="do" ? [["done","Done","d"]] : [["pass","Worked","p"],["fail","Problem","f"],["none","Didn't see it","n"]];
+  return '<div class="seg" role="group" aria-label="Result">'+opts.map(o=>'<button type="button" class="'+o[2]+'" data-step="'+st.id+'" data-val="'+o[0]+'" aria-pressed="'+(cur===o[0])+'"'+(canWrite?'':' disabled')+'>'+o[1]+'</button>').join("")+'</div>';
+}
+function renderChecklist(){
+  const r=byId[selected]; const d=runsData[r.id]||{}; const checks=d.checks||{};
+  const openState = (()=>{ try{return JSON.parse(LS.get("drt.open")||"{}")}catch(e){return {}} })();
+  document.getElementById("stages").innerHTML = stepsFor(r).map(s=>{
+    const marked=s.steps.filter(st=>checks[st.id]&&checks[st.id].s).length;
+    const bad=s.steps.filter(st=>checks[st.id]&&(checks[st.id].s==="fail"||checks[st.id].s==="none")).length;
+    const isOpen = openState[s.id]!==undefined ? openState[s.id] : (marked<s.steps.length);
+    return '<details class="stage" data-stage="'+s.id+'"'+(isOpen?' open':'')+'>'+
+      '<summary><h3><span class="sn">'+s.id+'</span>'+esc(s.title)+'</h3><span>'+(bad?'<span class="pill bad">'+bad+' issue'+(bad>1?'s':'')+'</span> ':'')+'<span class="pill'+(marked===s.steps.length?' ok':'')+'">'+marked+'/'+s.steps.length+'</span></span></summary>'+
+      '<div class="bts"><b>Behind the scenes:</b> '+s.bts+'</div>'+
+      '<ol class="steps">'+s.steps.map(st=>{
+        const c=checks[st.id]||{};
+        const needNote = c.s==="fail"||c.s==="none";
+        return '<li class="step '+st.k+'"><div class="what"><span class="kind">'+st.id+' · '+(st.k==="do"?"Do":"Check")+'</span><span>'+esc(st.t)+'</span>'+(st.d?'<span class="detail">'+esc(st.d)+'</span>':'')+'</div>'+
+          segButtons(st,c.s)+
+          '<div class="note"><input type="text" data-note="'+st.id+'" aria-label="Note for step '+st.id+'" placeholder="'+(needNote?'What did you see? (needed)':'Note (optional)')+'" value="'+esc(c.note||"")+'"'+(canWrite?'':' disabled')+'></div></li>';
+      }).join("")+'</ol></details>';
+  }).join("") +
+  '<div class="panel" style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between">'+
+    '<span class="muted">'+(d.completedAt?'Marked complete '+new Date(d.completedAt).toLocaleString()+'.':'When every step has a mark and every problem has a note, mark the run complete.')+'</span>'+
+    (d.completedAt?'<button class="btn" type="button" id="reopen"'+(canWrite?'':' disabled')+'>Reopen run</button>':'<button class="btn primary" type="button" id="complete"'+(canWrite?'':' disabled')+'>Mark run complete</button>')+
+  '</div><p class="syncnote" id="completeNote"></p>';
+}
+
+function renderAll(){
+  renderBoard(); renderRunHead(); renderChecklist();
+  const sel=document.getElementById("runSelect"); if(sel.value!==selected) sel.value=selected;
+}
+
+/* ---------- Roster UI ---------- */
+let rosterRun = selected;
+function renderRoster(){
+  const r=byId[rosterRun]; const {rows,teachers}=buildRoster(r);
+  document.getElementById("rosterSummary").innerHTML =
+    '<p><b>'+esc(r.school)+'</b> · '+rows.length+' students · '+teachers.length+' teachers · <span class="mono">'+r.label.toLowerCase()+'-roster.csv</span></p>'+
+    (baseEmail()?'':'<p class="syncnote warn">Enter your work email under Before you start, so the teacher emails come to your inbox.</p>');
+  const head='<thead><tr><th>ID</th><th>First</th><th>Last</th><th>Grade</th><th>Class</th><th>Teacher</th><th>Teacher email</th></tr></thead>';
+  document.getElementById("rosterTable").innerHTML = head+'<tbody>'+rows.map(x=>'<tr><td class="num">'+x.student_id+'</td><td>'+esc(x.first_name)+'</td><td>'+esc(x.last_name)+'</td><td>'+x.grade+'</td><td>'+x.section+'</td><td>'+esc(x.teacher_name)+'</td><td class="mono">'+esc(x.teacher_email)+'</td></tr>').join("")+'</tbody>';
+  document.getElementById("csvFallback").hidden=true;
+}
+
+/* ---------- Events ---------- */
+document.getElementById("board").addEventListener("click",e=>{
+  const b=e.target.closest("[data-run]"); if(!b) return;
+  select(b.dataset.run, true);
+});
+function select(id, jump){
+  selected=id; LS.set("drt.sel",id); rosterRun=id;
+  document.getElementById("rosterRun").value=id;
+  renderAll(); renderRoster();
+  if(jump) document.getElementById("checklist").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+}
+document.getElementById("runSelect").addEventListener("change",e=>select(e.target.value,false));
+
+document.getElementById("stages").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-step]");
+  if(b && canWrite){
+    const id=b.dataset.step, val=b.dataset.val, r=byId[selected];
+    const cur=((runsData[r.id]||{}).checks||{})[id]||{};
+    const next = cur.s===val ? null : val;
+    const patch={checks:{[id]:{s:next, at:new Date().toISOString()}}};
+    if(!runsData[r.id] || !runsData[r.id].startedAt) patch.startedAt=new Date().toISOString();
+    writeRun(r.id,patch); renderChecklist(); return;
+  }
+  if(e.target.id==="complete" && canWrite){
+    const r=byId[selected]; const p=progress(r);
+    const d=runsData[r.id]||{}; const checks=d.checks||{};
+    const missingNotes = Object.entries(checks).filter(([k,v])=>(v.s==="fail"||v.s==="none")&&!(v.note||"").trim()).map(([k])=>k);
+    const note=document.getElementById("completeNote");
+    if(p.done<p.total){ note.textContent=(p.total-p.done)+" step"+(p.total-p.done>1?"s are":" is")+" still unmarked. Mark every step first."; note.classList.add("warn"); return; }
+    if(missingNotes.length){ note.textContent="Add a note to: "+missingNotes.join(", ")+"."; note.classList.add("warn"); return; }
+    writeRun(r.id,{completedAt:new Date().toISOString()}); renderChecklist();
+  }
+  if(e.target.id==="reopen" && canWrite){ writeRun(selected,{completedAt:null}); renderChecklist(); }
+});
+document.getElementById("stages").addEventListener("change",e=>{
+  const i=e.target.closest("input[data-note]"); if(!i||!canWrite) return;
+  writeRun(selected,{checks:{[i.dataset.note]:{note:i.value.trim()}}});
+});
+document.getElementById("stages").addEventListener("toggle",e=>{
+  const d=e.target.closest("details[data-stage]"); if(!d) return;
+  let o={}; try{o=JSON.parse(LS.get("drt.open")||"{}")}catch(_){}
+  o[d.dataset.stage]=d.open; LS.set("drt.open",JSON.stringify(o));
+},true);
+
+const emailIn=document.getElementById("baseEmail");
+emailIn.value = LS.get("drt.email")||"";
+function renderAliases(){
+  const b=baseEmail(); const el=document.getElementById("aliasPreview");
+  if(!b){ el.textContent="Enter your email to see your test addresses."; return; }
+  el.innerHTML='Example for run R01:<br><span class="mono">'+esc(alias("r01"))+'</span> buyer and primary admin<br><span class="mono">'+esc(alias("r01-admin2"))+'</span> second admin<br><span class="mono">'+esc(alias("r01-help"))+'</span> support contact<br><span class="mono">'+esc(alias("r01-tka"))+'</span> Kindergarten teacher';
+}
+emailIn.addEventListener("input",()=>{ LS.set("drt.email",emailIn.value.trim()); renderAliases(); renderRunHead(); renderRoster(); });
+
+const rosterSel=document.getElementById("rosterRun"), runSel=document.getElementById("runSelect");
+const optHtml = RUNS.map(r=>'<option value="'+r.id+'">'+r.label+' · '+esc(r.who)+' '+r.which+' · '+esc(r.school)+'</option>').join("");
+rosterSel.innerHTML=optHtml; runSel.innerHTML=optHtml;
+rosterSel.value=selected; runSel.value=selected;
+rosterSel.addEventListener("change",()=>{ rosterRun=rosterSel.value; renderRoster(); });
+
+let downloads=null;
+document.getElementById("dlCsv").addEventListener("click",async()=>{
+  const r=byId[rosterRun]; const csv=toCSV(buildRoster(r).rows); const note=document.getElementById("dlNote");
+  note.classList.remove("warn"); note.textContent="";
+  if(!downloads){ showFallback(csv,"Downloads aren't available here. Copy the CSV text below into a file named "+r.label.toLowerCase()+"-roster.csv."); return; }
+  try{ await downloads.save({filename:r.label.toLowerCase()+"-roster.csv", data:csv}); note.textContent="Saved "+r.label.toLowerCase()+"-roster.csv."; }
+  catch(e){
+    if(e&&e.code==="declined") return;
+    if(e&&e.code==="rate_limited"){ note.textContent="A save prompt is already open. Finish it, then try again."; return; }
+    showFallback(csv,"The download didn't start. Copy the CSV text below instead.");
+  }
+});
+document.getElementById("copyCsv").addEventListener("click",()=>{
+  const r=byId[rosterRun]; const csv=toCSV(buildRoster(r).rows); const note=document.getElementById("dlNote");
+  navigator.clipboard.writeText(csv).then(()=>{ note.classList.remove("warn"); note.textContent="Copied "+r.label+" roster ("+csv.split("\n").length+" lines). Paste it into a blank file and save as .csv."; })
+    .catch(()=>showFallback(csv,"Copy isn't allowed here. Select the text below and copy it."));
+});
+function showFallback(csv,msg){
+  const ta=document.getElementById("csvFallback"); ta.hidden=false; ta.value=csv; ta.focus(); ta.select();
+  const n=document.getElementById("dlNote"); n.textContent=msg; n.classList.add("warn");
+}
+
+/* ---------- Boot ---------- */
+loadLocal(); renderAliases(); renderAll(); renderRoster();
+setSync("Connecting to shared progress…");
+
+(async()=>{
+  const c = window.claude;
+  if(!c || !c.use){ mode="local"; setSync("Progress is saving on this device only.", true); return; }
+  c.use("downloads").then(d=>{ downloads=d; }).catch(()=>{});
+  let user=null; try{ user=await c.use("user"); }catch(e){}
+  if(user){ try{ const w=await user.can("data.write"); if(w===false){ canWrite=false; } }catch(e){} }
+  try{ db=await c.use("db"); }catch(e){ db=null; }
+  if(!db){ mode="local"; setSync("Shared progress isn't available in this view. Changes save on this device only.", true); renderAll(); return; }
+  mode="shared"; runsData={};
+  let loaded=false;
+  const timer=setTimeout(()=>{ if(!loaded) setSync("Can't reach shared progress yet. What you see may be out of date.", true); },10000);
+  db.collection("runs").onSnapshot(snap=>{
+    const next={}; snap.docs.forEach(d=>{ next[d.id]=d.data(); });
+    runsData=next;
+    if(!snap.metadata.fromCache){ loaded=true; clearTimeout(timer);
+      setSync(canWrite? "Shared progress is live. Everyone on this page sees the same check-offs." : "You can view progress but not save changes. Ask Todd for Contributor access to this page.", !canWrite); }
+    const active=document.activeElement;
+    const typing = active && active.matches && active.matches("input[data-note], #observer");
+    renderBoard();
+    if(!typing){ renderRunHead(); renderChecklist(); } else renderProgress(selected);
+  }, err=>{ clearTimeout(timer); setSync("Shared progress stopped updating. Reload the page to reconnect.", true); });
+})();
+})();
+</script>
