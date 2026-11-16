@@ -32,6 +32,8 @@ Full chore / reward / character list: [`CATALOG.md`](CATALOG.md). ✅ = decided.
   (talking back, chore not done) or add them (exceptional work, very helpful),
   up to 50 coins each way per son per day. Parents can undo anything.
 
+- ✅ Built to be sellable: many households, onboarding, chore/reward library, optional router add-on and Faith pack (see PRODUCT.md)
+
 ## Still open
 1. **Younger son's map** and his big end goal.
 2. **Monthly and yearly prizes.**
@@ -40,3 +42,4 @@ Full chore / reward / character list: [`CATALOG.md`](CATALOG.md). ✅ = decided.
    closed-testing track?
 5. **On-site setup day** (needs you home): pick devices in UniFi, create the
    YouTube rule, bridge account, Mac mini service.
+6. **Product:** form an LLC? Store name ("Winkler Quest" or something else)? Pricing.

@@ -7,6 +7,9 @@ penalties and oversight. Digital rewards switch devices on and off through UniFi
 > Temporarily living in this folder; it will move to its own repo.
 
 - Plan and rules: [`docs/SPEC.md`](docs/SPEC.md)
+- Chores, rewards, settings: [`docs/CATALOG.md`](docs/CATALOG.md)
+- Selling it: [`docs/PRODUCT.md`](docs/PRODUCT.md)
+- Open decisions: [`docs/DECISIONS.md`](docs/DECISIONS.md)
 - Rules engine: [`core/`](core/) — pure TypeScript, no dependencies
 - Home bridge for UniFi: [`bridge/`](bridge/)
 
