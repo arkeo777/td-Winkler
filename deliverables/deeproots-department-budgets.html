@@ -1,0 +1,202 @@
+<title>DeepRoots Growth Budget</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; summary tiles → inputs → revenue bridge → department table → risks → sources */
+:root{
+  --bg:#f5f7f4; --surface:#ffffff; --fg:#1b2420; --muted:#5d6b64; --line:#dce3de;
+  --accent:#2f6b4f; --accent-soft:#e3efe8; --y0:#9aaba2; --y1:#5f9a7c; --y2:#2f6b4f;
+  --warn:#9a5b00; --warn-soft:#fbf1e1; --good:#2f6b4f;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Manrope",ui-sans-serif,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121815; --surface:#1a221e; --fg:#e6ece8; --muted:#9aa9a1; --line:#2c3833;
+  --accent:#7cc39e; --accent-soft:#1f3329; --y0:#55645c; --y1:#4f8a6c; --y2:#7cc39e;
+  --warn:#e8b25f; --warn-soft:#2e2414; --good:#7cc39e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121815; --surface:#1a221e; --fg:#e6ece8; --muted:#9aa9a1; --line:#2c3833;
+  --accent:#7cc39e; --accent-soft:#1f3329; --y0:#55645c; --y1:#4f8a6c; --y2:#7cc39e;
+  --warn:#e8b25f; --warn-soft:#2e2414; --good:#7cc39e; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+main{max-width:1040px;margin:0 auto;display:grid;gap:40px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,4.4vw,42px);font-weight:700}
+h2{font-size:22px;font-weight:700}
+h3{font-size:15px;font-weight:700;font-family:var(--body)}
+p{margin:0;max-width:68ch}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--muted)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+section{display:grid;gap:16px;min-width:0}
+header{display:grid;gap:12px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:6px;align-content:start}
+.tile .label{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+.tile .big{font:500 24px/1.1 var(--mono)}
+.tile .sub{font-size:12px;color:var(--muted)}
+.inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;background:var(--accent-soft);border-radius:10px;padding:16px}
+.inputs label{display:grid;gap:4px;font-size:12px;font-weight:600;color:var(--muted)}
+.inputs input{font:500 15px var(--mono);padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--fg);width:100%}
+.inputs input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);font-weight:600;letter-spacing:.02em;background:var(--surface)}
+td.r,th.r{text-align:right}
+tr:last-child td{border-bottom:0}
+tfoot td{font-weight:700;border-top:2px solid var(--line)}
+.dept{font-weight:700}
+.lead{font-size:12px;color:var(--muted)}
+.bars{display:grid;gap:3px;min-width:120px}
+.bar{height:6px;border-radius:3px}
+.inv{font-size:13px;color:var(--muted);max-width:34ch}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+.callout{background:var(--warn-soft);border-left:4px solid var(--warn);border-radius:6px;padding:14px 16px;display:grid;gap:8px}
+.callout strong{color:var(--warn)}
+ul{margin:0;padding-left:20px;display:grid;gap:6px;max-width:72ch}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.pill{display:inline-block;font:500 11px/1 var(--mono);padding:3px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:middle}
+.pill.est{background:var(--warn-soft);color:var(--warn)}
+</style>
+
+<main>
+<header>
+  <div class="eyebrow">DeepRoots · FY2026–27 to FY2028–29 · Draft for leadership</div>
+  <h1>Department budgets for 4x sales in two years</h1>
+  <p class="muted">Sales grow from <span class="num" id="h0"></span> today to <span class="num" id="h2"></span> by the end of year 2, doubling each year. Each department's budget is sized to deliver its part of that growth, while keeping the donor gap no larger than it is today. Change the inputs below to see every number update.</p>
+</header>
+
+<section aria-label="Summary">
+  <div class="tiles">
+    <div class="tile"><div class="label">Sales today (FY26–27)</div><div class="big" id="t0"></div><div class="sub">390 schools · 93,735 students</div></div>
+    <div class="tile"><div class="label">Year 1 sales target (FY27–28)</div><div class="big" id="t1"></div><div class="sub" id="t1s"></div></div>
+    <div class="tile"><div class="label">Year 2 sales target (FY28–29)</div><div class="big" id="t2"></div><div class="sub" id="t2s"></div></div>
+    <div class="tile"><div class="label">Donor gap: today → Y1 → Y2</div><div class="big" id="tg"></div><div class="sub">Spending minus sales</div></div>
+  </div>
+</section>
+
+<section aria-labelledby="in-h">
+  <h2 id="in-h">Inputs</h2>
+  <div class="inputs">
+    <label for="base">Current annual sales ($)<input id="base" type="number" step="10000" value="2340000"></label>
+    <label for="don">Current annual donations ($)<input id="don" type="number" step="10000" value="1500000"></label>
+    <label for="mult">Sales growth goal (× in 2 years)<input id="mult" type="number" step="0.5" min="1" value="4"></label>
+    <label for="s1">Year 1 spending, % of sales<input id="s1" type="number" step="1" value="128"></label>
+    <label for="s2">Year 2 spending, % of sales<input id="s2" type="number" step="1" value="96"></label>
+  </div>
+  <p class="muted" style="font-size:13px">Today's spending is assumed to equal sales plus donations (about <span class="num" id="e0"></span>), since donors cover the gap. Year 1 spends ahead of revenue to hire and market. In year 2 the larger sales base covers costs.</p>
+</section>
+
+<section aria-labelledby="rev-h">
+  <h2 id="rev-h">Where the 4x comes from</h2>
+  <p class="muted">Adding schools at the current pace won't get there. Today's 2027 goal of 75 new schools adds about $0.2–0.45M. The plan needs three revenue streams growing together.</p>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Revenue stream</th><th class="r">Today</th><th class="r">Year 1</th><th class="r">Year 2</th><th>What has to be true</th></tr></thead>
+    <tbody id="revBody"></tbody>
+    <tfoot id="revFoot"></tfoot>
+  </table></div>
+</section>
+
+<section aria-labelledby="dept-h">
+  <h2 id="dept-h">Department budgets</h2>
+  <div class="legend"><span><i class="sw" style="background:var(--y0)"></i>Today (est.)</span><span><i class="sw" style="background:var(--y1)"></i>Year 1</span><span><i class="sw" style="background:var(--y2)"></i>Year 2</span></div>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Department and lead</th><th class="r">Today<span class="pill est">est.</span></th><th class="r">Year 1</th><th class="r">Year 2</th><th>Share</th><th class="r">People<br>now → Y2</th><th>Main investments</th></tr></thead>
+    <tbody id="deptBody"></tbody>
+    <tfoot id="deptFoot"></tfoot>
+  </table></div>
+  <p class="muted" style="font-size:13px">Each budget is a share of total spending. The shares move toward Sales, Marketing and Customer Success while sales grow. Curriculum and admin keep growing in dollars but take a smaller share. "Today" figures are estimates built from the company's total costs, not actual department spending.</p>
+</section>
+
+<section aria-labelledby="risk-h">
+  <h2 id="risk-h">Reality check before this goes to the board</h2>
+  <div class="callout">
+    <p><strong>The 4x goal is far above the current plan.</strong> The 2027 plan says "75 new schools" and "double sales." The July vision doc says "390 to 1,500+ schools in 18 months." This budget follows the 1,500-school path, which needs about <span class="num" id="nsTot"></span> new schools over two years. At 75 a year, that many schools would take about 15 years.</p>
+  </div>
+  <div class="cols">
+    <div><h3>Biggest risks</h3><ul>
+      <li><b>Sales capacity.</b> Reps said 20 new schools each per year is a stretch, and Julie is part-time. The plan adds inside sales and online ordering through the portal so reps aren't the only way to close a sale.</li>
+      <li><b>First-year deal size.</b> A new school averages about $2,267 in year one. This plan assumes $3,000. Smaller first orders mean more schools are needed.</li>
+      <li><b>New markets don't exist yet.</b> Homeschool, church, Spanish and high school must reach about $2.7M by year 2. Each one needs a launch owner and a date.</li>
+      <li><b>Year 1 cash.</b> Spending runs ahead of sales in year 1. Donor money must at least stay at today's level until the year 2 sales arrive.</li>
+    </ul></div>
+    <div><h3>Numbers to confirm with Kathleen</h3><ul>
+      <li>Actual FY26–27 revenue (the $2.34M is from the July vision doc) and the fiscal year dates</li>
+      <li>Total operating expenses and payroll by department; this replaces the "Today" estimates</li>
+      <li>Last year's donations (the $1.5M comes from Pete's notes and is unconfirmed)</li>
+      <li>Print and fulfillment cost per student, plus the Akoolai contract value</li>
+      <li>Head count and full- or part-time status by department</li>
+    </ul></div>
+  </div>
+</section>
+
+<section aria-labelledby="src-h">
+  <h2 id="src-h">Sources and assumptions</h2>
+  <ul class="muted" style="font-size:13px">
+    <li>"390 active schools, 93,735 students, $2.34M annual revenue, 90% renewal rate": DeepRoots Vision Request for Storyland (July 2026).</li>
+    <li>"2027 growth goals: 75 new schools. Market share 6.5% to 8%. Double sales.": strategic planning whiteboard, Nov 2026.</li>
+    <li>New school averages about $2,267 in its first year. One point of renewal is worth about $13,000 a year. From the Automation by Department analysis.</li>
+    <li>Portal running cost of about $92,640 a year at current volume: Akoolai cost slide.</li>
+    <li>Department list follows the portal's department hubs, with Finance and People &amp; HR combined.</li>
+    <li>Assumed: current schools renew at 92% (up from 90%), with prices and grade add-ons (PreK, G7) rising about 8% a year. New schools renew at 90%, start at $3,000 and grow to $4,500 in their second year.</li>
+    <li>"Today" department splits and head counts are estimates from the staff roster and the portal deck. Replace them with QuickBooks and payroll actuals.</li>
+  </ul>
+</section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>{const a=Math.abs(n);const s=n<0?"−":"";return a>=1e6?s+"$"+(a/1e6).toFixed(2)+"M":s+"$"+Math.round(a/1e3)+"K"};
+// department shares of total spending: [today, Y1, Y2]
+const DEPTS=[
+ {n:"Sales",lead:"Pete Lasutschinkow · 6 territory ambassadors (T4 open)",sh:[15,20,21],hc:"7 → 18",inv:"Fill T4. Go from 6 to 10 field reps and add 6 inside-sales reps for small schools, homeschool and church. Add a sales-ops role and commissions, plus conventions and travel."},
+ {n:"Customer Success",lead:"Onboarding, renewals and support · lead to be named",sh:[8,10,11],hc:"3 → 10",inv:"About 1 person per 150 schools. A renewal team aiming for 92–93% renewal. Portal-based onboarding for June peaks."},
+ {n:"Curriculum & Editorial",lead:"Nancy Wood's team",sh:[22,17,15],hc:"5 → 9",inv:"PreK launch (fall 2027), K revision, G7, G8 (Feb 2028), a Spanish edition and a high-school scope."},
+ {n:"Production & Fulfillment",lead:"Lead to be named",sh:[17,16,18],hc:"2 → 4",inv:"Printing and shipping rise with volume. Move more delivery to digital to keep cost per student flat."},
+ {n:"Marketing",lead:"Megan Van Vlear",sh:[10,14,13],hc:"2 → 6",inv:"Marketing Communications Analyst and Video Editor (already planned). Rebrand and website, paid search, nurturing the 2,000 sample requests, homeschool and church campaigns."},
+ {n:"Technology",lead:"Bob Castle and Troy Winkler · Akoolai (contractor)",sh:[8,9,8],hc:"1.5 → 3.5",inv:"Portal hosting rises with seats ($0.10 down to $0.02 each). Online ordering, Salesforce integration, a full-time tech hire."},
+ {n:"Finance, People & Admin",lead:"Kathleen Cosby",sh:[11,8,8],hc:"3 → 5",inv:"Billing staff for 3–4x the invoices, recruiting and onboarding about 25 hires, and a yearly audit."},
+ {n:"Leadership & Board",lead:"Kim Van Vlear · Dan Williamson",sh:[9,6,6],hc:"3 → 3",inv:"The 36-month plan, donor relations and the board. Head count stays flat."}
+];
+// revenue stream shares of the target at 4x
+function calc(){
+  const base=+$("base").value||0, don=+$("don").value||0, m=Math.max(1,+$("mult").value||1);
+  const r1=base*Math.sqrt(m), r2=base*m;
+  const e0=base+don, e1=r1*(+$("s1").value||0)/100, e2=r2*(+$("s2").value||0)/100;
+  $("h0").textContent=fmt(base); $("h2").textContent=fmt(r2);
+  $("t0").textContent=fmt(base); $("t1").textContent=fmt(r1); $("t2").textContent=fmt(r2);
+  $("t1s").textContent="Spending "+fmt(e1); $("t2s").textContent="Spending "+fmt(e2);
+  $("tg").textContent=[don,e1-r1,e2-r2].map(fmt).join(" → ");
+  $("e0").textContent=fmt(e0);
+  // revenue bridge
+  const cur1=Math.min(r1,base*1.11), cur2=Math.min(r2,base*1.24);
+  const mk1=(r1-cur1)*0.42, mk2=(r2-cur2)*0.42;
+  const ns1=r1-cur1-mk1, ns2=r2-cur2-mk2;
+  const n1=Math.round(ns1/3000), carry=0.9*n1*4500, n2=Math.max(0,Math.round((ns2-carry)/3000));
+  const schools2=Math.round(390*0.92*0.92+0.9*n1+n2);
+  $("nsTot").textContent=(n1+n2).toLocaleString();
+  const rows=[
+    ["Current 390 schools",base,cur1,cur2,"Renewals rise from 90% to 92%. About 8% a year from price and grade add-ons (PreK, G7)."],
+    ["New schools",0,ns1,ns2,`${n1} new schools in year 1 and ${n2} in year 2, about ${schools2.toLocaleString()} schools in total by the end of year 2.`],
+    ["New markets",0,mk1,mk2,"Homeschool and church ($119.95 per grade), a Spanish edition, Canada and Mexico, and high school."]
+  ];
+  $("revBody").innerHTML=rows.map(r=>`<tr><td class="dept">${r[0]}</td>${r.slice(1,4).map(v=>`<td class="r num">${fmt(v)}</td>`).join("")}<td class="inv">${r[4]}</td></tr>`).join("");
+  $("revFoot").innerHTML=`<tr><td>Total sales</td><td class="r num">${fmt(base)}</td><td class="r num">${fmt(r1)}</td><td class="r num">${fmt(r2)}</td><td></td></tr>`;
+  // departments
+  const tot=[e0,e1,e2], mx=Math.max(...DEPTS.map(d=>Math.max(d.sh[0]*e0,d.sh[1]*e1,d.sh[2]*e2)/100));
+  $("deptBody").innerHTML=DEPTS.map(d=>{
+    const v=d.sh.map((s,i)=>s*tot[i]/100);
+    const bars=v.map((x,i)=>`<div class="bar" style="width:${(x/mx*100).toFixed(1)}%;background:var(--y${i})"></div>`).join("");
+    return `<tr><td><div class="dept">${d.n}</div><div class="lead">${d.lead}</div></td>${v.map(x=>`<td class="r num">${fmt(x)}</td>`).join("")}<td><div class="bars" aria-hidden="true">${bars}</div><div class="lead num">${d.sh.join("% → ")}%</div></td><td class="r num">${d.hc}</td><td class="inv">${d.inv}</td></tr>`}).join("");
+  $("deptFoot").innerHTML=`<tr><td>Total spending</td>${tot.map(x=>`<td class="r num">${fmt(x)}</td>`).join("")}<td></td><td class="r num">≈27 → 58</td><td></td></tr>`;
+}
+["base","don","mult","s1","s2"].forEach(id=>$(id).addEventListener("input",calc));
+calc();
+</script>
