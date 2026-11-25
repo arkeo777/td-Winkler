@@ -1,0 +1,8 @@
+{
+  "alerts": { "ntfy_topic": "" },
+  "risk": { "position_pct": 10, "max_open_positions": 5 },
+  "books": {
+    "cex": { "enabled": true, "universe": "all", "watchlist": ["BTC/USD", "ETH/USD", "SOL/USD"] },
+    "dex": { "enabled": true }
+  }
+}
